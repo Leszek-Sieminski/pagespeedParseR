@@ -41,5 +41,57 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                              interval = 0.5, keep_tmp = FALSE, locale = NULL,
                              utm_campaign = NULL, utm_source = NULL)
 {
-  message("please wait, v5 is under development")
+  # safety net ----------------------------------------------------------------
+  if (is.null(key) | nchar(key) == 0){
+    stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
+
+  assert_that(not_empty(url), is.string(url), grepl(".", url, fixed = T),
+              is.string(key), is.character(strategy) | is.null(strategy),
+              is.number(interval) & interval >= 0 & interval <= 120,
+              is.logical(keep_tmp),
+              is.vector(category) | is.string(category) | is.null(category),
+              # category %in% c("accessibility", "best-practices", "performance", "pwa", "seo"),
+              is.string(locale) | is.null(locale),
+              is.string(utm_campaign) | is.null(utm_campaign),
+              is.string(utm_source) | is.null(utm_source))
+
+  category <- paste(category, collapse = "&category=")
+
+  # downloading ---------------------------------------------------------------
+  req <- httr::GET(
+    url = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
+    query = list(url = url, strategy = strategy, key = key, locale = locale,
+                 category = category_f[1],
+                 category = if (length(category_f) >= 2) {category_f[2]} else {NULL},
+                 category = if (length(category_f) >= 3) {category_f[3]} else {NULL},
+                 category = if (length(category_f) >= 4) {category_f[4]} else {NULL},
+                 category = if (length(category_f) == 5) {category_f[5]} else {NULL},
+                 utm_campaign = utm_campaign,
+                 utm_source = utm_source))
+
+  # parsing -------------------------------------------------------------------
+  # httr::stop_for_status(req) # we don't want to stop for error as we want to know which URL's wasn't properly returned
+  if (req$status_code == 200){
+    if (httr::http_type(req) != "application/json") {
+      stop("API did not return json", call. = FALSE)
+    }
+    con <- httr::content(req, "text")
+    parsed <- jsonlite::fromJSON(con)
+    if (keep_tmp) { # saving tmp file for debugging in dev
+      rnd <- paste0(
+        do.call(paste0,
+                replicate(n = 3, sample(x = LETTERS, size = 1, replace = TRUE), simplify = FALSE)),
+        sprintf("%03d", sample(x = 999,  size = 1, replace = TRUE)),
+        sample(x = LETTERS, size = 1, replace = TRUE))
+
+      # save(parsed, file = paste0("tmp_", url, "_", Sys.Date(), "_",  rnd, ".RData"))
+      save(parsed, file = paste0("tmp_",  rnd, ".RData"))
+    }
+    full_results <- parsed
+    return(full_results)
+  } else {
+    full_results <- NULL
+    Sys.sleep(interval)
+    return(full_results)
+  }
 }

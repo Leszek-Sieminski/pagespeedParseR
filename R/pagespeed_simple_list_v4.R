@@ -54,10 +54,14 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), grepl(".", url, fixed = T),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp), is.string(filter_third_party),
-              is.string(locale), is.string(rule), is.logical(screenshot),
-              is.logical(snapshots), is.string(utm_campaign),
-              is.string(utm_source))
+              is.logical(keep_tmp),
+              is.string(filter_third_party) | is.null(filter_third_party),
+              is.string(locale)             | is.null(locale),
+              is.string(rule)               | is.null(rule),
+              is.logical(screenshot)        | is.null(screenshot),
+              is.logical(snapshots)         | is.null(snapshots),
+              is.string(utm_campaign)       | is.null(utm_campaign),
+              is.string(utm_source)         | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
