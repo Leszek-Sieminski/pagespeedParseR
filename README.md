@@ -1,4 +1,4 @@
-# pagespeedParseR
+# pagespeedParseR 0.1.0.9000 (under development)
 R wrapper for Google Pagespeed Insights API
 
 ## Currently under development! Wait for stable version
