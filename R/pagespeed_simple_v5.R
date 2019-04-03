@@ -5,7 +5,7 @@
 #'     "PAGESPEED_API_KEY" enviroment variable.
 #' @param strategy string. The analysis strategy to use. Options: "desktop" or
 #'     "mobile". Defaults to "desktop"
-#' @param category string. A Lighthouse category to run. Defaults to
+#' @param categories string. A Lighthouse category to run. Defaults to
 #'     "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
@@ -29,23 +29,10 @@
 #' single_url_simple_output_5 <- pagespeed_simple_v5("https://www.google.com/")
 #' }
 pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                strategy = NULL, category = "performance",
+                                strategy = NULL, categories = "performance",
                                 interval = 0.5, keep_tmp = FALSE, locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
 {
-  # testing ------------------------------------
-  url <- "https://www.wp.pl" # "https://www.wp.pl" # "https://zVCSDVSDvSDcv.ok"
-  key = Sys.getenv("PAGESPEED_API_KEY")
-  category = c("accessibility", "best-practices")
-  # category = c("accessibility", "best-practices", "performance", "pwa", "seo")
-  # category = "performance"
-  interval = 0.5
-  keep_tmp = FALSE
-  locale = NULL
-  strategy = NULL
-  utm_campaign = NULL
-  utm_source = NULL
-
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
@@ -54,24 +41,21 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.logical(keep_tmp),
-              is.vector(category) | is.string(category) | is.null(category),
-              # category %in% c("accessibility", "best-practices", "performance", "pwa", "seo"),
+              is.vector(categories) | is.string(categories) | is.null(categories),
+              # categories %in% c("accessibility", "best-practices", "performance", "pwa", "seo"),
               is.string(locale) | is.null(locale),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source) | is.null(utm_source))
-
-  category_f <- category # placeholder to avoid overwriting
-  rm(category)           # because of the same argument names
 
   # downloading ---------------------------------------------------------------
   req <- httr::GET(
     url = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
     query = list(url = url, strategy = strategy, key = key, locale = locale,
-                 category = category_f[1],
-                 category = if (length(category_f) >= 2) {category_f[2]} else {NULL},
-                 category = if (length(category_f) >= 3) {category_f[3]} else {NULL},
-                 category = if (length(category_f) >= 4) {category_f[4]} else {NULL},
-                 category = if (length(category_f) == 5) {category_f[5]} else {NULL},
+                 category = categories[1],
+                 category = if (length(categories) >= 2) {categories[2]} else {NULL},
+                 category = if (length(categories) >= 3) {categories[3]} else {NULL},
+                 category = if (length(categories) >= 4) {categories[4]} else {NULL},
+                 category = if (length(categories) == 5) {categories[5]} else {NULL},
                  utm_campaign = utm_campaign,
                  utm_source = utm_source))
   # parsing -------------------------------------------------------------------

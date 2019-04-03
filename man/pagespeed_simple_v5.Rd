@@ -5,7 +5,7 @@
 \title{Download Pagespeed v4 raport for an URL as a data frame}
 \usage{
 pagespeed_simple_v5(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-  strategy = NULL, category = "performance", interval = 0.5,
+  strategy = NULL, categories = "performance", interval = 0.5,
   keep_tmp = FALSE, locale = NULL, utm_campaign = NULL,
   utm_source = NULL)
 }
@@ -18,7 +18,7 @@ pagespeed_simple_v5(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 \item{strategy}{string. The analysis strategy to use. Options: "desktop" or
 "mobile". Defaults to "desktop"}
 
-\item{category}{string. A Lighthouse category to run. Defaults to
+\item{categories}{string. A Lighthouse category to run. Defaults to
 "performance". See more in Details section}
 
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
