@@ -1,6 +1,6 @@
 #' Download Pagespeed report
 #'
-#' @description
+#' @description Download single or multiple URLs in variety of options.
 #'
 #' @param url vector of character strings. The URLs to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -46,7 +46,7 @@
 #' @export
 #'
 #' @examples
-#' #' \dontrun{
+#' \dontrun{
 #' checked_url <- download_pagespeed("https://www.google.com/", )
 #'
 #' checked_url_raw_list <- download_pagespeed(

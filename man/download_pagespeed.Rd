@@ -55,7 +55,7 @@ should be included. Defaults to NULL (= FALSE)}
 two options: data frame (if "simple"), nested list (if "raw")
 }
 \description{
-
+Download single or multiple URLs in variety of options.
 }
 \details{
 The \code{output_type} parameter regulates how the output will be
@@ -72,7 +72,7 @@ The \code{output_type} parameter regulates how the output will be
     reports.
 }
 \examples{
-#' \dontrun{
+\dontrun{
 checked_url <- download_pagespeed("https://www.google.com/", )
 
 checked_url_raw_list <- download_pagespeed(

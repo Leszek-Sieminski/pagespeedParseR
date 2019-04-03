@@ -47,7 +47,15 @@ should be included. Defaults to NULL (= FALSE)}
 formatted data frame
 }
 \description{
-Download Pagespeed v4 raport for an URL as a data frame
+This function can check a single URL (character) and parse
+   the output into a data frame. This data frame contain all the possible
+   information from Pagespeed ver 4.
+}
+\details{
+This function uses legacy version 4 of the API.
+   Check function \code{pagespeed_raw_v5} for version 5.
+   If you need all the information but in form of a nested list,
+   use \code{pagespeed_raw_v4}.
 }
 \examples{
 \dontrun{

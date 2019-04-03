@@ -2,20 +2,52 @@
 % Please edit documentation in R/pagespeed_simple_v5.R
 \name{pagespeed_simple_v5}
 \alias{pagespeed_simple_v5}
-\title{Title}
+\title{Download Pagespeed v4 raport for an URL as a data frame}
 \usage{
-pagespeed_simple_v5(url, strategy = NULL, interval = 0.5,
-  keep_tmp = FALSE, key = Sys.getenv("PAGESPEED_API_KEY"),
-  filter_third_party = NULL, locale = NULL, rule = NULL,
-  screenshot = NULL, snapshots = NULL, utm_campaign = NULL,
+pagespeed_simple_v5(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = NULL, category = "performance", interval = 0.5,
+  keep_tmp = FALSE, locale = NULL, utm_campaign = NULL,
   utm_source = NULL)
 }
 \arguments{
-\item{utm_source}{}
+\item{url}{string. The URL to fetch and analyze}
+
+\item{key}{string. Pagespeed API key to authenticate. Defaults to
+"PAGESPEED_API_KEY" enviroment variable.}
+
+\item{strategy}{string. The analysis strategy to use. Options: "desktop" or
+"mobile". Defaults to "desktop"}
+
+\item{category}{string. A Lighthouse category to run. Defaults to
+"performance". See more in Details section}
+
+\item{interval}{numeric. Number of seconds to wait between multiple queries.
+Defaults to 0.5 second.}
+
+\item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
+with parsed response. Defaults to FALSE}
+
+\item{locale}{string. The locale used to localize formatted results}
+
+\item{utm_campaign}{string. Campaign name for analytics. Defaults to NULL}
+
+\item{utm_source}{string. Campaign source for analytics. Defaults to NULL}
 }
 \value{
-
+data frame
 }
 \description{
-Title
+Download Pagespeed v4 raport for an URL as a data frame
+}
+\details{
+The \code{category} parameter regulates which of the tests'
+    categories from Lighthouse are to be run. You can select more than
+    one.
+    Options: "accessibility", "best-practices", "performance", "pwa",
+    "seo".
+}
+\examples{
+\dontrun{
+single_url_simple_output_5 <- pagespeed_simple_v5("https://www.google.com/")
+}
 }

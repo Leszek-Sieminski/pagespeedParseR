@@ -1,5 +1,14 @@
 #' Download Pagespeed v4 raport for an URL as a data frame
 #'
+#' @description This function can check a single URL (character) and parse
+#'    the output into a data frame. This data frame contain all the possible
+#'    information from Pagespeed ver 4.
+#'
+#' @details This function uses legacy version 4 of the API.
+#'    Check function \code{pagespeed_raw_v5} for version 5.
+#'    If you need all the information but in form of a nested list,
+#'    use \code{pagespeed_raw_v4}.
+#'
 #' @param url string. The URL to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
 #'     "PAGESPEED_API_KEY" enviroment variable.
