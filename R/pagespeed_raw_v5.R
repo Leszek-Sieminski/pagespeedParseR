@@ -77,6 +77,7 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     }
     con <- httr::content(req, "text")
     parsed <- jsonlite::fromJSON(con)
+    # TODO fixing keep_tmp mechanism in list functions
     if (keep_tmp) { # saving tmp file for debugging in dev
       rnd <- paste0(
         do.call(paste0,

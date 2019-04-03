@@ -79,6 +79,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     parsed <- jsonlite::fromJSON(httr::content(req, "text"))
 
     # 03 temporary file -------------------------------------------------------
+    # TODO fixing keep_tmp mechanism in list functions
     if (keep_tmp) { # saving tmp file for debugging in dev
       rnd <- paste0(
         do.call(paste0,
@@ -101,6 +102,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       stringsAsFactors = FALSE)
     # source("additional_data_ext.R", encoding = "UTF-8", local = TRUE)
 
+    # TODO deleting 05 helper source and renaming sections
     # 05 helper function ------------------------------------------------------
     # source("fun_ps_url_extract.R", encoding = "UTF-8")
 
@@ -268,6 +270,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     visible_summary <- gsub("{{END_LINK}}.", ": ", visible_summary, fixed = TRUE)
     visible_summary <- paste0(visible_summary, visible$summary$args$value)
 
+    # TODO repair visible_url error when there is an url in the list (empty)
     if ("urlBlocks" %in% names(visible)) {
       visible_url <- visible$urlBlocks$urls[[1]]$result$args
       visible_url <- ps_url_extract(visible_url)

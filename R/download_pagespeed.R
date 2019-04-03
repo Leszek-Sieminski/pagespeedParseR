@@ -93,12 +93,14 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       filter_third_party = filter_third_party, locale = locale, rule = rule, screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("raw", output_type) & api_version == 5) {
+    # TODO adding finished function call (pagespeed_raw_list_v5)
     # pagespeed_raw_list_v5(
-    #   url = url, key = key, strategy = strategy, category = category, interval = interval,
+    #   url = url, key = key, strategy = strategy, categories = categories, interval = interval,
     #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type) & api_version == 5) {
-    #pagespeed_simple_list_v5(
-    #   url = url, key = key, strategy = strategy, category = category, interval = interval,
+    # TODO adding finished function call (pagespeed_simple_list_v5)
+    # pagespeed_simple_list_v5(
+    #   url = url, key = key, strategy = strategy, categories = categories, interval = interval,
     #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }
