@@ -1,7 +1,7 @@
 Package: pagespeedParseR
 Type: Package
-Title: Google Pagespeed Insights API R Interface
-Version: 0.1.0
+Title: R Interface for Google Pagespeed Insights API
+Version: 0.1.0.9000
 Depends: R (>= 3.5.0)
 Imports:
     assertthat, 
@@ -12,7 +12,7 @@ Imports:
 Author: Leszek Siemiński [aut, cre]
 Maintainer: Leszek Siemiński <leszek.sieminski@gmail.com>
 Description: Interface for interaction with the Google Pagespeed API through R.
-    Enables versions v4 and v5 of API, parsing output to data frames or nested lists, 
+    Enables parsing output to data frames or nested lists, versions v4 and v5 of API, 
     simple API limit control and more.
 License: MIT + file LICENCE
 Encoding: UTF-8

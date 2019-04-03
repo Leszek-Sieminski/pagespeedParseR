@@ -4,14 +4,14 @@
 \alias{download_pagespeed}
 \title{Title}
 \usage{
-download_pagespeed(url, strategy = NULL, output_type = "simple",
-  interval = 0.5, keep_tmp = FALSE,
-  key = Sys.getenv("PAGESPEED_API_KEY"), filter_third_party = NULL,
+download_pagespeed(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  output_type = "simple", api_version = 4, strategy = "desktop",
+  interval = 0.5, keep_tmp = FALSE, filter_third_party = NULL,
   locale = NULL, rule = NULL, screenshot = NULL, snapshots = NULL,
-  utm_campaign = NULL, utm_source = NULL, fields = NULL)
+  utm_campaign = NULL, utm_source = NULL)
 }
 \arguments{
-\item{fields}{}
+\item{utm_source}{}
 }
 \description{
 Title

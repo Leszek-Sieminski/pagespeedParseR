@@ -1,11 +1,13 @@
-#' Title
+#' Extract nested list as a dataframe
 #'
-#' @param object
+#' @param object nested list object that contains 1-line data frames as lists
 #'
-#' @return
-#' @export
+#' @return data frame
 #'
 #' @examples
+#' \dontrun{
+#' ps_url_extract(parsed$minify_css$url_blocks[1]$args)
+#' }
 ps_url_extract <- function(object)
 {
   x <- if (!is.null(object)) {

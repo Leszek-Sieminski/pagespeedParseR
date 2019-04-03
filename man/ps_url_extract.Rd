@@ -2,13 +2,21 @@
 % Please edit documentation in R/fun_ps_url_extract.R
 \name{ps_url_extract}
 \alias{ps_url_extract}
-\title{Title}
+\title{Extract nested list as a dataframe}
 \usage{
 ps_url_extract(object)
 }
 \arguments{
-\item{object}{}
+\item{object}{nested list object that contains 1-line data frames as lists}
+}
+\value{
+data frame
 }
 \description{
-Title
+Extract nested list as a dataframe
+}
+\examples{
+\dontrun{
+ps_url_extract(parsed$minify_css$url_blocks[1]$args)
+}
 }

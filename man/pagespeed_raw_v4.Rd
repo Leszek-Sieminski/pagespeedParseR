@@ -2,17 +2,63 @@
 % Please edit documentation in R/pagespeed_raw_v4.R
 \name{pagespeed_raw_v4}
 \alias{pagespeed_raw_v4}
-\title{Title}
+\title{Download Pagespeed v4 raport for an URL as a nested list}
 \usage{
-pagespeed_raw_v4(url, strategy = NULL, interval = 0.5,
-  keep_tmp = FALSE, key = Sys.getenv("PAGESPEED_API_KEY"),
+pagespeed_raw_v4(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = "desktop", interval = 0.5, keep_tmp = FALSE,
   filter_third_party = NULL, locale = NULL, rule = NULL,
   screenshot = NULL, snapshots = NULL, utm_campaign = NULL,
-  utm_source = NULL, fields = NULL)
+  utm_source = NULL)
 }
 \arguments{
-\item{fields}{}
+\item{url}{string. The URL to fetch and analyze}
+
+\item{key}{string. Pagespeed API key to authenticate. Defaults to
+"PAGESPEED_API_KEY" enviroment variable.}
+
+\item{strategy}{string. The analysis strategy to use. Options: "desktop" or
+"mobile". Defaults to "desktop"}
+
+\item{interval}{numeric. Number of seconds to wait between multiple queries.
+Defaults to 0.5 second.}
+
+\item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
+with parsed response. Defaults to FALSE}
+
+\item{filter_third_party}{logical. Indicates if third party resources should
+be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)}
+
+\item{locale}{string. The locale used to localize formatted results}
+
+\item{rule}{string. A PageSpeed rule to run; if none are given, all rules
+are run}
+
+\item{screenshot}{logical. Indicates if binary data containing a screenshot
+should be included. Defaults to NULL (= FALSE)}
+
+\item{snapshots}{logical. Indicates if binary data containing snapshot images
+should be included. Defaults to NULL (= FALSE)}
+
+\item{utm_campaign}{string. Campaign name for analytics. Defaults to NULL}
+
+\item{utm_source}{string. Campaign source for analytics. Defaults to NULL}
+}
+\value{
+unformatted nested list
 }
 \description{
-Title
+This function can check a single URL (character) and parse
+   the output into a data frame. This data frame contain all the possible
+   information from Pagespeed ver 4.
+}
+\details{
+This function uses legacy version 4 of the API.
+   Check function \code{pagespeed_raw_v5} for version 5.
+   If you need less information but in form of a data frame,
+   use \code{pagespeed_simple_v4}.
+}
+\examples{
+\dontrun{
+
+}
 }
