@@ -73,7 +73,7 @@ The \code{output_type} parameter regulates how the output will be
 }
 \examples{
 \dontrun{
-checked_url <- download_pagespeed("https://www.google.com/", )
+checked_url <- download_pagespeed("https://www.google.com/")
 
 checked_url_raw_list <- download_pagespeed(
   url = c("https://www.google.com/", "https://www.bing.com/"),

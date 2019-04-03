@@ -47,7 +47,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' checked_url <- download_pagespeed("https://www.google.com/", )
+#' checked_url <- download_pagespeed("https://www.google.com/")
 #'
 #' checked_url_raw_list <- download_pagespeed(
 #'   url = c("https://www.google.com/", "https://www.bing.com/"),
@@ -93,8 +93,12 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       filter_third_party = filter_third_party, locale = locale, rule = rule, screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("raw", output_type) & api_version == 5) {
-    #pagespeed_raw_list_v5()
+    # pagespeed_raw_list_v5(
+    #   url = url, key = key, strategy = strategy, category = category, interval = interval,
+    #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type) & api_version == 5) {
-    #pagespeed_simple_list_v5()
+    #pagespeed_simple_list_v5(
+    #   url = url, key = key, strategy = strategy, category = category, interval = interval,
+    #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }
