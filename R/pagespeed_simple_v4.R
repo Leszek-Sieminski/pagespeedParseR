@@ -23,9 +23,11 @@
 #'
 #' @return formatted data frame
 #'
+#' @import assertthat
+#'
 #' @examples
 #' \dontrun{
-#'
+#' single_url_simple_output <- pagespeed_simple_v4("https://www.google.com/")
 #' }
 pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 strategy = NULL, interval = 0.5, keep_tmp = FALSE,

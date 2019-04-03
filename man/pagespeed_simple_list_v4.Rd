@@ -61,6 +61,6 @@ This function uses legacy version 4 of the API.
 }
 \examples{
 \dontrun{
-
+multiple_urls_simple_output <- pagespeed_simple_list_v4("https://www.google.com/")
 }
 }

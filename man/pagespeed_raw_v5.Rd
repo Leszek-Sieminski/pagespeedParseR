@@ -13,6 +13,9 @@ pagespeed_raw_v5(url, strategy = NULL, interval = 0.5,
 \arguments{
 \item{utm_source}{}
 }
+\value{
+
+}
 \description{
 Title
 }

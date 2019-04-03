@@ -51,6 +51,6 @@ Download Pagespeed v4 raport for an URL as a data frame
 }
 \examples{
 \dontrun{
-
+single_url_simple_output <- pagespeed_simple_v4("https://www.google.com/")
 }
 }

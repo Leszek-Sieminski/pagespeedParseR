@@ -32,9 +32,11 @@
 #'
 #' @return unformatted nested list
 #'
+#' @import assertthat
+#'
 #' @examples
 #' \dontrun{
-#'
+#' multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
 #' }
 pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                   strategy = "desktop", interval = 0.5, keep_tmp = FALSE,

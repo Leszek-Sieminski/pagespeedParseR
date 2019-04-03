@@ -59,6 +59,6 @@ This function uses legacy version 4 of the API.
 }
 \examples{
 \dontrun{
-
+multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
 }
 }
