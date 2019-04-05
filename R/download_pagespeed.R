@@ -13,8 +13,13 @@
 #'     Options: \code{"desktop"}, \code{"mobile"},
 #'     and \code{"c("desktop", "mobile")"} to return both results in one
 #'     function call.
+#' @param categories string. A Lighthouse categories to run.
+#'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
+#' @param enhanced_lighthouse logical. Set to TRUE if you want to obtain even
+#'     more data from Lighthouse. However, it can create a VERY WIDE data
+#'     frame (hundreds of columns) depending on your
 #' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
 #'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
@@ -42,6 +47,12 @@
 #'     change in the future as version 5 supports additional Lighthouse
 #'     reports.
 #'
+#'     The \code{categories} parameter works only for API version 5.
+#'     It regulates which of the tests' categories from Lighthouse
+#'     are to be run. You can select more than one in a vector.
+#'     Options: "accessibility", "best-practices", "performance", "pwa",
+#'     "seo".
+#'
 #' @return two options: data frame (if "simple"), nested list (if "raw")
 #' @export
 #'
@@ -63,23 +74,30 @@
 #' }
 download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                output_type = "simple", api_version = 4,
-                               strategy = "desktop", interval = 0.5, keep_tmp = FALSE,
-                               filter_third_party = NULL, locale = NULL, rule = NULL,
-                               screenshot = NULL, snapshots = NULL,
-                               utm_campaign = NULL, utm_source = NULL)
+                               strategy = "desktop", categories = "performance",
+                               interval = 0.5, enhanced_lighthouse = FALSE,
+                               keep_tmp = FALSE, filter_third_party = NULL,
+                               locale = NULL, rule = NULL, screenshot = NULL,
+                               snapshots = NULL, utm_campaign = NULL,
+                               utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.string(url), grepl(".", url, fixed = T),
+  assert_that(not_empty(url), is.character(url), # grepl(".", url, fixed = T),
               is.string(key), is.number(api_version), api_version %in% c(4, 5),
               is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp), is.string(filter_third_party),
-              is.string(locale), is.string(rule), is.logical(screenshot),
-              is.logical(snapshots), is.string(utm_campaign),
-              is.string(utm_source))
+              is.logical(keep_tmp),
+              is.logical(enhanced_lighthouse),
+              is.string(filter_third_party) | is.null(filter_third_party),
+              is.string(locale)             | is.null(locale),
+              is.string(rule)               | is.null(rule),
+              is.logical(screenshot)        | is.null(screenshot),
+              is.logical(snapshots)         | is.null(snapshots),
+              is.string(utm_campaign)       | is.null(utm_campaign),
+              is.string(utm_source)         | is.null(utm_source))
 
   # creating report -----------------------------------------------------------
   if (grepl("raw", output_type) & api_version == 4) {
@@ -93,14 +111,13 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       filter_third_party = filter_third_party, locale = locale, rule = rule, screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("raw", output_type) & api_version == 5) {
-    # TODO adding finished function call (pagespeed_raw_list_v5)
     # pagespeed_raw_list_v5(
     #   url = url, key = key, strategy = strategy, categories = categories, interval = interval,
     #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type) & api_version == 5) {
     # TODO adding finished function call (pagespeed_simple_list_v5)
-    # pagespeed_simple_list_v5(
-    #   url = url, key = key, strategy = strategy, categories = categories, interval = interval,
-    #   keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+    pagespeed_simple_list_v5(
+      url = url, key = key, strategy = strategy, categories = categories, interval = interval,
+      keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }

@@ -8,7 +8,8 @@ Imports:
     httr, 
     jsonlite,
     purrr,
-    dplyr
+    dplyr,
+    plyr
 Author: Leszek Siemiński [aut, cre]
 Maintainer: Leszek Siemiński <leszek.sieminski@gmail.com>
 Description: Interface for interaction with the Google Pagespeed API through R.

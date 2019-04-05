@@ -119,7 +119,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                            stringsAsFactors = FALSE)
 
     # 08 page stats -----------------------------------------------------------
-    page_stats_df <- as.data.frame(parsed$pageStats)
+    page_stats_df <- as.data.frame(parsed$pageStats, stringsAsFactors = FALSE)
 
     # 09 compression ----------------------------------------------------------
     compression <- parsed$formattedResults$ruleResults$EnableGzipCompression
@@ -322,7 +322,8 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       minify_js_url = NA, render_block_summary = NA,
       render_block_impact = NA, render_block_url = NA, images_summary = NA,
       images_impact = NA, images_url = NA, visible_summary = NA,
-      visible_impact = NA, visible_url = NA)
+      visible_impact = NA, visible_url = NA,
+      stringsAsFactors = FALSE)
     Sys.sleep(interval) # optional waiting to keep API limits happy
     return(full_results)
   }

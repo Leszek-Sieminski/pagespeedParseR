@@ -6,9 +6,11 @@
 \usage{
 download_pagespeed(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   output_type = "simple", api_version = 4, strategy = "desktop",
-  interval = 0.5, keep_tmp = FALSE, filter_third_party = NULL,
-  locale = NULL, rule = NULL, screenshot = NULL, snapshots = NULL,
-  utm_campaign = NULL, utm_source = NULL)
+  categories = "performance", interval = 0.5,
+  enhanced_lighthouse = FALSE, keep_tmp = FALSE,
+  filter_third_party = NULL, locale = NULL, rule = NULL,
+  screenshot = NULL, snapshots = NULL, utm_campaign = NULL,
+  utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze}
@@ -27,8 +29,15 @@ Options: \code{"desktop"}, \code{"mobile"},
 and \code{"c("desktop", "mobile")"} to return both results in one
 function call.}
 
+\item{categories}{string. A Lighthouse categories to run.
+Defaults to "performance". See more in Details section}
+
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
 Defaults to 0.5 second.}
+
+\item{enhanced_lighthouse}{logical. Set to TRUE if you want to obtain even
+more data from Lighthouse. However, it can create a VERY WIDE data
+frame (hundreds of columns) depending on your}
 
 \item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
 with parsed response. Defaults to FALSE}
@@ -70,6 +79,12 @@ The \code{output_type} parameter regulates how the output will be
     create the report. Legacy version 4 is now default, but it will
     change in the future as version 5 supports additional Lighthouse
     reports.
+
+    The \code{categories} parameter works only for API version 5.
+    It regulates which of the tests' categories from Lighthouse
+    are to be run. You can select more than one in a vector.
+    Options: "accessibility", "best-practices", "performance", "pwa",
+    "seo".
 }
 \examples{
 \dontrun{
