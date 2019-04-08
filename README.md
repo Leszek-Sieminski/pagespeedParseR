@@ -1,9 +1,11 @@
 # pagespeedParseR  v0.2.0.9000 (under development)
 R wrapper for Google Pagespeed Insights API
 
+![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+
 * [What is Google Pagespeed Insights?](#what-is-google-pagespeed-insights)
-* [Other Pagespeed API packages in R](#other-pagespeed-api-packages-in-r)
-* [Why pagespeedParseR when there are other packages?](#why-another-r-package-for-pagespeed)
+* [Other Pagespeed API packages in R](#other-pagespeed-packages-in-r)
+* [Why pagespeedParseR when there are other packages?](#but-why-another-r-package-for-pagespeed-api)
 * [Features](#features)
 * [Acquiring API access token](#acquiring-api-access-token)
 * [Installation](#installation)
