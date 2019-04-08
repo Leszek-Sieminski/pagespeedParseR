@@ -30,7 +30,6 @@ Parsing **API response returns nested list object** in R which isn't very conven
 * Query multiple URLs in one function call and keep information which URL's failed the check
 * Query every page for both Desktop and Mobile in one function call
 * Control API limits usage with simple interval mechanism
-* [IN PROGRESS] Save the output as the tmp.Rdata files in case of trouble
 
 ## Acquiring API access token
 Visit your [Google Developers Console](https://console.developers.google.com/) page, create the project, [switch on](https://console.developers.google.com/apis/library/pagespeedonline.googleapis.com) Pagespeed API and copy your API access token into R from the credentials screen.
