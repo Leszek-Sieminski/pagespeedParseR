@@ -13,7 +13,9 @@ R wrapper for Google Pagespeed Insights API
 * [Usage](#usage)
 
 ## What is Google Pagespeed Insights?
-It's an online tool that identifies performance issues for a given URL and provides suggestions and optimizations.
+Google Pagespeed is an online tool that identifies performance issues for a given URL and provides suggestions and optimizations. See [more details](https://developers.google.com/speed/pagespeed/insights/?hl=pl).
+
+Google Lighthouse is another tool for webdevelopers that helps in fixing page performance. It was recently featured in Pagespeed API (version 5). You can try it via Chrome browser, see [more details](https://developers.google.com/web/tools/lighthouse/).
 
 ## Other Pagespeed packages in R
 There are other R packages for Pagespeed that I find very valuable:
