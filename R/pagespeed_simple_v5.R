@@ -9,8 +9,6 @@
 #'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param enhanced_lighthouse logical. If TRUE, adds even more columns with
 #'     Lighthouse data. Defaults to FALSE
 #' @param locale string. The locale used to localize formatted results
@@ -32,21 +30,10 @@
 #' }
 pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 strategy = NULL, categories = "performance",
-                                interval = 0.5, keep_tmp = FALSE,
+                                interval = 0.5,
                                 enhanced_lighthouse = FALSE, locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
 {
-  # url = "https://www.wp.pl"
-  # key = Sys.getenv("PAGESPEED_API_KEY")
-  # strategy = "desktop"
-  # categories = "performance"
-  # interval = 0.5
-  # keep_tmp = FALSE
-  # enhanced_lighthouse = FALSE
-  # locale = NULL
-  # utm_campaign = NULL
-  # utm_source = NULL
-
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
@@ -54,10 +41,8 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.logical(enhanced_lighthouse),
               is.vector(categories) | is.string(categories) | is.null(categories),
-              # categories %in% c("accessibility", "best-practices", "performance", "pwa", "seo"),
               is.string(locale) | is.null(locale),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source) | is.null(utm_source))
@@ -83,19 +68,6 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     # 02 extracting from JSON -------------------------------------------------
     parsed <- jsonlite::fromJSON(httr::content(req, "text"))
-
-    # 03 temporary file -------------------------------------------------------
-    # TODO fixing keep_tmp mechanism in list functions
-    # if (keep_tmp) { # saving tmp file for debugging in dev
-    #   rnd <- paste0(
-    #     do.call(paste0,
-    #             replicate(n = 3, sample(x = LETTERS, size = 1, replace = TRUE), simplify = FALSE)),
-    #     sprintf("%03d", sample(x = 999,  size = 1, replace = TRUE)),
-    #     sample(x = LETTERS, size = 1, replace = TRUE))
-    #
-    #   # save(parsed, file = paste0("tmp_", url, "_", Sys.Date(), "_",  rnd, ".RData"))
-    #   save(parsed, file = paste0("tmp_",  rnd, ".RData"))
-    # }
 
     # 04 creating baseline data frame -----------------------------------------
     baseline <- data.frame(

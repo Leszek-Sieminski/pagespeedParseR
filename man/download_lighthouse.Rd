@@ -7,8 +7,8 @@
 download_lighthouse(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   output_type = "simple", strategy = "desktop",
   categories = "performance", interval = 0.5,
-  enhanced_lighthouse = FALSE, keep_tmp = FALSE, locale = NULL,
-  utm_campaign = NULL, utm_source = NULL)
+  enhanced_lighthouse = FALSE, locale = NULL, utm_campaign = NULL,
+  utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze}
@@ -33,9 +33,6 @@ Defaults to 0.5 second.}
 \item{enhanced_lighthouse}{logical. Set to TRUE if you want to obtain even
 more data from Lighthouse. However, it can create a VERY WIDE data
 frame (hundreds of columns) depending on your}
-
-\item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
-with parsed response. Defaults to FALSE}
 
 \item{locale}{string. The locale used to localize formatted results}
 

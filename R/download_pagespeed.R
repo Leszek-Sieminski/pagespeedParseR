@@ -13,8 +13,6 @@
 #'     function call.
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
 #'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
@@ -67,7 +65,7 @@
 #' }
 download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                output_type = "simple", strategy = "desktop",
-                               interval = 0.5, keep_tmp = FALSE,
+                               interval = 0.5,
                                filter_third_party = NULL, locale = NULL,
                                rule = NULL, screenshot = NULL,
                                snapshots = NULL, utm_campaign = NULL,
@@ -81,8 +79,6 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(key), # is.number(api_version), api_version %in% c(4, 5),
               is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
-              # is.logical(enhanced_lighthouse),
               is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
               is.string(rule)               | is.null(rule),
@@ -94,12 +90,12 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # creating report -----------------------------------------------------------
   if (grepl("raw", output_type)) {
     pagespeed_raw_list_v4(
-      url = url, strategy = strategy, interval = interval, keep_tmp = keep_tmp, key = key,
+      url = url, strategy = strategy, interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule, screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type)) {
     pagespeed_simple_list_v4(
-      url = url, strategy = strategy, interval = interval, keep_tmp = keep_tmp, key = key,
+      url = url, strategy = strategy, interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule, screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)}
 }

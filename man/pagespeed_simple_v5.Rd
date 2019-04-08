@@ -6,8 +6,8 @@
 \usage{
 pagespeed_simple_v5(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   strategy = NULL, categories = "performance", interval = 0.5,
-  keep_tmp = FALSE, enhanced_lighthouse = FALSE, locale = NULL,
-  utm_campaign = NULL, utm_source = NULL)
+  enhanced_lighthouse = FALSE, locale = NULL, utm_campaign = NULL,
+  utm_source = NULL)
 }
 \arguments{
 \item{url}{string. The URL to fetch and analyze}
@@ -23,9 +23,6 @@ Defaults to "performance". See more in Details section}
 
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
 Defaults to 0.5 second.}
-
-\item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
-with parsed response. Defaults to FALSE}
 
 \item{enhanced_lighthouse}{logical. If TRUE, adds even more columns with
 Lighthouse data. Defaults to FALSE}

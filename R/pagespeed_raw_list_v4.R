@@ -16,8 +16,6 @@
 #'     "mobile". Defaults to "desktop"
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
 #'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
@@ -39,7 +37,7 @@
 #' multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
 #' }
 pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                  strategy = "desktop", interval = 0.5, keep_tmp = FALSE,
+                                  strategy = "desktop", interval = 0.5,
                                   filter_third_party = NULL, locale = NULL, rule = NULL,
                                   screenshot = NULL, snapshots = NULL,
                                   utm_campaign = NULL, utm_source = NULL)
@@ -50,7 +48,6 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
               is.string(rule)               | is.null(rule),
@@ -64,7 +61,6 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     desktop <- purrr::map(
       .x = url,
       .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
       strategy = "desktop", key = key, interval = interval,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
@@ -75,8 +71,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     mobile <- purrr::map(
       .x = url,
       .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "mobile", key = key,
+      strategy = "mobile", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
       utm_campaign = utm_campaign, utm_source = utm_source)
@@ -94,8 +89,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     results <- purrr::map(
       .x = url,
       .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "desktop", key = key,
+      strategy = "desktop", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
       utm_campaign = utm_campaign, utm_source = utm_source)
@@ -106,8 +100,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     results <- purrr::map(
       .x = url,
       .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "mobile", key = key,
+      strategy = "mobile", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
       utm_campaign = utm_campaign, utm_source = utm_source)

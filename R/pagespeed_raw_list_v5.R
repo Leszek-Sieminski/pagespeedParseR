@@ -18,8 +18,6 @@
 #'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param locale string. The locale used to localize formatted results
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
@@ -34,7 +32,7 @@
 #' }
 pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                   strategy = NULL, categories = "performance",
-                                  interval = 0.5, keep_tmp = FALSE, locale = NULL,
+                                  interval = 0.5, locale = NULL,
                                   utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
@@ -44,7 +42,6 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.vector(categories) | is.string(categories) | is.null(categories),
               is.string(locale)             | is.null(locale),
               is.string(utm_campaign)       | is.null(utm_campaign),
@@ -56,7 +53,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_raw_v5,
       strategy = "desktop", key = key, interval = interval,
-      categories = categories, keep_tmp = keep_tmp, locale = locale,
+      categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     Sys.sleep(1 + interval) # very simple time interval for saving API limits
@@ -65,7 +62,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_raw_v5,
       strategy = "mobile", interval = interval, key = key,
-      categories = categories, keep_tmp = keep_tmp, locale = locale,
+      categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     results <- list(
@@ -82,7 +79,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_raw_v5,
       strategy = "desktop", interval = interval, key = key,
-      categories = categories, keep_tmp = keep_tmp, locale = locale,
+      categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   } else if (grepl("mobile", strategy)) {
@@ -92,7 +89,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_raw_v5,
       strategy = "mobile", interval = interval, key = key,
-      categories = categories, keep_tmp = keep_tmp, locale = locale,
+      categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   }

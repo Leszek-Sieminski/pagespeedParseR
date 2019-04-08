@@ -18,8 +18,6 @@
 #'     "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param locale string. The locale used to localize formatted results
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
@@ -38,7 +36,7 @@
 #' }
 pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                              strategy = NULL, categories = "performance",
-                             interval = 0.5, keep_tmp = FALSE, locale = NULL,
+                             interval = 0.5, locale = NULL,
                              utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
@@ -48,14 +46,10 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.vector(categories) | is.string(categories) | is.null(categories),
-              # categories %in% c("accessibility", "best-practices", "performance", "pwa", "seo"),
               is.string(locale) | is.null(locale),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source) | is.null(utm_source))
-
-  # category <- paste(category, collapse = "&category=")
 
   # downloading ---------------------------------------------------------------
   req <- httr::GET(
@@ -77,17 +71,6 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     }
     con <- httr::content(req, "text")
     parsed <- jsonlite::fromJSON(con)
-    # TODO fixing keep_tmp mechanism in list functions
-    if (keep_tmp) { # saving tmp file for debugging in dev
-      rnd <- paste0(
-        do.call(paste0,
-                replicate(n = 3, sample(x = LETTERS, size = 1, replace = TRUE), simplify = FALSE)),
-        sprintf("%03d", sample(x = 999,  size = 1, replace = TRUE)),
-        sample(x = LETTERS, size = 1, replace = TRUE))
-
-      # save(parsed, file = paste0("tmp_", url, "_", Sys.Date(), "_",  rnd, ".RData"))
-      save(parsed, file = paste0("tmp_",  rnd, ".RData"))
-    }
     full_results <- parsed
     return(full_results)
   } else {

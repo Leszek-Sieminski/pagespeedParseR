@@ -16,8 +16,6 @@
 #'     "mobile". Defaults to "desktop"
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
 #'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
@@ -39,7 +37,7 @@
 #' single_url_raw_output <- pagespeed_raw_v4("https://www.google.com/")
 #' }
 pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                             strategy = "desktop", interval = 0.5, keep_tmp = FALSE,
+                             strategy = "desktop", interval = 0.5,
                              filter_third_party = NULL, locale = NULL, rule = NULL,
                              screenshot = NULL, snapshots = NULL,
                              utm_campaign = NULL, utm_source = NULL)
@@ -51,7 +49,6 @@ pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
               is.string(rule)               | is.null(rule),
@@ -79,16 +76,6 @@ pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     }
     con <- httr::content(req, "text")
     parsed <- jsonlite::fromJSON(con)
-    if (keep_tmp) { # saving tmp file for debugging in dev
-      rnd <- paste0(
-        do.call(paste0,
-                replicate(n = 3, sample(x = LETTERS, size = 1, replace = TRUE), simplify = FALSE)),
-        sprintf("%03d", sample(x = 999,  size = 1, replace = TRUE)),
-        sample(x = LETTERS, size = 1, replace = TRUE))
-
-      # save(parsed, file = paste0("tmp_", url, "_", Sys.Date(), "_",  rnd, ".RData"))
-      save(parsed, file = paste0("tmp_",  rnd, ".RData"))
-    }
     full_results <- parsed
     return(full_results)
   } else {

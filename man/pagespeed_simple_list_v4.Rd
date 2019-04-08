@@ -5,10 +5,9 @@
 \title{Download Pagespeed v4 raport for multiple URLs as one data frame}
 \usage{
 pagespeed_simple_list_v4(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-  strategy = NULL, interval = 0.5, keep_tmp = FALSE,
-  filter_third_party = NULL, locale = NULL, rule = NULL,
-  screenshot = NULL, snapshots = NULL, utm_campaign = NULL,
-  utm_source = NULL)
+  strategy = NULL, interval = 0.5, filter_third_party = NULL,
+  locale = NULL, rule = NULL, screenshot = NULL, snapshots = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze}
@@ -21,9 +20,6 @@ pagespeed_simple_list_v4(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
 Defaults to 0.5 second.}
-
-\item{keep_tmp}{logical. Set to TRUE if you need to keep temporary Rdata file
-with parsed response. Defaults to FALSE}
 
 \item{filter_third_party}{logical. Indicates if third party resources should
 be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)}

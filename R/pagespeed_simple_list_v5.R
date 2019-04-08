@@ -28,8 +28,6 @@
 #'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param enhanced_lighthouse logical. If TRUE, adds even more columns with
 #'     Lighthouse data (errors, opportunities). Defaults to FALSE. See more in
 #'     Details section
@@ -48,7 +46,7 @@
 #' }
 pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                      strategy = NULL, categories = "performance",
-                                     interval = 0.5, keep_tmp = FALSE,
+                                     interval = 0.5,
                                      enhanced_lighthouse = FALSE, locale = NULL,
                                      utm_campaign = NULL, utm_source = NULL)
 {
@@ -59,7 +57,6 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.logical(enhanced_lighthouse),
               is.vector(categories) | is.string(categories) | is.null(categories),
               is.string(locale)             | is.null(locale),
@@ -73,7 +70,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_simple_v5,
       strategy = "desktop", key = key, interval = interval,
-      categories = categories, keep_tmp = keep_tmp,
+      categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
@@ -83,7 +80,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_simple_v5,
       interval = interval, strategy = "mobile", key = key,
-      categories = categories, keep_tmp = keep_tmp,
+      categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
@@ -96,7 +93,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_simple_v5,
       interval = interval, strategy = "desktop", key = key,
-      categories = categories, keep_tmp = keep_tmp,
+      categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
@@ -107,7 +104,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       .x = url,
       .f = pagespeed_simple_v5,
       interval = interval, strategy = "mobile", key = key,
-      categories = categories, keep_tmp = keep_tmp,
+      categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)

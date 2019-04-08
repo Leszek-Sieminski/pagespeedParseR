@@ -16,8 +16,6 @@
 #'     "mobile". Defaults to "desktop"
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
 #'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
@@ -39,7 +37,7 @@
 #' single_url_simple_output <- pagespeed_simple_v4("https://www.google.com/")
 #' }
 pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                strategy = NULL, interval = 0.5, keep_tmp = FALSE,
+                                strategy = NULL, interval = 0.5,
                                 filter_third_party = NULL,locale = NULL, rule = NULL,
                                 screenshot = NULL, snapshots = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
@@ -51,7 +49,6 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
               is.string(rule)               | is.null(rule),
@@ -78,20 +75,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # 02 extracting from JSON -------------------------------------------------
     parsed <- jsonlite::fromJSON(httr::content(req, "text"))
 
-    # 03 temporary file -------------------------------------------------------
-    # TODO fixing keep_tmp mechanism in list functions
-    if (keep_tmp) { # saving tmp file for debugging in dev
-      rnd <- paste0(
-        do.call(paste0,
-                replicate(n = 3, sample(x = LETTERS, size = 1, replace = TRUE), simplify = FALSE)),
-        sprintf("%03d", sample(x = 999,  size = 1, replace = TRUE)),
-        sample(x = LETTERS, size = 1, replace = TRUE))
-
-      # save(parsed, file = paste0("tmp_", url, "_", Sys.Date(), "_",  rnd, ".RData"))
-      save(parsed, file = paste0("tmp_",  rnd, ".RData"))
-    }
-
-    # 04 creating baseline data frame -----------------------------------------
+    # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
       device           = ifelse(is.null(strategy), "desktop", strategy),
       title            = ifelse(is.null(parsed$title), NA, parsed$title),
@@ -100,28 +84,23 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       speed_score      = ifelse(is.null(parsed$ruleGroups$SPEED$score), NA, parsed$ruleGroups$SPEED$score),
       overall_category = ifelse(is.null(parsed$loadingExperience$overall_category), NA, parsed$loadingExperience$overall_category),
       stringsAsFactors = FALSE)
-    # source("additional_data_ext.R", encoding = "UTF-8", local = TRUE)
 
-    # TODO deleting 05 helper source and renaming sections
-    # 05 helper function ------------------------------------------------------
-    # source("fun_ps_url_extract.R", encoding = "UTF-8")
-
-    # 06 first contentful paint -----------------------------------------------
+    # 04 first contentful paint -----------------------------------------------
     tmp_fcp <- parsed$loadingExperience$metrics$FIRST_CONTENTFUL_PAINT_MS
     fcp_main <- data.frame(fcp_median       = ifelse(is.null(tmp_fcp$median),   NA, tmp_fcp$median),
                            fcp_category     = ifelse(is.null(tmp_fcp$category), NA, tmp_fcp$category),
                            stringsAsFactors = FALSE)
 
-    # 07 dom content load -----------------------------------------------------
+    # 05 dom content load -----------------------------------------------------
     tmp_dcl <- parsed$loadingExperience$metrics$DOM_CONTENT_LOADED_EVENT_FIRED_MS
     dcl_main <- data.frame(dcl_median       = ifelse(is.null(tmp_dcl$median),   NA, tmp_dcl$median),
                            dcl_category     = ifelse(is.null(tmp_dcl$category), NA, tmp_dcl$category),
                            stringsAsFactors = FALSE)
 
-    # 08 page stats -----------------------------------------------------------
+    # 06 page stats -----------------------------------------------------------
     page_stats_df <- as.data.frame(parsed$pageStats, stringsAsFactors = FALSE)
 
-    # 09 compression ----------------------------------------------------------
+    # 07 compression ----------------------------------------------------------
     compression <- parsed$formattedResults$ruleResults$EnableGzipCompression
     compression_impact <- compression$ruleImpact
     compression_summary <- gsub("{{BEGIN_LINK}}", "", compression$summary$format, fixed = TRUE)
@@ -138,7 +117,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                    compression_urls    = compression_urls,
                                    stringsAsFactors    = FALSE)
 
-    # 10 caching --------------------------------------------------------------
+    # 08 caching --------------------------------------------------------------
     caching <- parsed$formattedResults$ruleResults$LeverageBrowserCaching
     caching_impact   <- caching$ruleImpact
     caching_summary <- paste0(caching$summary$format, caching$summary$args$value)
@@ -153,7 +132,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                caching_urls     = cache_urls,
                                stringsAsFactors = FALSE)
 
-    # 11 server_resp ----------------------------------------------------------
+    # 09 server_resp ----------------------------------------------------------
     server_resp <- parsed$formattedResults$ruleResults$MainResourceServerResponseTime
     server_resp_impact   <- server_resp$ruleImpact
     server_resp_summary  <- server_resp$localizedRuleName
@@ -168,7 +147,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                    server_resp_recommendation = server_resp_recommendation,
                                    stringsAsFactors           = FALSE)
 
-    # 12 redirects ------------------------------------------------------------
+    # 10 redirects ------------------------------------------------------------
     redirects <- parsed$formattedResults$ruleResults$AvoidLandingPageRedirects
     redirects_impact   <- redirects$ruleImpact
     redirects_summary  <- redirects$localizedRuleName
@@ -183,7 +162,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                  server_resp_recommendation = server_resp_recommendation,
                                  stringsAsFactors           = FALSE)
 
-    # 13 minify_css -----------------------------------------------------------
+    # 11 minify_css -----------------------------------------------------------
     minify_css <- parsed$formattedResults$ruleResults$MinifyCss
     minify_css_impact   <- minify_css$ruleImpact
     minify_css_summary <- gsub("{{BEGIN_LINK}}", "", minify_css$summary$format, fixed = TRUE)
@@ -199,7 +178,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                   minify_css_url     = minify_css_url,
                                   stringsAsFactors   = FALSE)
 
-    # 14 minify_html ----------------------------------------------------------
+    # 12 minify_html ----------------------------------------------------------
     minify_html <- parsed$formattedResults$ruleResults$MinifyHTML
     minify_html_impact <- minify_html$ruleImpact
     minify_html_summary <- gsub("{{BEGIN_LINK}}", "", minify_html$summary$format, fixed = TRUE)
@@ -215,7 +194,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                    minify_css_url      = minify_css_url,
                                    stringsAsFactors    = FALSE)
 
-    # 15 minify_js  -----------------------------------------------------------
+    # 13 minify_js  -----------------------------------------------------------
     minify_js <- parsed$formattedResults$ruleResults$MinifyJavaScript
     minify_js_impact <- minify_js$ruleImpact
     minify_js_summary <- gsub("{{BEGIN_LINK}}", "", minify_js$summary$format, fixed = TRUE)
@@ -231,7 +210,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                  minify_js_url     = minify_js_url,
                                  stringsAsFactors  = FALSE)
 
-    # 16 render_block ---------------------------------------------------------
+    # 14 render_block ---------------------------------------------------------
     render_block <- parsed$formattedResults$ruleResults$MinimizeRenderBlockingResources
     render_block_impact <- render_block$ruleImpact
     render_block_summary <- gsub("{{NUM_CSS}} ", "", render_block$summary$format, fixed = T)
@@ -247,7 +226,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                     render_block_url     = render_block_url,
                                     stringsAsFactors     = FALSE)
 
-    # 17 images ---------------------------------------------------------------
+    # 15 images ---------------------------------------------------------------
     images <- parsed$formattedResults$ruleResults$OptimizeImages
     images_impact <- images$ruleImpact
     images_summary <- gsub("{{BEGIN_LINK}}", "", images$summary$format, fixed = TRUE)
@@ -263,7 +242,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                               images_url       = images_url,
                               stringsAsFactors = FALSE)
 
-    # 18 visible --------------------------------------------------------------
+    # 16 visible --------------------------------------------------------------
     visible <- parsed$formattedResults$ruleResults$PrioritizeVisibleContent
     visible_impact <- visible$ruleImpact
     visible_summary <- gsub("{{BEGIN_LINK}}", "", visible$summary$format, fixed = TRUE)
@@ -281,7 +260,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                visible_url      = visible_url,
                                stringsAsFactors = FALSE)
 
-    # 19 binding results together ---------------------------------------------
+    # 17 binding results together ---------------------------------------------
     full_results <- cbind(baseline, page_stats_df, fcp_main, dcl_main, compression_main,
                           caching_main, server_resp_main, redirects_main, minify_css_main,
                           minify_html_main, minify_js_main, render_block_main, images_main,
@@ -295,7 +274,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     full_results$javascriptResponseBytes  <- as.integer(as.character(full_results$javascriptResponseBytes))
     full_results$otherResponseBytes       <- as.integer(as.character(full_results$otherResponseBytes))
 
-    # 20 returning ------------------------------------------------------------
+    # 18 returning ------------------------------------------------------------
     return(full_results)
   } else {
     # else NA df --------------------------------------------------------------

@@ -18,8 +18,6 @@
 #' @param enhanced_lighthouse logical. Set to TRUE if you want to obtain even
 #'     more data from Lighthouse. However, it can create a VERY WIDE data
 #'     frame (hundreds of columns) depending on your
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param locale string. The locale used to localize formatted results
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
@@ -66,7 +64,7 @@ download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 output_type = "simple",
                                 strategy = "desktop", categories = "performance",
                                 interval = 0.5, enhanced_lighthouse = FALSE,
-                                keep_tmp = FALSE, locale = NULL,
+                                locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL) {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
@@ -78,13 +76,8 @@ download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.character(strategy) | is.null(strategy),
               is.vector(categories) | is.character(categories),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.logical(enhanced_lighthouse),
-              # is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
-              # is.string(rule)               | is.null(rule),
-              # is.logical(screenshot)        | is.null(screenshot),
-              # is.logical(snapshots)         | is.null(snapshots),
               is.string(utm_campaign)       | is.null(utm_campaign),
               is.string(utm_source)         | is.null(utm_source))
 
@@ -92,11 +85,11 @@ download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   if (grepl("raw", output_type)) {
     pagespeed_raw_list_v5(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
-      keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+      locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type)) {
     # TODO adding finished function call (pagespeed_simple_list_v5)
     pagespeed_simple_list_v5(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
-      keep_tmp = keep_tmp, locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+      locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }

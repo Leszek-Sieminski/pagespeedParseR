@@ -18,8 +18,6 @@
 #'     "mobile". Defaults to "desktop"
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
-#'     with parsed response. Defaults to FALSE
 #' @param filter_third_party logical. Indicates if third party resources should
 #'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
@@ -42,7 +40,7 @@
 #' multiple_urls_simple_output <- pagespeed_simple_list_v4("https://www.google.com/")
 #' }
 pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                     strategy = NULL, interval = 0.5, keep_tmp = FALSE,
+                                     strategy = NULL, interval = 0.5,
                                      filter_third_party = NULL,locale = NULL, rule = NULL,
                                      screenshot = NULL, snapshots = NULL,
                                      utm_campaign = NULL, utm_source = NULL)
@@ -54,7 +52,6 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(keep_tmp),
               is.string(filter_third_party) | is.null(filter_third_party),
               is.string(locale)             | is.null(locale),
               is.string(rule)               | is.null(rule),
