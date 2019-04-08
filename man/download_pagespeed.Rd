@@ -73,18 +73,46 @@ The \code{output_type} parameter regulates how the output will be
 }
 \examples{
 \dontrun{
-checked_url <- download_pagespeed("https://www.google.com/")
+# download simple data frame with Pagespeed report for Google.com
+ps_df_1 <- download_pagespeed(url = "https://www.google.com", output_type = "simple")
 
-checked_url_raw_list <- download_pagespeed(
-  url = c("https://www.google.com/", "https://www.bing.com/"),
-  strategy = c("desktop", "mobile"),
-  output_type = "raw",
-  api_version = 4)
+# run Pagespeed reports for Google.com & Bing.com for mobile and
+# return in a data frame with most important columns
+ps_df_2 <- download_pagespeed(url = c("https://www.google.com",
+                                      "https://www.bing.com/"),
+                              output_type = "simple",  # return the results in a wide data frame
+                              strategy = "mobile",     # run tests for mobile
+                              interval = 1)            # wait 1 second between the calls to API
 
-checked_url_simple_df <- download_pagespeed(
-  url = c("https://www.google.com/", "https://www.bing.com/"),
-  strategy = c("desktop", "mobile"),
-  api_version = 4)
+# run Pagespeed reports for Google.com & Bing.com for both desktop & mobile and
+# return in a data frame with most important columns
+ps_df_3 <- download_pagespeed(url = c("https://www.google.com",
+                                      "https://www.bing.com/"),
+                              output_type = "simple",  # return the results in a wide data frame
+                              strategy = c("desktop",  # check both desktop and mobile, bind
+                                           "mobile"),
+                              interval = 2)            # wait 2 seconds between the calls to API
+
+# download nested list with Pagespeed report for Google.com
+ps_nl_1 <- download_pagespeed(url = "https://www.google.com",
+                              output_type = "raw")
+
+# run Pagespeed for Google.com & Bing.com for desktop and
+# return in a nested list with all possible data
+ps_nl_2 <- download_pagespeed(url = c("https://www.google.com",
+                                      "https://www.bing.com/"),
+                              output_type = "raw",
+                              strategy = "desktop",
+                              interval = 1)
+
+# check "Performance" for Google.com & Bing.com for both desktop & mobile and
+# return in a nested list with all possible data
+ps_nl_3 <- download_pagespeed(url = c("https://www.google.com",
+                                      "https://www.bing.com/"),
+                              output_type = "raw",
+                              strategy = c("desktop",
+                                           "mobile"),
+                              interval = 2)
 
 }
 }

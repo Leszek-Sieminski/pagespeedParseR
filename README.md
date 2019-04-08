@@ -52,18 +52,71 @@ auth_pagespeed(api_key)
 
 ## Usage
 
+### Startup
 ```r
 library(pagespeedParseR)
 auth_pagespeed("12345") # not run, example
+```
 
-# PageSpeed reports -----------------------------------------------------------
+### PageSpeed reports as wide data frames (most important data)
+```r
+# PageSpeed reports -  Data Frames --------------------------------------------
+# download simple data frame with Pagespeed report for Google.com
+ps_df_1 <- download_pagespeed(url = "https://www.google.com", output_type = "simple")
 
+# run Pagespeed reports for Google.com & Bing.com for mobile and
+# return in a data frame with most important columns
+ps_df_2 <- download_pagespeed(url = c("https://www.google.com", 
+                                      "https://www.bing.com/"), 
+                              output_type = "simple",      # return the results in a wide data frame
+                              strategy = "mobile",         # run tests for mobile
+                              interval = 1)                # wait 1 second between the calls to API 
 
+# run Pagespeed reports for Google.com & Bing.com for both desktop & mobile and
+# return in a data frame with most important columns                              
+ps_df_3 <- download_pagespeed(url = c("https://www.google.com", 
+                                      "https://www.bing.com/"), 
+                              output_type = "simple",      # return the results in a wide data frame
+                              strategy = c("desktop",      # check both desktop and mobile, bind
+                                           "mobile"), 
+                              interval = 2)                # wait 2 seconds between the calls to API 
+
+```
+
+### PageSpeed reports as nested lists (all data)
+
+```r
+# PageSpeed reports - Nested Lists --------------------------------------------
+# download nested list with Pagespeed report for Google.com
+ps_nl_1 <- download_pagespeed(url = "https://www.google.com", 
+                              output_type = "raw")
+
+# run Pagespeed for Google.com & Bing.com for desktop and
+# return in a nested list with all possible data
+ps_nl_2 <- download_pagespeed(url = c("https://www.google.com", 
+                                      "https://www.bing.com/"), 
+                              output_type = "raw", 
+                              strategy = "desktop", 
+                              interval = 1)
+
+# check "Performance" for Google.com & Bing.com for both desktop & mobile and
+# return in a nested list with all possible data
+ps_nl_3 <- download_pagespeed(url = c("https://www.google.com", 
+                                      "https://www.bing.com/"), 
+                              output_type = "raw", 
+                              strategy = c("desktop", 
+                                           "mobile"), 
+                              interval = 2)
+
+```
+
+### Lighthouse reports as wide data frames (most important data)
+
+```r
 # Lighthouse reports - Data Frames --------------------------------------------
 # download simple data frame with "Performance" Lighthouse report for Google.com
 lh_df_1 <- download_lighthouse(url = "https://www.google.com", 
                              output_type = "simple")          # return the results in a wide data frame
-
 
 # check "Performance" for Google.com & Bing.com for both desktop & mobile and
 # return in a data frame with most important columns
@@ -100,15 +153,20 @@ lh_df_4 <- download_lighthouse(url = c("https://www.google.com",
                                categories = c("performance",    # run performance & accessibility... 
                                               "accessibility")) # ... Lighthouse reports
        
+```
+
+### Lighthouse reports as nested lists (all data)
+
+```r
 
 # Lighthouse reports - Nested Lists -------------------------------------------                                           
 # download nested list with "Performance" Lighthouse report for Google.com
-lh_df_1 <- download_lighthouse(url = "https://www.google.com", 
+lh_nl_1 <- download_lighthouse(url = "https://www.google.com", 
                                output_type = "raw")           # return nested list with all possible data
 
 # check "Performance" for Google.com & Bing.com for both desktop & mobile and
 # return in a nested list with all possible data
-lh_df_2 <- download_lighthouse(url = c("https://www.google.com", 
+lh_nl_2 <- download_lighthouse(url = c("https://www.google.com", 
                                        "https://www.bing.com/"), 
                                output_type = "raw",           # return nested list with all possible data
                                strategy = c("desktop",        # check both desktop and mobile, bind

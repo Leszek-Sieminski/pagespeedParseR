@@ -1,20 +1,26 @@
 fun_lh_details_extract <- function(audits){
+  # creating empty list for storing the data
   results <- list()
 
+  # extraction from the audits nested list
   for (i in 1:length(audits)) {
+    # extraction of raw data
     x <- list(details = if (!is.null(audits[[i]]$details)) {audits[[i]]$details} else {NA})
+    # adding proper name
     names(x) <- paste0(gsub("-", "_", audits[[i]]$id), "_details")
     results <- c(results, x)
   }
 
   # user_timings --------------------------------------------------------------
+  # str(results$user_timings_details)
   # results$user_timings_details
 
   # first_meaningful_paint ----------------------------------------------------
+  # str(results$first_meaningful_paint_details)
   # results$first_meaningful_paint_details
 
-
   # efficient_animated_content ------------------------------------------------
+  # str(results$efficient_animated_content_details)
   # results$efficient_animated_content_details
 
   # metrics -------------------------------------------------------------------
@@ -89,45 +95,63 @@ fun_lh_details_extract <- function(audits){
   results$offscreen_images_details$items$url
 
   # uses_responsive_images ----------------------------------------------------
-  results$uses_responsive_images_details
+  results$uses_responsive_images_details$overallSavingsBytes
+  results$uses_responsive_images_details$overallSavingsMs
+  results$uses_responsive_images_details$items$url
 
   # unused_css_rules ----------------------------------------------------------
-  results$unused_css_rules_details
+  results$unused_css_rules_details$overallSavingsBytes
+  results$unused_css_rules_details$overallSavingsMs
+  results$unused_css_rules_details$items$url
 
   # speed_index ---------------------------------------------------------------
-  results$speed_index_details
+  # str(results$speed_index_details)
+  # results$speed_index_details
 
   # first_cpu_idle ------------------------------------------------------------
-  results$first_cpu_idle_details
+  # str(results$first_cpu_idle_details)
+  # results$first_cpu_idle_details
 
   # total_byte_weight ---------------------------------------------------------
-  results$total_byte_weight_details
+  results$total_byte_weight_details$items$totalBytes
+  results$total_byte_weight_details$items$url
 
   # mainthread_work_breakdown -------------------------------------------------
-  results$mainthread_work_breakdown_details
+  results$mainthread_work_breakdown_details$items$duration
+  results$mainthread_work_breakdown_details$items$group
+  results$mainthread_work_breakdown_details$items$groupLabel
 
   # first_contentful_paint ----------------------------------------------------
-  results$first_contentful_paint_details
+  # str(results$first_contentful_paint_details)
+  # results$first_contentful_paint_details
 
   # uses_webp_images ----------------------------------------------------------
-  results$uses_webp_images_details
+  # str(results$uses_webp_images_details)
+  # results$uses_webp_images_details
 
   # critical_request_chains ---------------------------------------------------
+  # TODO ogarnąć parsowanie łańcuchów...
+  str(results$critical_request_chains_details)
   results$critical_request_chains_details
 
   # dom_size ------------------------------------------------------------------
-  results$dom_size_details
+  results$dom_size_details$items$statistic
+  results$dom_size_details$items$value
 
   # uses_rel_preload ----------------------------------------------------------
-  results$uses_rel_preload_details
+  # str(results$uses_rel_preload_details)
+  # results$uses_rel_preload_details
 
   # unminified_javascript -----------------------------------------------------
-  results$unminified_javascript_details
+  results$unminified_javascript_details$overallSavingsBytes
+  results$unminified_javascript_details$overallSavingsMs
+  results$unminified_javascript_details$items$url
 
   # redirects -----------------------------------------------------------------
-  results$redirects_details
+  results$redirects_details$items$wastedMs
+  results$redirects_details$items$url
 
-  }
+}
 # str(results)
 # det <- fun_lh_details_extract(audits = audits)
 # str(det)
