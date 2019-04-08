@@ -20,9 +20,11 @@ auth_pagespeed <- function(api_key, verbose = TRUE){
 
   # testing query
   x <- httr::GET(url = "https://www.googleapis.com/pagespeedonline/v4/runPagespeed",
-                 query = list(url = "https://www.google.com/", #"https://www.w3.org/", #,
+                 query = list(url = "https://www.google.com/", # "https://www.w3.org/"
                               key = api_key,
                               strategy = "desktop"))
+
+  Sys.sleep(2)
 
   if (x$status_code == 200){
     Sys.setenv("PAGESPEED_API_KEY" = api_key)

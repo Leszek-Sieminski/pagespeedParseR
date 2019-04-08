@@ -2,7 +2,7 @@
 % Please edit documentation in R/pagespeed_simple_list_v5.R
 \name{pagespeed_simple_list_v5}
 \alias{pagespeed_simple_list_v5}
-\title{Download Pagespeed v4 raport for multiple URLs as one data frame}
+\title{Download Pagespeed v5 raport (Lighthouse) for multiple URLs as one data frame}
 \usage{
 pagespeed_simple_list_v5(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   strategy = NULL, categories = "performance", interval = 0.5,
@@ -28,7 +28,8 @@ Defaults to 0.5 second.}
 with parsed response. Defaults to FALSE}
 
 \item{enhanced_lighthouse}{logical. If TRUE, adds even more columns with
-Lighthouse data. Defaults to FALSE}
+Lighthouse data (errors, opportunities). Defaults to FALSE. See more in
+Details section}
 
 \item{locale}{string. The locale used to localize formatted results}
 
@@ -47,10 +48,18 @@ This function can check multiple URLs given in a vector
    most of the metrics, recommendations and error occurences.
 }
 \details{
-This function uses legacy version 4 of the API.
-   Check function \code{pagespeed_simple_list_v5} for version 5.
+This function uses new version of the API (5th).
+   Check function \code{pagespeed_simple_list_v4} for version 4
+   (classic Pagespeed results).
    If you need all the information but in form of a nested list,
-   use \code{pagespeed_raw_lists_v4}.
+   use \code{pagespeed_raw_lists_v5}.
+
+   Setting \code{enhanced_lighthouse} parameter to \code{TRUE}
+   will add more data about error occurencess and opportunities
+   for improvement, but mind that resulting data frame can have
+   literally hundreds of columns (depending on how many \code{categories}
+   were selected). This is due to large amount of data returned by
+   Lighthouse reports.
 }
 \examples{
 \dontrun{

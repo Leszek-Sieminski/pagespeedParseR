@@ -1,4 +1,4 @@
-#' Download Pagespeed v4 raport for multiple URLs as one data frame
+#' Download Pagespeed v5 raport (Lighthouse) for multiple URLs as one data frame
 #'
 #' @description This function can check multiple URLs given in a vector
 #'    and parse them into a one data frame. This data frame doesn't
@@ -6,10 +6,18 @@
 #'    cannot be simply parsed into tabular form, but it contains
 #'    most of the metrics, recommendations and error occurences.
 #'
-#' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_simple_list_v5} for version 5.
+#' @details This function uses new version of the API (5th).
+#'    Check function \code{pagespeed_simple_list_v4} for version 4
+#'    (classic Pagespeed results).
 #'    If you need all the information but in form of a nested list,
-#'    use \code{pagespeed_raw_lists_v4}.
+#'    use \code{pagespeed_raw_lists_v5}.
+#'
+#'    Setting \code{enhanced_lighthouse} parameter to \code{TRUE}
+#'    will add more data about error occurencess and opportunities
+#'    for improvement, but mind that resulting data frame can have
+#'    literally hundreds of columns (depending on how many \code{categories}
+#'    were selected). This is due to large amount of data returned by
+#'    Lighthouse reports.
 #'
 #' @param url vector of character strings. The URLs to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -23,7 +31,8 @@
 #' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
 #'     with parsed response. Defaults to FALSE
 #' @param enhanced_lighthouse logical. If TRUE, adds even more columns with
-#'     Lighthouse data. Defaults to FALSE
+#'     Lighthouse data (errors, opportunities). Defaults to FALSE. See more in
+#'     Details section
 #' @param locale string. The locale used to localize formatted results
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
@@ -47,7 +56,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.character(url), # grepl(".", url, fixed = T),
+  assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.logical(keep_tmp),

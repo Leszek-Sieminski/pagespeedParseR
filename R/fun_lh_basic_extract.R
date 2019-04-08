@@ -9,9 +9,9 @@ fun_lh_basic_extract <- function(audits){
       stringsAsFactors = FALSE)
 
     x <- plyr::rename(x, c(
-      "description"   = paste0(gsub("-", "_", audits[[i]]$id), "_description"),
-      "score"         = paste0(gsub("-", "_", audits[[i]]$id), "_score"),
-      "display_value" = paste0(gsub("-", "_", audits[[i]]$id), "_display_value")))
+      "description"   = paste0(gsub("-", "_", audits[[i]]$id, fixed = TRUE), "_description"),
+      "score"         = paste0(gsub("-", "_", audits[[i]]$id, fixed = TRUE), "_score"),
+      "display_value" = paste0(gsub("-", "_", audits[[i]]$id, fixed = TRUE), "_display_value")))
 
     results <- cbind(results, x)
   }

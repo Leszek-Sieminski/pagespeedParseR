@@ -48,7 +48,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.string(url), grepl(".", url, fixed = T),
+  assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.logical(keep_tmp),

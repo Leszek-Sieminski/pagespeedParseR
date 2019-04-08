@@ -1,8 +1,8 @@
-#' Download Pagespeed v4 raport for multiple URLs as a one nested list
+#' Download Pagespeed v5 raport (Lighthouse) for multiple URLs as a one nested list
 #'
 #' @description This function can check multiple URLs (character vector)
 #'    and parse the output into a data frame. This data frame contain all
-#'    the possible information from Pagespeed ver 4.
+#'    the possible information from Pagespeed ver 5.
 #'
 #' @details This function uses legacy version 4 of the API.
 #'    Check function \code{pagespeed_raw_list_v5} for version 5.
@@ -14,19 +14,13 @@
 #'     "PAGESPEED_API_KEY" enviroment variable.
 #' @param strategy string. The analysis strategy to use. Options: "desktop" or
 #'     "mobile". Defaults to "desktop"
+#' @param categories string. A Lighthouse category/categories to run.
+#'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
 #' @param keep_tmp logical. Set to TRUE if you need to keep temporary Rdata file
 #'     with parsed response. Defaults to FALSE
-#' @param filter_third_party logical. Indicates if third party resources should
-#'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
 #' @param locale string. The locale used to localize formatted results
-#' @param rule string. A PageSpeed rule to run; if none are given, all rules
-#'     are run
-#' @param screenshot logical. Indicates if binary data containing a screenshot
-#'     should be included. Defaults to NULL (= FALSE)
-#' @param snapshots logical. Indicates if binary data containing snapshot images
-#'     should be included. Defaults to NULL (= FALSE)
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
 #'
@@ -38,47 +32,40 @@
 #' \dontrun{
 #' multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
 #' }
-pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                  strategy = "desktop", interval = 0.5, keep_tmp = FALSE,
-                                  filter_third_party = NULL, locale = NULL, rule = NULL,
-                                  screenshot = NULL, snapshots = NULL,
+pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+                                  strategy = NULL, categories = "performance",
+                                  interval = 0.5, keep_tmp = FALSE, locale = NULL,
                                   utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
-  assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
+
+  assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.logical(keep_tmp),
-              is.string(filter_third_party) | is.null(filter_third_party),
+              is.vector(categories) | is.string(categories) | is.null(categories),
               is.string(locale)             | is.null(locale),
-              is.string(rule)               | is.null(rule),
-              is.logical(screenshot)        | is.null(screenshot),
-              is.logical(snapshots)         | is.null(snapshots),
               is.string(utm_campaign)       | is.null(utm_campaign),
               is.string(utm_source)         | is.null(utm_source))
 
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
-    # simple df, both devices ------------------------------------------------------------
+    # nested list, both devices ------------------------------------------------------------
     desktop <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
+      .f = pagespeed_raw_v5,
       strategy = "desktop", key = key, interval = interval,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      categories = categories, keep_tmp = keep_tmp, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     Sys.sleep(1 + interval) # very simple time interval for saving API limits
 
     mobile <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "mobile", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      .f = pagespeed_raw_v5,
+      strategy = "mobile", interval = interval, key = key,
+      categories = categories, keep_tmp = keep_tmp, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     results <- list(
@@ -90,26 +77,22 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     return(results)
   } else if (is.null(strategy) || grepl("desktop", strategy)) {
 
-    # simple df, only desktop --------------------------------------------------------------
+    # nested list, only desktop --------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "desktop", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      .f = pagespeed_raw_v5,
+      strategy = "desktop", interval = interval, key = key,
+      categories = categories, keep_tmp = keep_tmp, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   } else if (grepl("mobile", strategy)) {
 
-    # simple df, only mobile ---------------------------------------------------------------
+    # nested list, only mobile ---------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
-      # .f = if (api_version == 4) {pagespeed_raw_v4} else if (api_version == 5) {pagespeed_raw_v5},
-      interval = interval, strategy = "mobile", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      .f = pagespeed_raw_v5,
+      strategy = "mobile", interval = interval, key = key,
+      categories = categories, keep_tmp = keep_tmp, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   }

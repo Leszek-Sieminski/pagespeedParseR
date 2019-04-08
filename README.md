@@ -1,4 +1,4 @@
-# pagespeedParseR  v0.1.0.9000 (under development)
+# pagespeedParseR  v0.2.0.9000 (under development)
 R wrapper for Google Pagespeed Insights API
 
 * [What is Google Pagespeed Insights?](#what-is-google-pagespeed-insights)
@@ -25,12 +25,11 @@ Parsing **API response returns nested list object** in R which isn't very conven
 
 ## Features
 * Authenticate with an API key
+* Choose report content: use download_pagespeed() for classic PageSpeed v4 results OR download_lighthouse() for new Lighthouse (PageSpeed v5) results
 * Choose output format: simple (conveniently parsed data frame with most important info) or raw (nested list with all the data provided by the API)
-* Query multiple URLs in one function call
+* Query multiple URLs in one function call and keep information which URL's failed the check
 * Query every page for both Desktop and Mobile in one function call
-* Find out which URLs weren't analyzed if error happened - output object keeps information about pages that didn't create the report
 * Control API limits usage with simple interval mechanism
-* [IN PROGRESS] Download data for two API versions (4th = ready, 5th = under development)
 * [IN PROGRESS] Save the output as the tmp.Rdata files in case of trouble
 
 ## Acquiring API access token
@@ -56,18 +55,65 @@ auth_pagespeed(api_key)
 ```r
 library(pagespeedParseR)
 auth_pagespeed("12345") # not run, example
-checked_url <- download_pagespeed("https://www.google.com/")
 
-checked_url_raw_list <- download_pagespeed(
-  url = c("https://www.google.com/", "https://www.bing.com/"),
-  strategy = c("desktop", "mobile"),
-  output_type = "raw",
-  api_version = 4,
-  interval = 2)
+# PageSpeed reports -----------------------------------------------------------
 
-checked_url_simple_df <- download_pagespeed(
-  url = c("https://www.google.com/", "https://www.bing.com/"),
-  strategy = c("desktop", "mobile"),
-  api_version = 4)
+
+# Lighthouse reports - Data Frames --------------------------------------------
+# download simple data frame with "Performance" Lighthouse report for Google.com
+lh_df_1 <- download_lighthouse(url = "https://www.google.com", 
+                             output_type = "simple")          # return the results in a wide data frame
+
+
+# check "Performance" for Google.com & Bing.com for both desktop & mobile and
+# return in a data frame with most important columns
+lh_df_2 <- download_lighthouse(url = c("https://www.google.com", 
+                                       "https://www.bing.com/"), 
+                               output_type = "simple",        # return the results in a wide data frame
+                               strategy = c("desktop",        # check both desktop and mobile, bind
+                                            "mobile"), 
+                               interval = 1,                  # wait 1 second between the calls to API 
+                               categories = "performance")    # which Lighthouse reports are to be run?
+
+# check "Performance" and "Accessibility" for Google.com & Bing.com for 
+# both desktop & mobile and return in a data frame with most important columns
+lh_df_3 <- download_lighthouse(url = c("https://www.google.com", 
+                                       "https://www.bing.com/"), 
+                               output_type = "simple",          # return the results in a wide data frame
+                               strategy = c("desktop",          # check both desktop and mobile, bind
+                                            "mobile"), 
+                               interval = 2,                    # wait 2 seconds between the calls to API 
+                               categories = c("performance",    # run performance & accessibility... 
+                                              "accessibility")) # ... Lighthouse reports
+
+
+# check "Performance" and "Accessibility" for Google.com & Bing.com for 
+# both desktop & mobile and return in a data frame with even more data,
+# including error occurences and the importance of each report result
+lh_df_4 <- download_lighthouse(url = c("https://www.google.com", 
+                                       "https://www.bing.com/"), 
+                               output_type = "simple",          # return the results in a wide data frame
+                               strategy = c("desktop",          # check both desktop and mobile, bind
+                                            "mobile"), 
+                               interval = 2,                    # wait 2 seconds between the calls to API 
+                               enhanced_lighthouse = TRUE       # set to TRUE to obtain more data about errors
+                               categories = c("performance",    # run performance & accessibility... 
+                                              "accessibility")) # ... Lighthouse reports
+       
+
+# Lighthouse reports - Nested Lists -------------------------------------------                                           
+# download nested list with "Performance" Lighthouse report for Google.com
+lh_df_1 <- download_lighthouse(url = "https://www.google.com", 
+                               output_type = "raw")           # return nested list with all possible data
+
+# check "Performance" for Google.com & Bing.com for both desktop & mobile and
+# return in a nested list with all possible data
+lh_df_2 <- download_lighthouse(url = c("https://www.google.com", 
+                                       "https://www.bing.com/"), 
+                               output_type = "raw",           # return nested list with all possible data
+                               strategy = c("desktop",        # check both desktop and mobile, bind
+                                            "mobile"), 
+                               interval = 1,                  # wait 1 second between the calls to API 
+                               categories = "performance")    # which Lighthouse reports are to be run?
 
 ```

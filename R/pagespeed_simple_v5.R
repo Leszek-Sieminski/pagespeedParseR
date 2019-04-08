@@ -36,11 +36,22 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 enhanced_lighthouse = FALSE, locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
 {
+  # url = "https://www.wp.pl"
+  # key = Sys.getenv("PAGESPEED_API_KEY")
+  # strategy = "desktop"
+  # categories = "performance"
+  # interval = 0.5
+  # keep_tmp = FALSE
+  # enhanced_lighthouse = FALSE
+  # locale = NULL
+  # utm_campaign = NULL
+  # utm_source = NULL
+
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.string(url), grepl(".", url, fixed = T),
+  assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.logical(keep_tmp),
@@ -92,7 +103,6 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       url              = ifelse(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
       status_code      = req$status_code,
       stringsAsFactors = FALSE)
-    # TODO create proper extraction from this nested list for all possible categories
 
     audits <- parsed$lighthouseResult$audits
 
@@ -101,23 +111,41 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     basic <- basic[, -1]
     full_results <- cbind(baseline, basic)
 
-    # 06 extra lighthouse data extraction -------------------------------------
+    # 06 missing columns in case of mobile ------------------------------------
+    if (grepl("desktop", strategy) || is.null(strategy)){
+      full_results$first_contentful_paint_3g_description <- NA
+      full_results$first_contentful_paint_3g_score <- NA
+      full_results$first_contentful_paint_3g_display_value <- NA
+    }
+
+    # 07 sorting the columns --------------------------------------------------
+    full_results <- fun_lh_basic_sort(full_results)
+
+    # TODO create proper extraction from this nested list for all possible categories
+    # 08 extra lighthouse data extraction -------------------------------------
     # if (extra) {
     #   details <- fun_lh_details_extract(audits)
     #   full_results <- cbind(full_results, details)
     # }
 
-    # 20 returning ----------------------------------------------------------
+    # 09 extra columns sorting
+    # if (extra) {
+    #   full_results <- fun_lh_details_sort(full_results)
+    # }
+
+    # 10 returning ----------------------------------------------------------
     return(full_results)
+
   } else {
     # else NA df --------------------------------------------------------------
     # if there were no results, create placeholder to keep track which URL failed
 
+    # TODO finish placeholder extended and uncomment these lines:
     if (!enhanced_lighthouse) { # basic export
-      v5_placeholder_basic()
-    } else {
-      v5_placeholder_enhanced()
-    }
+      full_results <- v5_placeholder_basic()
+    } # else {
+    # full_results <- v5_placeholder_enhanced()
+    # }
 
     Sys.sleep(interval) # optional waiting to keep API limits happy
     return(full_results)
