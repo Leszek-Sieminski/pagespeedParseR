@@ -1,7 +1,7 @@
 Package: pagespeedParseR
 Type: Package
 Title: R Interface for Google Pagespeed Insights API
-Version: 0.2.0
+Version: 0.2.1
 Depends: R (>= 3.5.0)
 Imports:
     assertthat, 

@@ -34,16 +34,6 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 enhanced_lighthouse = FALSE, locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
 {
-  url = "http://www.rennie.pl"
-  key = Sys.getenv("PAGESPEED_API_KEY")
-  strategy = NULL
-  categories = "performance"
-  interval = 0.5
-  enhanced_lighthouse = FALSE
-  locale = NULL
-  utm_campaign = NULL
-  utm_source = NULL
-
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
