@@ -22,7 +22,6 @@
 #'     "seo".
 #'
 #' @return data frame
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -34,7 +33,7 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 enhanced_lighthouse = FALSE, locale = NULL,
                                 utm_campaign = NULL, utm_source = NULL)
 {
-  # safety net ----------------------------------------------------------------
+ # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
@@ -69,39 +68,76 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # 02 extracting from JSON -------------------------------------------------
     parsed <- jsonlite::fromJSON(httr::content(req, "text"))
 
-    # 04 creating baseline data frame -----------------------------------------
+    # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
       device           = ifelse(is.null(strategy), "desktop", strategy),
       url              = ifelse(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
       status_code      = req$status_code,
       stringsAsFactors = FALSE)
 
+    # 04 intermediary audit object -----------------------------------------------
     audits <- parsed$lighthouseResult$audits
 
-    # 05 basic lighthouse data extraction -------------------------------------
-    basic <- fun_lh_basic_extract(audits)
-    basic <- basic[, -1]
-    full_results <- cbind(baseline, basic)
-
-    # 06 missing columns in case of mobile ------------------------------------
-    if (grepl("desktop", strategy) || is.null(strategy)){
-      full_results$first_contentful_paint_3g_description <- NA
-      full_results$first_contentful_paint_3g_score <- NA
-      full_results$first_contentful_paint_3g_display_value <- NA
+    # 05 report category object --------------------------------------------------
+    if ("performance" %in% categories) {
+      pm <- data.frame(category = "performance",
+                       report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id),
+                       stringsAsFactors = FALSE)
     }
 
-    # 07 sorting the columns --------------------------------------------------
+    if ("accessibility" %in% categories) {
+      acc <- data.frame(category = "accessibility",
+                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id),
+                        stringsAsFactors = FALSE)
+    }
+
+    if ("best-practices" %in% categories) {
+      bp <- data.frame(category = "best-practices",
+                       report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id),
+                       stringsAsFactors = FALSE)
+    }
+
+    if ("pwa" %in% categories) {
+      pwa <- data.frame(category = "pwa",
+                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id),
+                        stringsAsFactors = FALSE)
+    }
+
+    if ("seo" %in% categories) {
+      seo <- data.frame(category = "seo",
+                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id),
+                        stringsAsFactors = FALSE)
+    }
+
+    report_cat_df <- rbind(
+      if ("performance" %in% categories) {pm},
+      if ("accessibility" %in% categories) {acc},
+      if ("best-practices" %in% categories) {bp},
+      if ("pwa" %in% categories) {pwa},
+      if ("seo" %in% categories) {seo})
+
+    # 06 basic lighthouse data extraction -------------------------------------
+    basic <- fun_lh_basic_extract(audits, report_cat_df)
+    full_results <- cbind(baseline, basic)
+
+    # 07 missing columns in case of mobile ------------------------------------
+    if (grepl("desktop", strategy) || is.null(strategy)) {
+      full_results$performance.first_contentful_paint_3g_description   <- NA
+      full_results$performance.first_contentful_paint_3g_score         <- NA
+      full_results$performance.first_contentful_paint_3g_display_value <- NA
+    }
+
+    # 08 sorting the columns --------------------------------------------------
     full_results <- fun_lh_basic_sort(full_results)
 
-    # TODO create proper extraction from this nested list for all possible categories
-    # 08 extra lighthouse data extraction -------------------------------------
-    # if (extra) {
-    #   details <- fun_lh_details_extract(audits)
-    #   full_results <- cbind(full_results, details)
-    # }
+    # 09 enhanced lighthouse data extraction -------------------------------------
+    if (enhanced_lighthouse) {
+      details <- fun_lh_enhanced_extract(audits, categories)
+      full_results <- cbind(full_results, details)
+    }
 
     # 09 extra columns sorting
-    # if (extra) {
+    # if (enhanced_lighthouse) {
     #   full_results <- fun_lh_details_sort(full_results)
     # }
 

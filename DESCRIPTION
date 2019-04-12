@@ -1,7 +1,7 @@
 Package: pagespeedParseR
 Type: Package
 Title: R Interface for Google Pagespeed Insights API
-Version: 0.2.1
+Version: 0.2.2
 Depends: R (>= 3.5.0)
 Imports:
     assertthat, 
@@ -9,7 +9,8 @@ Imports:
     jsonlite,
     purrr,
     dplyr,
-    plyr
+    plyr,
+    glue
 Author: Leszek Siemiński [aut, cre]
 Maintainer: Leszek Siemiński <leszek.sieminski@gmail.com>
 Description: Interface for interaction with the Google Pagespeed API through R.
