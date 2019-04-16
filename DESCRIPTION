@@ -1,7 +1,7 @@
 Package: pagespeedParseR
 Type: Package
 Title: R Interface for Google Pagespeed Insights API
-Version: 0.2.2
+Version: 0.2.3
 Depends: R (>= 3.5.0)
 Imports:
     assertthat, 
@@ -20,3 +20,5 @@ License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Suggests: 
+    testthat

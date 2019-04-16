@@ -1,4 +1,4 @@
-# pagespeedParseR  v0.2.2
+# pagespeedParseR  v0.2.3
 R wrapper for Google Pagespeed Insights API
 
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)

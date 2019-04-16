@@ -49,16 +49,18 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
-              is.string(key), is.character(strategy) | is.null(strategy),
+  assert_that(all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)),
+              is.string(key),
+              !is.na(strategy) & (is.null(strategy) || (is.character(strategy) & strategy %in% c("desktop", "mobile"))),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.string(filter_third_party) | is.null(filter_third_party),
-              is.string(locale)             | is.null(locale),
-              is.string(rule)               | is.null(rule),
-              is.logical(screenshot)        | is.null(screenshot),
-              is.logical(snapshots)         | is.null(snapshots),
-              is.string(utm_campaign)       | is.null(utm_campaign),
-              is.string(utm_source)         | is.null(utm_source))
+              is.null(filter_third_party) ||
+                (is.logical(filter_third_party) & length(filter_third_party) > 0 & !is.na(filter_third_party)),
+              (is.string(locale) & nchar(locale) > 0) || is.null(locale),
+              (is.string(rule) & nchar(rule) > 0) || is.null(rule),
+              (is.logical(screenshot) & length(screenshot) > 0 & !is.na(screenshot)) || is.null(screenshot),
+              (is.logical(snapshots) & length(snapshots) > 0 & !is.na(snapshots)) || is.null(snapshots),
+              is.string(utm_campaign) | is.null(utm_campaign),
+              is.string(utm_source)   | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   if ("desktop" %in% strategy & "mobile" %in% strategy) {

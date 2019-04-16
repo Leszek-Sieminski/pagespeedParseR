@@ -16,24 +16,23 @@
 auth_pagespeed <- function(api_key, verbose = TRUE){
 
   assertthat::assert_that(noNA(api_key), not_empty(api_key), is.string(api_key),
+                          nchar(api_key) > 0,
                           noNA(verbose), not_empty(verbose), is.logical(verbose))
 
   # testing query
   x <- httr::GET(url = "https://www.googleapis.com/pagespeedonline/v4/runPagespeed",
-                 query = list(url = "https://www.google.com/", # "https://www.w3.org/"
+                 query = list(url = "https://www.google.com/", # "https://www.w3.org/"\
                               key = api_key,
                               strategy = "desktop"))
 
-  Sys.sleep(2)
+  Sys.sleep(0.5)
 
   if (x$status_code == 200){
     Sys.setenv("PAGESPEED_API_KEY" = api_key)
     if (verbose) {
       message("API key authorized.")
-    } else {
-      warning(
-        paste0("Authorization error: HTTP status code ", x$status_code, ". Check your API key.")
-      )
     }
+  } else {
+    stop(paste0("Authorization error: HTTP status code ", x$status_code, ". Check your API key."))
   }
 }

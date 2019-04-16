@@ -46,16 +46,18 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   if (is.null(key) | nchar(key) == 0){
     stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
-              is.string(key), is.character(strategy) | is.null(strategy),
+  assert_that(not_empty(url), is.string(url) & length(url) > 0, grepl(".", url, fixed = T),
+              is.string(key), is.null(strategy) ||
+                (is.character(strategy) & strategy %in% c("desktop", "mobile")),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.string(filter_third_party) | is.null(filter_third_party),
-              is.string(locale)             | is.null(locale),
-              is.string(rule)               | is.null(rule),
-              is.logical(screenshot)        | is.null(screenshot),
-              is.logical(snapshots)         | is.null(snapshots),
-              is.string(utm_campaign)       | is.null(utm_campaign),
-              is.string(utm_source)         | is.null(utm_source))
+              is.null(filter_third_party) ||
+                (is.logical(filter_third_party) & length(filter_third_party) > 0 & !is.na(filter_third_party)),
+              (is.string(locale) & nchar(locale) > 0) || is.null(locale),
+              (is.string(rule) & nchar(rule) > 0) || is.null(rule),
+              (is.logical(screenshot) & length(screenshot) > 0 & !is.na(screenshot)) || is.null(screenshot),
+              (is.logical(snapshots) & length(snapshots) > 0 & !is.na(snapshots)) || is.null(snapshots),
+              is.string(utm_campaign) | is.null(utm_campaign),
+              is.string(utm_source)   | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   req <- httr::GET(
@@ -153,14 +155,14 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     redirects_summary  <- redirects$localizedRuleName
 
     if ("urlBlocks" %in% names(redirects)){
-      server_resp_recommendation <- redirects$summary$args$value
+      redirects_recommendation <- redirects$summary$args$value
       # server_resp_recommendation <- ps_url_extract(server_resp_recommendation)
-    } else {server_resp_recommendation <- NA}
+    } else {redirects_recommendation <- NA}
 
-    redirects_main <- data.frame(redirects_summary          = redirects_summary,
-                                 redirects_impact           = redirects_impact,
-                                 server_resp_recommendation = server_resp_recommendation,
-                                 stringsAsFactors           = FALSE)
+    redirects_main <- data.frame(redirects_summary        = redirects_summary,
+                                 redirects_impact         = redirects_impact,
+                                 redirects_recommendation = redirects_recommendation,
+                                 stringsAsFactors         = FALSE)
 
     # 11 minify_css -----------------------------------------------------------
     minify_css <- parsed$formattedResults$ruleResults$MinifyCss
@@ -187,11 +189,11 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if ("urlBlocks" %in% names(minify_html)) {
       minify_html_url <- minify_html$urlBlocks$urls[[1]]$result$args
       minify_html_url <- ps_url_extract(minify_html_url)
-    } else {minify_css_url <- NA}
+    } else {minify_html_url <- NA}
 
     minify_html_main <- data.frame(minify_html_summary = minify_html_summary,
                                    minify_html_impact  = minify_html_impact,
-                                   minify_css_url      = minify_css_url,
+                                   minify_html_url      = minify_html_url,
                                    stringsAsFactors    = FALSE)
 
     # 13 minify_js  -----------------------------------------------------------
@@ -260,21 +262,71 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                visible_url      = visible_url,
                                stringsAsFactors = FALSE)
 
-    # 17 binding results together ---------------------------------------------
+    # 17 dealing with missing in stats when no JS/CSS -------------------------
+    if ("totalRequestBytes" %in% names(page_stats_df)) {
+      page_stats_df$totalRequestBytes <- as.integer(as.character(page_stats_df$totalRequestBytes))
+    } else {
+      page_stats_df$totalRequestBytes <- NA
+    }
+
+    if ("htmlResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$htmlResponseBytes <- as.integer(as.character(page_stats_df$htmlResponseBytes))
+    } else {
+      page_stats_df$htmlResponseBytes <- NA
+    }
+
+    if ("overTheWireResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$overTheWireResponseBytes <- as.integer(as.character(page_stats_df$overTheWireResponseBytes))
+    } else {
+      page_stats_df$cssResponseBytes <- NA
+    }
+
+    if ("cssResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$cssResponseBytes <- as.integer(as.character(page_stats_df$cssResponseBytes))
+    } else {
+      page_stats_df$cssResponseBytes <- NA
+    }
+
+    if ("imageResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$imageResponseBytes <- as.integer(as.character(page_stats_df$imageResponseBytes))
+    } else {
+      page_stats_df$imageResponseBytes <- NA
+    }
+
+    if ("javascriptResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$javascriptResponseBytes <- as.integer(as.character(page_stats_df$javascriptResponseBytes))
+    } else {
+      page_stats_df$javascriptResponseBytes <- NA
+    }
+
+    if ("otherResponseBytes" %in% names(page_stats_df)) {
+      page_stats_df$otherResponseBytes <- as.integer(as.character(page_stats_df$otherResponseBytes))
+    } else {
+      page_stats_df$page_stats_df$otherResponseBytes <- NA
+    }
+
+    if ("numberJsResources" %in% names(page_stats_df)) {
+      page_stats_df$numberJsResources <- as.integer(as.character(page_stats_df$numberJsResources))
+    } else {
+      page_stats_df$numberJsResources <- NA
+    }
+
+    if ("numberCssResources" %in% names(page_stats_df)) {
+      page_stats_df$numberCssResources <- as.integer(as.character(page_stats_df$numberCssResources))
+    } else {
+      page_stats_df$numberCssResources <- NA
+    }
+
+    # 18 binding results together ---------------------------------------------
     full_results <- cbind(baseline, page_stats_df, fcp_main, dcl_main, compression_main,
                           caching_main, server_resp_main, redirects_main, minify_css_main,
                           minify_html_main, minify_js_main, render_block_main, images_main,
                           visible_main, stringsAsFactors = FALSE)
 
-    full_results$totalRequestBytes        <- as.integer(as.character(full_results$totalRequestBytes))
-    full_results$htmlResponseBytes        <- as.integer(as.character(full_results$htmlResponseBytes))
-    full_results$overTheWireResponseBytes <- as.integer(as.character(full_results$overTheWireResponseBytes))
-    full_results$cssResponseBytes         <- as.integer(as.character(full_results$cssResponseBytes))
-    full_results$imageResponseBytes       <- as.integer(as.character(full_results$imageResponseBytes))
-    full_results$javascriptResponseBytes  <- as.integer(as.character(full_results$javascriptResponseBytes))
-    full_results$otherResponseBytes       <- as.integer(as.character(full_results$otherResponseBytes))
+    # 19 sorting the df -------------------------------------------------------
+    full_results <- fun_lh_basic_sort(full_results)
 
-    # 18 returning ------------------------------------------------------------
+    # 20 returning ------------------------------------------------------------
     return(full_results)
   } else {
     # else NA df --------------------------------------------------------------
@@ -292,16 +344,14 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       fcp_category = NA, dcl_median = NA, dcl_category = NA,
       compression_summary = NA, compression_impact = NA, compression_urls = NA,
       caching_summary = NA, caching_impact = NA, caching_urls = NA,
-      server_resp_summary = NA, server_resp_impact = NA,
-      server_resp_recommendation = NA, redirects_summary = NA,
-      redirects_impact = NA, server_resp_recommendation = NA,
+      server_resp_summary = NA, server_resp_impact = NA, server_resp_recommendation = NA,
+      redirects_summary = NA, redirects_impact = NA, # redirects_url = NA,
       minify_css_summary = NA, minify_css_impact = NA, minify_css_url = NA,
-      minify_html_summary = NA, minify_html_impact = NA,
-      minify_css_url = NA, minify_js_summary = NA, minify_js_impact = NA,
-      minify_js_url = NA, render_block_summary = NA,
-      render_block_impact = NA, render_block_url = NA, images_summary = NA,
-      images_impact = NA, images_url = NA, visible_summary = NA,
-      visible_impact = NA, visible_url = NA,
+      minify_html_summary = NA, minify_html_impact = NA, minify_html_url = NA,
+      minify_js_summary = NA, minify_js_impact = NA, minify_js_url = NA,
+      render_block_summary = NA, render_block_impact = NA, render_block_url = NA,
+      images_summary = NA, images_impact = NA, images_url = NA,
+      visible_summary = NA, visible_impact = NA, visible_url = NA,
       stringsAsFactors = FALSE)
     Sys.sleep(interval) # optional waiting to keep API limits happy
     return(full_results)
