@@ -4,10 +4,10 @@
 #         cp travis-tool.sh.cmd R-package\travis-tools.sh.cmd
 #         cd R-package
 #         bash -c "echo '^travis-tool\.sh\.cmd$' >> .Rbuildignore"
-
-build_script:
-  - R CMD build .
-  - R CMD check *tar.gz
+#
+#  build_script:
+#   - R CMD build .
+#   - R CMD check *tar.gz
 
 # DO NOT CHANGE the "init" and "install" sections below
 
