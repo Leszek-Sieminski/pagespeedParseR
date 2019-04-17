@@ -8,7 +8,7 @@ testthat::test_that("API key parameter cannot be NA or empty", {
 })
 
 testthat::test_that("API key parameter works when proper", {
-  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST")), "API key authorized.")
+  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY")), "API key authorized.")
 })
 
 testthat::test_that("API key parameter fails when wrong", {
@@ -16,12 +16,12 @@ testthat::test_that("API key parameter fails when wrong", {
 })
 
 testthat::test_that("verbose parameter cannot be NA or empty", {
-  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST"), verbose = ""))
-  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST"), verbose = NA))
-  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST"), verbose = NULL))
+  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = ""))
+  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = NA))
+  testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = NULL))
 })
 
 testthat::test_that("verbose parameter works when proper", {
-  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST"), verbose = TRUE), "API key authorized.")
-  testthat::expect_silent(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST"), verbose = FALSE))
+  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = TRUE), "API key authorized.")
+  testthat::expect_silent(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = FALSE))
 })
