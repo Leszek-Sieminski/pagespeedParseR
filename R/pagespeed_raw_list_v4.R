@@ -47,7 +47,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
   assert_that(all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)),
               is.string(key),
-              !is.na(strategy) & (is.null(strategy) || (is.character(strategy) & strategy %in% c("desktop", "mobile"))),
+              !is.na(strategy) & (is.null(strategy) || (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
               is.number(interval) & interval >= 0 & interval <= 120,
               is.null(filter_third_party) ||
                 (is.logical(filter_third_party) & length(filter_third_party) > 0 & !is.na(filter_third_party)),
