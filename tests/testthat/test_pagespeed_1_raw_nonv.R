@@ -65,6 +65,3 @@ testthat::test_that("basic output nested list has proper length (mobile)", {
   x <- pagespeedParseR:::pagespeed_raw_v4("https://www.google.com", strategy = "mobile", interval = 0)
   testthat::expect_equal(length(x), 10)
 })
-
-# x <- pagespeedParseR:::pagespeed_simple_list_v4(url = c("loremipsumdolorametpageparsererrortest.com", "https://www.google.com"), strategy = "desktop")
-# cat(colnames(x))

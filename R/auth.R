@@ -29,10 +29,6 @@ auth_pagespeed <- function(api_key, verbose = TRUE){
 
   if (x$status_code == 200){
     Sys.setenv("PAGESPEED_API_KEY" = api_key)
-    if (verbose) {
-      message("API key authorized.")
-    }
-  } else {
-    stop(paste0("Authorization error: HTTP status code ", x$status_code, ". Check your API key."))
-  }
+    if (verbose) {message("API key authorized.")}
+  } else {stop(paste0("Authorization error: HTTP status code ", x$status_code, ". Check your API key."))}
 }

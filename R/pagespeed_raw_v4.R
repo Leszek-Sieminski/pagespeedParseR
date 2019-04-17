@@ -43,8 +43,7 @@ pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                              utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
-  if (is.null(key) | nchar(key) == 0){
-    stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
+  if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
   assert_that(not_empty(url), is.string(url) & length(url) > 0, grepl(".", url, fixed = T),
               is.string(key), is.null(strategy) ||
@@ -59,8 +58,7 @@ pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source)   | is.null(utm_source))
 
-  if (is.null(key) | nchar(key) == 0){
-    stop("API key is a NULL - please check it and provide a proper API key.", call. = FALSE)}
+  if (is.null(key) | nchar(key) == 0){stop("API key is a NULL - please check it and provide a proper API key.", call. = FALSE)}
 
   # downloading ---------------------------------------------------------------
   req <- httr::GET(

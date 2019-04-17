@@ -40,8 +40,7 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                              utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
-  if (is.null(key) | nchar(key) == 0){
-    stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
+  if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
   assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
               is.string(key), is.character(strategy) | is.null(strategy),
@@ -66,9 +65,7 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # parsing -------------------------------------------------------------------
   # httr::stop_for_status(req) # we don't want to stop for error as we want to know which URL's wasn't properly returned
   if (req$status_code == 200){
-    if (httr::http_type(req) != "application/json") {
-      stop("API did not return json", call. = FALSE)
-    }
+    if (httr::http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
     con <- httr::content(req, "text")
     parsed <- jsonlite::fromJSON(con)
     full_results <- parsed
