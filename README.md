@@ -1,6 +1,7 @@
 # pagespeedParseR  v0.2.3
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Travis_CI_Build_Status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
+[![Code_Coverage_Status](https://codecov.io/gh/Leszek-Sieminski/pagespeedParseR/branch/master/graph/badge.svg)](https://codecov.io/gh/Leszek-Sieminski/pagespeedParseR)
 
 R wrapper for Google Pagespeed Insights API
 
