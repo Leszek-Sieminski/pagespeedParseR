@@ -1,8 +1,8 @@
 # pagespeedParseR  v0.2.3
-R wrapper for Google Pagespeed Insights API
-
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Travis_CI_Build_Status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
+
+R wrapper for Google Pagespeed Insights API
 
 * [What is Google Pagespeed Insights?](#what-is-google-pagespeed-insights)
 * [Other Pagespeed API packages in R](#other-pagespeed-packages-in-r)
