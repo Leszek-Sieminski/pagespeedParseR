@@ -179,7 +179,7 @@ testthat::test_that("basic output nested list has proper length (desktop, raw)",
   x <- pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", output_type = "raw", interval = 0)
   testthat::expect_equal(length(x), 1)
   testthat::expect_equal(length(x[[1]]), 10)
-  testthat::expect_equal(length(x[[1]]$pageStats), 12)
+  testthat::expect_equal(length(x[[1]]$pageStats), 14)
   testthat::expect_equal(length(x[[1]]$formattedResults), 2)
   testthat::expect_equal(length(x[[1]]$formattedResults$ruleResults), 10)
 })
