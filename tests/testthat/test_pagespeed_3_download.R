@@ -22,6 +22,11 @@ testthat::test_that("url param doesn't accept wrong vectors (simple)", {
   testthat::expect_error(pagespeedParseR:::download_pagespeed(url = c("https://www.google.com", "google com"), strategy = "mobile"))
 })
 
+testthat::test_that("API key doesn't accept wrong values (simple)", {
+  testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", api_key = ""), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+  testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", api_key = NULL), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+})
+
 testthat::test_that("strategy param doesn't accept wrong values (simple)", {
   testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = NA))
   testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = ""))
@@ -119,6 +124,11 @@ testthat::test_that("url param doesn't accept wrong values (raw)", {
   testthat::expect_error(pagespeedParseR:::download_pagespeed(url = NA, strategy = "mobile", output_type = "raw"))
   testthat::expect_error(pagespeedParseR:::download_pagespeed(url = NULL, strategy = "mobile", output_type = "raw"))
   testthat::expect_error(pagespeedParseR:::download_pagespeed(url = "google com", strategy = "mobile", output_type = "raw"))
+})
+
+testthat::test_that("API key doesn't accept wrong values (raw)", {
+  testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", api_key = "", output_type = "raw"), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+  testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", api_key = NULL, output_type = "raw"), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
 })
 
 testthat::test_that("strategy param doesn't accept wrong values (raw)", {

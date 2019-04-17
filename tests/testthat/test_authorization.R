@@ -11,10 +11,6 @@ testthat::test_that("API key parameter works when proper", {
   testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY")), "API key authorized.")
 })
 
-testthat::test_that("API key parameter fails when wrong", {
-  testthat::expect_error(auth_pagespeed(api_key = "abcd123"), regexp = "Authorization error: HTTP status code [0-9]{3}. Check your API key.")
-})
-
 testthat::test_that("verbose parameter cannot be NA or empty", {
   testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = ""))
   testthat::expect_error(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY"), verbose = NA))
