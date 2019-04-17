@@ -134,7 +134,6 @@ testthat::test_that("API key doesn't accept wrong values (raw)", {
 testthat::test_that("strategy param doesn't accept wrong values (raw)", {
   testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = NA, output_type = "raw"))
   testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "", output_type = "raw"))
-  testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = c("desktop", "mobile"), output_type = "raw"))
   testthat::expect_error(pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "loremipsum", output_type = "raw"))
 })
 
@@ -179,7 +178,6 @@ testthat::test_that("basic output nested list has proper length (desktop, raw)",
   x <- pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "desktop", output_type = "raw", interval = 0)
   testthat::expect_equal(length(x), 1)
   testthat::expect_equal(length(x[[1]]), 10)
-  testthat::expect_equal(length(x[[1]]$pageStats), 14)
   testthat::expect_equal(length(x[[1]]$formattedResults), 2)
   testthat::expect_equal(length(x[[1]]$formattedResults$ruleResults), 10)
 })
@@ -188,7 +186,6 @@ testthat::test_that("basic output nested list has proper length (mobile, raw)", 
   x <- pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = "mobile", output_type = "raw", interval = 0)
   testthat::expect_equal(length(x), 1)
   testthat::expect_equal(length(x[[1]]), 10)
-  testthat::expect_equal(length(x[[1]]$pageStats), 14)
   testthat::expect_equal(length(x[[1]]$formattedResults), 2)
   testthat::expect_equal(length(x[[1]]$formattedResults$ruleResults), 10)
 })
