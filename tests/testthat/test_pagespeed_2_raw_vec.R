@@ -81,6 +81,19 @@ testthat::test_that("basic output df has proper dimensions (mobile)", {
   testthat::expect_equal(length(x), 1)
 })
 
+testthat::test_that("basic output df has proper dimensions (both devices)", {
+  x <- pagespeedParseR:::pagespeed_raw_list_v4("https://www.google.com", strategy = c("mobile", "desktop"), interval = 0)
+  testthat::expect_equal(length(x), 2)
+
+  testthat::expect_equal(length(x[[1]]), 1)
+  testthat::expect_equal(length(x[[1]][[1]]), 10)
+  testthat::expect_equal(length(x[[1]][[1]]$loadingExperience$metrics), 2)
+
+  testthat::expect_equal(length(x[[2]]), 1)
+  testthat::expect_equal(length(x[[2]][[1]]), 10)
+  testthat::expect_equal(length(x[[2]][[1]]$loadingExperience$metrics), 2)
+})
+
 # testthat::test_that("output df returns proper dimensions despite the NULL", {
 #   x <- pagespeedParseR:::pagespeed_raw_list_v4(url = c(NULL, "https://www.google.com"), strategy = "desktop", interval = 0)
 #   testthat::expect_equal(length(x), 2)

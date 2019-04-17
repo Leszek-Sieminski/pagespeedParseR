@@ -36,14 +36,16 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
  # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.string(url), all(grepl(".", url, fixed = T)),
-              is.string(key), is.character(strategy) | is.null(strategy),
+  assert_that(not_empty(url), is.string(url) & length(url) > 0, grepl(".", url, fixed = T),
+              is.string(key), is.null(strategy) ||
+                (is.character(strategy) & strategy %in% c("desktop", "mobile")),
+              is.null(categories) ||
+                (is.character(categories) & categories %in%
+                   c("accessibility", "best-practices", "performance", "pwa", "seo")),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(enhanced_lighthouse),
-              is.vector(categories) | is.string(categories) | is.null(categories),
-              is.string(locale) | is.null(locale),
+              (is.string(locale) & nchar(locale) > 0) || is.null(locale),
               is.string(utm_campaign) | is.null(utm_campaign),
-              is.string(utm_source) | is.null(utm_source))
+              is.string(utm_source)   | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   req <- httr::GET(
@@ -154,7 +156,7 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # full_results <- v5_placeholder_enhanced()
     # }
 
-    Sys.sleep(interval) # optional waiting to keep API limits happy
+    Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
     return(full_results)
   }
 }

@@ -83,6 +83,12 @@ testthat::test_that("basic output df has proper dimensions (mobile, simple)", {
   testthat::expect_equal(ncol(x), 54)
 })
 
+testthat::test_that("basic output df has proper dimensions (both, simple)", {
+  x <- pagespeedParseR:::download_pagespeed("https://www.google.com", strategy = c("mobile", "desktop"), interval = 0)
+  testthat::expect_equal(nrow(x), 2)
+  testthat::expect_equal(ncol(x), 54)
+})
+
 testthat::test_that("output df returns proper dimensions despite the NULL (simple)", {
   x <- pagespeedParseR:::download_pagespeed(url = c(NULL, "https://www.google.com"), strategy = "desktop", interval = 0)
   testthat::expect_equal(nrow(x), 1)

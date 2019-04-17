@@ -53,14 +53,17 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
-  assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
-              is.string(key), is.character(strategy) | is.null(strategy),
+  assert_that(all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)),
+              is.string(key),
+              all(!is.na(strategy)) & (is.null(strategy) ||
+                   (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
+              is.null(categories) ||
+                (is.character(categories) & categories %in%
+                   c("accessibility", "best-practices", "performance", "pwa", "seo")),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.logical(enhanced_lighthouse),
-              is.vector(categories) | is.string(categories) | is.null(categories),
-              is.string(locale)             | is.null(locale),
-              is.string(utm_campaign)       | is.null(utm_campaign),
-              is.string(utm_source)         | is.null(utm_source))
+              (is.string(locale) & nchar(locale) > 0) || is.null(locale),
+              is.string(utm_campaign) | is.null(utm_campaign),
+              is.string(utm_source)   | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
