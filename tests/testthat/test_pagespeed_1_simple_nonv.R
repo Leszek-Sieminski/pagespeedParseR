@@ -13,8 +13,8 @@ testthat::test_that("url param doesn't accept bad values", {
 })
 
 testthat::test_that("API key doesn't accept wrong values", {
-  testthat::expect_error(pagespeedParseR:::pagespeed_simple_v4("https://www.google.com", strategy = "desktop", api_key = ""), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
-  testthat::expect_error(pagespeedParseR:::pagespeed_simple_v4("https://www.google.com", strategy = "desktop", api_key = NULL), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+  testthat::expect_error(pagespeedParseR:::pagespeed_simple_v4("https://www.google.com", strategy = "desktop", key = ""), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+  testthat::expect_error(pagespeedParseR:::pagespeed_simple_v4("https://www.google.com", strategy = "desktop", key = NULL), regexp = "argument is of length zero")
 })
 
 testthat::test_that("strategy param doesn't accept bad values", {
