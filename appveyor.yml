@@ -1,9 +1,9 @@
-before_build:
-  ps: |
-        cp ..\travis-tool.sh R-package\travis-tool.sh
-        cp travis-tool.sh.cmd R-package\travis-tools.sh.cmd
-        cd R-package
-        bash -c "echo '^travis-tool\.sh\.cmd$' >> .Rbuildignore"
+# before_build:
+#   ps: |
+#         cp ..\travis-tool.sh R-package\travis-tool.sh
+#         cp travis-tool.sh.cmd R-package\travis-tools.sh.cmd
+#         cd R-package
+#         bash -c "echo '^travis-tool\.sh\.cmd$' >> .Rbuildignore"
 
 build_script:
   - R CMD build .
