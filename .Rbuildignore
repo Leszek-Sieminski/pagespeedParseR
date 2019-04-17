@@ -1,3 +1,4 @@
+^codecov\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 1.R
@@ -6,3 +7,4 @@ tests_lh.R
 tests_ps.R
 .travis.yml
 appveyor.yml
+codecov.yml

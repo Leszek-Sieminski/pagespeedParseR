@@ -8,4 +8,4 @@ script:
 - R CMD check *tar.gz
 
 after_success:
-  - Rscript -e 'library(covr); codecov()'
+  - Rscript -e 'library(covr); covr::codecov()'
