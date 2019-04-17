@@ -8,7 +8,7 @@ testthat::test_that("API key parameter cannot be NA or empty", {
 })
 
 testthat::test_that("API key parameter works when proper", {
-  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY_TEST")), "API key authorized.")
+  testthat::expect_message(auth_pagespeed(api_key = Sys.getenv("PAGESPEED_API_KEY")), "API key authorized.")
 })
 
 testthat::test_that("API key parameter fails when wrong", {
