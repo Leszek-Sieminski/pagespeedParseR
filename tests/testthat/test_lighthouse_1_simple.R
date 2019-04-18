@@ -60,3 +60,10 @@ testthat::test_that("advanced output df contains reports (mobile)", {
   testthat::expect_equal(nrow(x), 1)
 })
 
+testthat::test_that("advanced output df contains proper columns (mobile)", {
+  x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+  y <- pagespeedParseR:::pagespeed_simple_v5("https://loremipsumpackagetestingsiteexample.com", strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+  col_set <- colnames(pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa")))
+  testthat::expect_true(all(col_set %in% colnames(x)))
+  testthat::expect_true(all(col_set %in% colnames(y)))
+})
