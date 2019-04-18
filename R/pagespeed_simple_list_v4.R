@@ -66,8 +66,6 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, both devices -------------------------------------------------
     desktop <- purrr::map_dfr(
       .x = url,
-      # TODO cleaning the code from comments
-      # .f = if (api_version == 4) {pagespeed_simple_v4} else if (api_version == 5) {pagespeed_simple_v5},
       .f = pagespeed_simple_v4,
       strategy = "desktop", key = key, interval = interval,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
@@ -78,7 +76,6 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     mobile <- purrr::map_dfr(
       .x = url,
-      # .f = if (api_version == 4) {pagespeed_simple_v4} else if (api_version == 5) {pagespeed_simple_v5},
       .f = pagespeed_simple_v4,
       interval = interval, strategy = "mobile", key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
@@ -92,7 +89,6 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only desktop -------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      # .f = if (api_version == 4) {pagespeed_simple_v4} else if (api_version == 5) {pagespeed_simple_v5},
       .f = pagespeed_simple_v4,
       interval = interval, strategy = "desktop", key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
@@ -104,7 +100,6 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only mobile --------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      # .f = if (api_version == 4) {pagespeed_simple_v4} else if (api_version == 5) {pagespeed_simple_v5},
       .f = pagespeed_simple_v4,
       interval = interval, strategy = "mobile", key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,

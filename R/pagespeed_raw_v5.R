@@ -67,7 +67,7 @@ pagespeed_raw_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
   # parsing -------------------------------------------------------------------
   # httr::stop_for_status(req) # we don't want to stop for error as we want to know which URL's wasn't properly returned
-  if (req$status_code == 200){
+  if (req$status_code == 200) {
     if (httr::http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
     con <- httr::content(req, "text")
     parsed <- jsonlite::fromJSON(con)
