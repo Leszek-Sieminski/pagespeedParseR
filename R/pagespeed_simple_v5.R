@@ -132,10 +132,10 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     full_results <- fun_lh_basic_sort(full_results)
 
     # 09 enhanced lighthouse data extraction -------------------------------------
-    if (enhanced_lighthouse) {
-      details <- fun_lh_enhanced_extract(audits, categories)
-      full_results <- cbind(full_results, details)
-    }
+    # if (enhanced_lighthouse) {
+      # details <- fun_lh_enhanced_extract(audits, categories)
+      # full_results <- cbind(full_results, details)
+    # }
 
     # 09 extra columns sorting
     # if (enhanced_lighthouse) {

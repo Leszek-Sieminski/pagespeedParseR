@@ -60,3 +60,15 @@ testthat::test_that("basic output df has proper dimensions (mobile)", {
   # testthat::expect_equal(ncol(x), 102)
 })
 
+testthat::test_that("basic output df has proper dimensions (mobile)", {
+  x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com",
+                                             strategy = "mobile",
+                                             interval = 0,
+                                             categories = c("performance",
+                                                            "accessibility",
+                                                            "best-practices",
+                                                            "seo",
+                                                            "pwa"))
+  testthat::expect_equal(nrow(x), 1)
+  # testthat::expect_equal(ncol(x), 102)
+})
