@@ -30,9 +30,6 @@ testthat::test_that("categories param doesn't accept bad values", {
   testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = NA))
   testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = "loremipsum"))
   testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = 1))
-  # testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = ""))
-  # testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = ""))
-  # testthat::expect_error(pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", categories = ""))
 })
 
 testthat::test_that("interval param doesn't accept bad values", {
@@ -51,24 +48,15 @@ testthat::test_that("locale param doesn't accept bad values", {
 testthat::test_that("basic output df has proper dimensions (desktop)", {
   x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", strategy = "desktop", interval = 0)
   testthat::expect_equal(nrow(x), 1)
-  # testthat::expect_equal(ncol(x), 102)
 })
 
 testthat::test_that("basic output df has proper dimensions (mobile)", {
   x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", strategy = "mobile", interval = 0)
   testthat::expect_equal(nrow(x), 1)
-  # testthat::expect_equal(ncol(x), 102)
 })
 
-testthat::test_that("basic output df has proper dimensions (mobile)", {
-  x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com",
-                                             strategy = "mobile",
-                                             interval = 0,
-                                             categories = c("performance",
-                                                            "accessibility",
-                                                            "best-practices",
-                                                            "seo",
-                                                            "pwa"))
+testthat::test_that("advanced output df contains reports (mobile)", {
+  x <- pagespeedParseR:::pagespeed_simple_v5("https://www.google.com", strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
   testthat::expect_equal(nrow(x), 1)
-  # testthat::expect_equal(ncol(x), 102)
 })
+

@@ -103,3 +103,5 @@ testthat::test_that("output df returns rows with errors", {
   testthat::expect_equal(nrow(x), 2)
   testthat::expect_equal(ncol(x), 54)
 })
+
+

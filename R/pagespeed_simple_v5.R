@@ -83,32 +83,27 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if ("performance" %in% categories) {
       pm <- data.frame(category = "performance",
                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id),
-                       stringsAsFactors = FALSE)
-    }
+                       stringsAsFactors = FALSE)}
 
     if ("accessibility" %in% categories) {
       acc <- data.frame(category = "accessibility",
                         report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id),
-                        stringsAsFactors = FALSE)
-    }
+                        stringsAsFactors = FALSE)}
 
     if ("best-practices" %in% categories) {
       bp <- data.frame(category = "best-practices",
                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id),
-                       stringsAsFactors = FALSE)
-    }
+                       stringsAsFactors = FALSE)}
 
     if ("pwa" %in% categories) {
       pwa <- data.frame(category = "pwa",
                         report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id),
-                        stringsAsFactors = FALSE)
-    }
+                        stringsAsFactors = FALSE)}
 
     if ("seo" %in% categories) {
       seo <- data.frame(category = "seo",
                         report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id),
-                        stringsAsFactors = FALSE)
-    }
+                        stringsAsFactors = FALSE)}
 
     report_cat_df <- rbind(
       if ("performance" %in% categories) {pm},
@@ -125,37 +120,17 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if (grepl("desktop", strategy) || is.null(strategy)) {
       full_results$performance.first_contentful_paint_3g_description   <- NA
       full_results$performance.first_contentful_paint_3g_score         <- NA
-      full_results$performance.first_contentful_paint_3g_display_value <- NA
-    }
+      full_results$performance.first_contentful_paint_3g_display_value <- NA}
 
     # 08 sorting the columns --------------------------------------------------
     full_results <- fun_lh_basic_sort(full_results)
 
-    # 09 enhanced lighthouse data extraction -------------------------------------
-    # if (enhanced_lighthouse) {
-      # details <- fun_lh_enhanced_extract(audits, categories)
-      # full_results <- cbind(full_results, details)
-    # }
-
-    # 09 extra columns sorting
-    # if (enhanced_lighthouse) {
-    #   full_results <- fun_lh_details_sort(full_results)
-    # }
-
     # 10 returning ----------------------------------------------------------
     return(full_results)
-
   } else {
     # else NA df --------------------------------------------------------------
     # if there were no results, create placeholder to keep track which URL failed
-
-    # TODO finish placeholder extended and uncomment these lines:
-    if (!enhanced_lighthouse) { # basic export
-      full_results <- v5_placeholder_basic()
-    } # else {
-    # full_results <- v5_placeholder_enhanced()
-    # }
-
+      full_results <- v5_placeholder_basic(categories = categories)
     Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
     return(full_results)
   }

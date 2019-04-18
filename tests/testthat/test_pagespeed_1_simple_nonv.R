@@ -73,5 +73,33 @@ testthat::test_that("basic output df has proper dimensions (mobile)", {
   testthat::expect_equal(ncol(x), 54)
 })
 
+testthat::test_that("advanced output df has proper dimensions (mobile)", {
+  col_set <- c("compression_urls",
+               "caching_urls",
+               "server_resp_recommendation",
+               "redirects_recommendation",
+               "minify_css_url",
+               "minify_html_url",
+               "minify_js_url",
+               "render_block_url",
+               "images_url",
+               "visible_url",
+               "totalRequestBytes",
+               "htmlResponseBytes",
+               "cssResponseBytes",
+               "overTheWireResponseBytes",
+               "cssResponseBytes",
+               "imageResponseBytes",
+               "javascriptResponseBytes",
+               "otherResponseBytes",
+               "numberJsResources",
+               "numberCssResources")
+  x <- pagespeedParseR:::pagespeed_simple_v4("https://www.google.com", strategy = "mobile", interval = 0)
+  y <- pagespeedParseR:::pagespeed_simple_v4("https://loremipsumpackagetestingsiteexample.com", strategy = "mobile", interval = 0)
+  testthat::expect_true(all(col_set %in% colnames(x)))
+  testthat::expect_true(all(col_set %in% colnames(y)))
+})
+
+
 # x <- pagespeedParseR:::pagespeed_simple_list_v4(url = c("loremipsumdolorametpageparsererrortest.com", "https://www.google.com"), strategy = "desktop")
 # cat(colnames(x))

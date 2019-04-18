@@ -277,7 +277,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if ("overTheWireResponseBytes" %in% names(page_stats_df)) {
       page_stats_df$overTheWireResponseBytes <- as.integer(as.character(page_stats_df$overTheWireResponseBytes))
     } else {
-      page_stats_df$cssResponseBytes <- NA
+      page_stats_df$overTheWireResponseBytes <- NA
     }
 
     if ("cssResponseBytes" %in% names(page_stats_df)) {
@@ -301,7 +301,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if ("otherResponseBytes" %in% names(page_stats_df)) {
       page_stats_df$otherResponseBytes <- as.integer(as.character(page_stats_df$otherResponseBytes))
     } else {
-      page_stats_df$page_stats_df$otherResponseBytes <- NA
+      page_stats_df$otherResponseBytes <- NA
     }
 
     if ("numberJsResources" %in% names(page_stats_df)) {
@@ -344,7 +344,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       compression_summary = NA, compression_impact = NA, compression_urls = NA,
       caching_summary = NA, caching_impact = NA, caching_urls = NA,
       server_resp_summary = NA, server_resp_impact = NA, server_resp_recommendation = NA,
-      redirects_summary = NA, redirects_impact = NA, # redirects_url = NA,
+      redirects_summary = NA, redirects_impact = NA, redirects_recommendation = NA, # redirects_url = NA,
       minify_css_summary = NA, minify_css_impact = NA, minify_css_url = NA,
       minify_html_summary = NA, minify_html_impact = NA, minify_html_url = NA,
       minify_js_summary = NA, minify_js_impact = NA, minify_js_url = NA,

@@ -4,7 +4,10 @@
 \alias{v5_placeholder_basic}
 \title{Create basic Lighthouse placeholder}
 \usage{
-v5_placeholder_basic()
+v5_placeholder_basic(categories)
+}
+\arguments{
+\item{categories}{character vector of categories to create placeholder for}
 }
 \value{
 data frame with NAs
