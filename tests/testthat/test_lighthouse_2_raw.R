@@ -53,3 +53,17 @@ testthat::test_that("basic output nested list has proper length (mobile)", {
   x <- pagespeedParseR:::pagespeed_raw_list_v5("https://www.google.com", strategy = "mobile", interval = 0)
   testthat::expect_equal(length(x[[1]]), 7)
 })
+
+testthat::test_that("output nested list for multiple URLs has proper length (mobile)", {
+  x <- pagespeedParseR:::pagespeed_raw_list_v5(c("https://www.google.com", "https://www.bing"), strategy = "mobile", interval = 0)
+  testthat::expect_equal(length(x), 2)
+  testthat::expect_equal(length(x[[1]]), 7)
+})
+
+testthat::test_that("output nested list for multiple URLs and multiple devices has proper length", {
+  x <- pagespeedParseR:::pagespeed_raw_list_v5(c("https://www.google.com", "https://www.bing"), strategy = c("mobile", "desktop"), interval = 0)
+  testthat::expect_equal(length(x), 2)
+  testthat::expect_equal(length(x[[1]]), 2)
+  testthat::expect_equal(length(x[[1]][[1]]), 7)
+  testthat::expect_true(all(names(x) %in% c("desktop", "mobile")))
+})

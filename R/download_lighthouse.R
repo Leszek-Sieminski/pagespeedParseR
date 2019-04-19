@@ -121,23 +121,12 @@ download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source)   | is.null(utm_source))
 
-  # assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
-  #             is.string(key), # is.number(api_version), api_version %in% c(4, 5),
-  #             is.character(strategy) | is.null(strategy),
-  #             is.vector(categories) | is.character(categories),
-  #             is.number(interval) & interval >= 0 & interval <= 120,
-  #             is.logical(enhanced_lighthouse),
-  #             is.string(locale)             | is.null(locale),
-  #             is.string(utm_campaign)       | is.null(utm_campaign),
-  #             is.string(utm_source)         | is.null(utm_source))
-
   # creating report -----------------------------------------------------------
   if (grepl("raw", output_type)) {
     pagespeed_raw_list_v5(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
       locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type)) {
-    # TODO adding finished function call (pagespeed_simple_list_v5)
     pagespeed_simple_list_v5(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
       locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
