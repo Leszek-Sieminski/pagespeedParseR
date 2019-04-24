@@ -323,7 +323,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                           visible_main, stringsAsFactors = FALSE)
 
     # 19 sorting the df -------------------------------------------------------
-    full_results <- fun_lh_basic_sort(full_results)
+    full_results <- fun_ps_basic_sort(full_results)
 
     # 20 returning ------------------------------------------------------------
     return(full_results)
