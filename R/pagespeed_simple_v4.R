@@ -109,7 +109,7 @@ pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     compression_summary <- paste0(compression_summary, compression$summary$args$value)
 
     if ("urlBlocks" %in% names(compression)){
-      compression_urls <- compression$summary$args
+      compression_urls <- compression$urlBlocks$urls[[1]]$result$args # compression$urlBlocks$urls
       compression_urls <- ps_url_extract(compression_urls)
     } else {compression_urls <- NA}
 
