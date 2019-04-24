@@ -1,4 +1,4 @@
-# pagespeedParseR  v0.2.4
+# pagespeedParseR  v0.2.5
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Build status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
 [![Build status](https://ci.appveyor.com/api/projects/status/tqqqirnkrlsmeysr?svg=true)](https://ci.appveyor.com/project/Leszek-Sieminski/pagespeedparser)

@@ -4,15 +4,14 @@
 #' @param elem searched element
 #' @param x list of all LH reports
 #'
-#' @importFrom glue glue
-#'
 #' @return TRUE if exists, FALSE if not
 fun_lhex <- function(report, elem = NULL, x = "results"){
   # x      = "results"
   # report = "font_size"
   # elem   = "overallSavingsBytes"
 
-  content <- eval(parse(text = glue::glue('{x}[["{report}"]]')))
+  content <- eval(parse(text = paste0(x, '}[["', report, '"]]'))) # glue::glue('{x}[["{report}"]]')))
+  # content <- eval(parse(text = glue::glue('{x}[["{report}"]]')))
   # length(content) > 0
   # is.null(content)
   # is.na(content)
@@ -24,9 +23,11 @@ fun_lhex <- function(report, elem = NULL, x = "results"){
   # isNA(content)
   # if (length(content) > 0 && (!is.null(content) & !is.na(content))) {
   if (length(content) > 0 & !is.null(content) & !isNA(content)) {
-    t <- glue::glue('"items" %in% names({x}[["{report}"]])')
+    t <- paste0('"items" %in% names(', x, '[["', report, '"]])')
+    # t <- glue::glue('"items" %in% names({x}[["{report}"]])')
     if (!is.null(elem)) {
-      t <- glue::glue(t, ' & "{elem}" %in% names({x}[["{report}"]][["items"]])')
+      t <- paste0(t, ' & "', elem, '" %in% names(', x, '[["', report, '"]][["items"]])')
+      # t <- glue::glue(t, ' & "{elem}" %in% names({x}[["{report}"]][["items"]])')
     }
     z <- eval(parse(text = t))
     return(z)
