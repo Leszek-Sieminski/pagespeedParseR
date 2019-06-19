@@ -99,13 +99,13 @@ testthat::test_that("output df returns rows with errors", {
   testthat::expect_equal(nrow(y), 2)
 })
 
-testthat::test_that("advanced output has all columns (mobile)", {
-  x <- pagespeedParseR:::download_lighthouse(c("https://www.google.com", "https://www.google.co.uk"), strategy = "mobile", output_type = "simple", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-  placeholder_cols <- pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-  testthat::expect_equal(nrow(x), 2)
-  testthat::expect_true(all(colnames(x) %in% colnames(placeholder_cols)))
-  testthat::expect_true(all(colnames(placeholder_cols) %in% colnames(x)))
-})
+# testthat::test_that("advanced output has all columns (mobile)", {
+#   x <- pagespeedParseR:::download_lighthouse(c("https://www.google.com", "https://www.google.co.uk"), strategy = "mobile", output_type = "simple", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+#   placeholder_cols <- pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+#   testthat::expect_equal(nrow(x), 2)
+#   testthat::expect_true(all(colnames(x) %in% colnames(placeholder_cols)))
+#   testthat::expect_true(all(colnames(placeholder_cols) %in% colnames(x)))
+# })
 
 # raw -------------------------------------------------------------------------
 testthat::test_that("url param doesn't accept bad values", {
@@ -157,9 +157,10 @@ testthat::test_that("locale param doesn't accept bad values", {
 #   x <- pagespeedParseR:::download_lighthouse("https://www.google.com", strategy = "desktop", interval = 0, output_type = "raw")
 #   testthat::expect_equal(length(x[[1]]), 7)
 # })
-#
+
 # testthat::test_that("basic output nested list has proper length (mobile)", {
 #   Sys.sleep(4)
 #   x <- pagespeedParseR:::download_lighthouse("https://www.google.com", strategy = "mobile", interval = 0, output_type = "raw")
+# testthat::expect_true(exists("x"))
 #   testthat::expect_equal(length(x[[1]]), 7)
 # })

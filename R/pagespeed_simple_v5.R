@@ -50,14 +50,15 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # downloading ---------------------------------------------------------------
   req <- httr::GET(
     url = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
-    query = list(url = url, strategy = strategy, key = key, locale = locale,
-                 category = categories[1],
-                 category = if (length(categories) >= 2) {categories[2]} else {NULL},
-                 category = if (length(categories) >= 3) {categories[3]} else {NULL},
-                 category = if (length(categories) >= 4) {categories[4]} else {NULL},
-                 category = if (length(categories) == 5) {categories[5]} else {NULL},
-                 utm_campaign = utm_campaign,
-                 utm_source = utm_source))
+    query = list(
+      url = url, strategy = strategy, key = key, locale = locale,
+      category = categories[1],
+      category = if (length(categories) >= 2) {categories[2]} else {NULL},
+      category = if (length(categories) >= 3) {categories[3]} else {NULL},
+      category = if (length(categories) >= 4) {categories[4]} else {NULL},
+      category = if (length(categories) == 5) {categories[5]} else {NULL},
+      utm_campaign = utm_campaign,
+      utm_source = utm_source))
 
   # parsing -------------------------------------------------------------------
   # httr::stop_for_status(req) # we don't want to stop for error
@@ -81,46 +82,79 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     # 05 report category object --------------------------------------------------
     if ("performance" %in% categories) {
-      pm <- data.frame(category = "performance",
-                       report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id),
-                       stringsAsFactors = FALSE)}
+      pm <- data.frame(
+        category = "performance",
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id),
+        stringsAsFactors = FALSE)
+    }
 
     if ("accessibility" %in% categories) {
-      acc <- data.frame(category = "accessibility",
-                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id),
-                        stringsAsFactors = FALSE)}
+      acc <- data.frame(
+        category = "accessibility",
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id),
+        stringsAsFactors = FALSE)
+    }
 
     if ("best-practices" %in% categories) {
-      bp <- data.frame(category = "best-practices",
-                       report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id),
-                       stringsAsFactors = FALSE)}
+      bp <- data.frame(
+        category = "best-practices",
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id),
+        stringsAsFactors = FALSE)
+    }
 
     if ("pwa" %in% categories) {
-      pwa <- data.frame(category = "pwa",
-                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id),
-                        stringsAsFactors = FALSE)}
+      pwa <- data.frame(
+        category = "pwa",
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id),
+        stringsAsFactors = FALSE)
+    }
 
     if ("seo" %in% categories) {
-      seo <- data.frame(category = "seo",
-                        report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id),
-                        stringsAsFactors = FALSE)}
+      seo <- data.frame(
+        category = "seo",
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id),
+        stringsAsFactors = FALSE)
+    }
 
     report_cat_df <- rbind(
       if ("performance" %in% categories) {pm},
       if ("accessibility" %in% categories) {acc},
       if ("best-practices" %in% categories) {bp},
       if ("pwa" %in% categories) {pwa},
-      if ("seo" %in% categories) {seo})
+      if ("seo" %in% categories) {seo}
+    )
 
     # 06 basic lighthouse data extraction -------------------------------------
     basic <- fun_lh_basic_extract(audits, report_cat_df)
     full_results <- cbind(baseline, basic)
 
     # 07 missing columns in case of mobile ------------------------------------
-    if (grepl("desktop", strategy) || is.null(strategy)) {
+    if ((grepl("desktop", strategy) || is.null(strategy)) & "performance" %in% categories) {
       full_results$performance.first_contentful_paint_3g_description   <- NA
       full_results$performance.first_contentful_paint_3g_score         <- NA
-      full_results$performance.first_contentful_paint_3g_display_value <- NA}
+      full_results$performance.first_contentful_paint_3g_display_value <- NA
+    }
+
+
+    if ("performance" %in% categories) {
+      full_results$score.performance <- parsed$lighthouseResult$categories$performance$score
+    }
+
+    if ("accessibility" %in% categories) {
+      full_results$score.accessibility <- parsed$lighthouseResult$categories$accessibility$score
+    }
+
+    if ("best-practices" %in% categories) {
+      full_results$score.best_practices <- parsed$lighthouseResult$categories$`best-practices`$score
+    }
+
+    if ("pwa" %in% categories) {
+      full_results$score.pwa <- parsed$lighthouseResult$categories$pwa$score
+    }
+
+    if ("seo" %in% categories) {
+      full_results$score.seo <- parsed$lighthouseResult$categories$seo$score
+    }
 
     # 08 sorting the columns --------------------------------------------------
     full_results <- fun_lh_basic_sort(full_results)
