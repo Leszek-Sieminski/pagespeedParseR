@@ -101,12 +101,12 @@
 #'                                categories = "performance") # which Lighthouse reports
 #'                                                            # are to be run?
 #' }
-download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                output_type = "simple",
-                                strategy = "desktop", categories = "performance",
-                                interval = 0.5, enhanced_lighthouse = FALSE,
-                                locale = NULL,
-                                utm_campaign = NULL, utm_source = NULL) {
+download_lighthouse <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"), output_type = "simple",
+  strategy = "desktop", categories = "performance", interval = 0.5,
+  enhanced_lighthouse = FALSE, locale = NULL, utm_campaign = NULL,
+  utm_source = NULL)
+{
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
@@ -123,11 +123,11 @@ download_lighthouse <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
   # creating report -----------------------------------------------------------
   if (grepl("raw", output_type)) {
-    pagespeed_raw_list_v5(
+    lh_raw_2_vec(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
       locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type)) {
-    pagespeed_simple_list_v5(
+    lh_simple_2_vec(
       url = url, key = key, strategy = strategy, categories = categories, interval = interval,
       locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }

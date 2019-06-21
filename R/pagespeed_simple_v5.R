@@ -25,9 +25,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' single_url_simple_output_5 <- pagespeed_simple_v5("https://www.google.com/")
+#' single_url_simple_output_5 <- lh_simple_1("https://www.google.com/")
 #' }
-pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 strategy = NULL, categories = "performance",
                                 interval = 0.5,
                                 enhanced_lighthouse = FALSE, locale = NULL,

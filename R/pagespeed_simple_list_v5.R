@@ -7,10 +7,10 @@
 #'    most of the metrics, recommendations and error occurences.
 #'
 #' @details This function uses new version of the API (5th).
-#'    Check function \code{pagespeed_simple_list_v4} for version 4
+#'    Check function \code{ps_simple_2_vec()} for version 4
 #'    (classic Pagespeed results).
 #'    If you need all the information but in form of a nested list,
-#'    use \code{pagespeed_raw_lists_v5}.
+#'    use \code{lh_raw_2_vec()}.
 #'
 #'    Setting \code{enhanced_lighthouse} parameter to \code{TRUE}
 #'    will add more data about error occurencess and opportunities
@@ -42,13 +42,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' multiple_urls_simple_output <- pagespeed_simple_list_v4("https://www.google.com/")
+#' multiple_urls_simple_output <- lh_simple_2_vec("https://www.google.com/")
 #' }
-pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                     strategy = NULL, categories = "performance",
-                                     interval = 0.5,
-                                     enhanced_lighthouse = FALSE, locale = NULL,
-                                     utm_campaign = NULL, utm_source = NULL)
+lh_simple_2_vec <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = NULL, categories = "performance",
+  interval = 0.5,
+  enhanced_lighthouse = FALSE, locale = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
@@ -70,7 +71,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, both devices -------------------------------------------------
     desktop <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v5,
+      .f = lh_simple_1,
       strategy = "desktop", key = key, interval = interval,
       categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
@@ -80,7 +81,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     mobile <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v5,
+      .f = lh_simple_1,
       interval = interval, strategy = "mobile", key = key,
       categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
@@ -93,7 +94,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only desktop -------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v5,
+      .f = lh_simple_1,
       interval = interval, strategy = "desktop", key = key,
       categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,
@@ -104,7 +105,7 @@ pagespeed_simple_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only mobile --------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v5,
+      .f = lh_simple_1,
       interval = interval, strategy = "mobile", key = key,
       categories = categories,
       enhanced_lighthouse = enhanced_lighthouse, locale = locale,

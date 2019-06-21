@@ -116,13 +116,13 @@ download_pagespeed <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
   # creating report -----------------------------------------------------------
   if (grepl("raw", output_type)) {
-    pagespeed_raw_list_v4(
+    ps_raw_2_vec(
       url = url, strategy = strategy, interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot,
       snapshots = snapshots, utm_campaign = utm_campaign, utm_source = utm_source)
   } else if (grepl("simple", output_type)) {
-    pagespeed_simple_list_v4(
+    ps_simple_2_vec(
       url = url, strategy = strategy, interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot,

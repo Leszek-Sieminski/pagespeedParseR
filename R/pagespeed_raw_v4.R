@@ -5,9 +5,9 @@
 #'    information from Pagespeed ver 4.
 #'
 #' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_raw_v5} for version 5.
+#'    Check function \code{lh_raw_1()} for version 5.
 #'    If you need less information but in form of a data frame,
-#'    use \code{pagespeed_simple_v4}.
+#'    use \code{ps_simple_1()}.
 #'
 #' @param url string. The URL to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -34,13 +34,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' single_url_raw_output <- pagespeed_raw_v4("https://www.google.com/")
+#' single_url_raw_output <- ps_raw_1("https://www.google.com/")
 #' }
-pagespeed_raw_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                             strategy = "desktop", interval = 0.5,
-                             filter_third_party = NULL, locale = NULL, rule = NULL,
-                             screenshot = NULL, snapshots = NULL,
-                             utm_campaign = NULL, utm_source = NULL)
+ps_raw_1 <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = "desktop", interval = 0.5,
+  filter_third_party = NULL, locale = NULL, rule = NULL,
+  screenshot = NULL, snapshots = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}

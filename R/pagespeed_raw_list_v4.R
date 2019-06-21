@@ -5,9 +5,9 @@
 #'    the possible information from Pagespeed ver 4.
 #'
 #' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_raw_list_v5} for version 5.
+#'    Check function \code{lh_raw_2_vec()} for version 5.
 #'    If you need less information but in form of a data frame,
-#'    use \code{pagespeed_simple_lists_v4}.
+#'    use \code{ps_simple_2_vec()}.
 #'
 #' @param url vector of character strings. The URLs to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -34,13 +34,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
+#' multiple_urls_raw_output <- ps_raw_2_vec("https://www.google.com/")
 #' }
-pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                  strategy = "desktop", interval = 0.5,
-                                  filter_third_party = NULL, locale = NULL, rule = NULL,
-                                  screenshot = NULL, snapshots = NULL,
-                                  utm_campaign = NULL, utm_source = NULL)
+ps_raw_2_vec <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = "desktop", interval = 0.5,
+  filter_third_party = NULL, locale = NULL, rule = NULL,
+  screenshot = NULL, snapshots = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
@@ -63,7 +64,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, both devices ------------------------------------------------------------
     desktop <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
+      .f = ps_raw_1,
       strategy = "desktop", key = key, interval = interval,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
@@ -73,7 +74,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     mobile <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
+      .f = ps_raw_1,
       strategy = "mobile", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
@@ -91,7 +92,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only desktop --------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
+      .f = ps_raw_1,
       strategy = "desktop", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
@@ -102,7 +103,7 @@ pagespeed_raw_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only mobile ---------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v4,
+      .f = ps_raw_1,
       strategy = "mobile", interval = interval, key = key,
       filter_third_party = filter_third_party, locale = locale, rule = rule,
       screenshot = screenshot, snapshots = snapshots,
