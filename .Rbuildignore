@@ -8,3 +8,4 @@ tests_ps.R
 .travis.yml
 appveyor.yml
 codecov.yml
+fun_lh_exist.R
