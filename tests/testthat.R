@@ -1,4 +1,4 @@
 library(testthat)
 library(pagespeedParseR)
 
-test_check("pagespeedParseR")
+testthat::test_check("pagespeedParseR")
