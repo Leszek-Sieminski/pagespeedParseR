@@ -1,7 +1,7 @@
 context("PS helper: sort")
 library(pagespeedParseR)
 
-testthat::test_that("url param doesn't accept wrong values", {
+testthat::test_that("function properly sorts dataframe's columns order", {
   before <- data.frame("device"      = "device",
                        "url"         = "url",
                        "title"       = "title",
