@@ -4,14 +4,14 @@
 \alias{fun_lhex}
 \title{Checking existence in LH nested list}
 \usage{
-fun_lhex(report, elem = NULL, x = "results")
+fun_lhex(report, elem = NULL, object_name = "results")
 }
 \arguments{
 \item{report}{searched report}
 
 \item{elem}{searched element}
 
-\item{x}{list of all LH reports}
+\item{object_name}{name of list of all LH reports}
 }
 \value{
 TRUE if exists, FALSE if not

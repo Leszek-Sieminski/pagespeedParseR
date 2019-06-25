@@ -2,6 +2,7 @@
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Build status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
 [![Coverage status](https://codecov.io/gh/Leszek-Sieminski/pagespeedParseR/branch/master/graph/badge.svg)](https://codecov.io/github/Leszek-Sieminski/pagespeedParseR?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Leszek-Sieminski/pagespeedParseR/badge.svg?branch=master)](https://coveralls.io/github/Leszek-Sieminski/pagespeedParseR?branch=master)
 
 R wrapper for Google Pagespeed Insights API
 
