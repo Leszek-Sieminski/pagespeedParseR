@@ -25,15 +25,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' single_url_simple_output_5 <- pagespeed_simple_v5("https://www.google.com/")
+#' single_url_simple_output_5 <- lh_simple_1("https://www.google.com/")
 #' }
-pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                strategy = NULL, categories = "performance",
-                                interval = 0.5,
-                                enhanced_lighthouse = FALSE, locale = NULL,
-                                utm_campaign = NULL, utm_source = NULL)
+lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+                        strategy = NULL, categories = "performance",
+                        interval = 0.5,
+                        enhanced_lighthouse = FALSE, locale = NULL,
+                        utm_campaign = NULL, utm_source = NULL)
 {
- # safety net ----------------------------------------------------------------
+  # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
   assert_that(not_empty(url), is.string(url) & length(url) > 0, grepl(".", url, fixed = T),
@@ -126,6 +126,7 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     # 06 basic lighthouse data extraction -------------------------------------
     basic <- fun_lh_basic_extract(audits, report_cat_df)
+    # basic <- pagespeedParseR:::fun_lh_basic_extract(audits, report_cat_df)
     full_results <- cbind(baseline, basic)
 
     # 07 missing columns in case of mobile ------------------------------------
@@ -158,13 +159,14 @@ pagespeed_simple_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     # 08 sorting the columns --------------------------------------------------
     full_results <- fun_lh_basic_sort(full_results)
+    # full_results <- pagespeedParseR:::fun_lh_basic_sort(full_results)
 
     # 10 returning ----------------------------------------------------------
     return(full_results)
   } else {
     # else NA df --------------------------------------------------------------
     # if there were no results, create placeholder to keep track which URL failed
-      full_results <- v5_placeholder_basic(categories = categories)
+    full_results <- v5_placeholder_basic(categories = categories)
     Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
     return(full_results)
   }

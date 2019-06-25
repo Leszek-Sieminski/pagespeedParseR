@@ -8,8 +8,7 @@
 #' \dontrun{
 #' ps_url_extract(parsed$minify_css$url_blocks[1]$args)
 #' }
-ps_url_extract <- function(object)
-{
+ps_url_extract <- function(object) {
   x <- if (!is.null(object)) {
     # dplyr::bind_rows(object, .id = "column_label")$value
     withCallingHandlers(suppressWarnings(

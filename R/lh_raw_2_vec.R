@@ -5,9 +5,9 @@
 #'    the possible information from Pagespeed ver 5.
 #'
 #' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_raw_list_v5} for version 5.
+#'    Check function \code{lh_raw_2_vec()} for version 5.
 #'    If you need less information but in form of a data frame,
-#'    use \code{pagespeed_simple_lists_v4}.
+#'    use \code{ps_simple_2_vec()}.
 #'
 #' @param url vector of character strings. The URLs to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -28,12 +28,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' multiple_urls_raw_output <- pagespeed_raw_list_v4("https://www.google.com/")
+#' multiple_urls_raw_output <- lh_raw_2_vec("https://www.google.com/")
 #' }
-pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                  strategy = NULL, categories = "performance",
-                                  interval = 0.5, locale = NULL,
-                                  utm_campaign = NULL, utm_source = NULL)
+lh_raw_2_vec <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = NULL, categories = "performance",
+  interval = 0.5, locale = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
@@ -49,19 +50,11 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source)   | is.null(utm_source))
 
-  # assert_that(not_empty(url), is.character(url), all(grepl(".", url, fixed = T)),
-  #             is.string(key), is.character(strategy) | is.null(strategy),
-  #             is.number(interval) & interval >= 0 & interval <= 120,
-  #             is.vector(categories) | is.string(categories) | is.null(categories),
-  #             is.string(locale)             | is.null(locale),
-  #             is.string(utm_campaign)       | is.null(utm_campaign),
-  #             is.string(utm_source)         | is.null(utm_source))
-
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
     # nested list, both devices ------------------------------------------------------------
     desktop <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v5,
+      .f = lh_raw_1,
       strategy = "desktop", key = key, interval = interval,
       categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
@@ -70,7 +63,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     mobile <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v5,
+      .f = lh_raw_1,
       strategy = "mobile", interval = interval, key = key,
       categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
@@ -87,7 +80,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # nested list, only desktop --------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v5,
+      .f = lh_raw_1,
       strategy = "desktop", interval = interval, key = key,
       categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
@@ -97,7 +90,7 @@ pagespeed_raw_list_v5 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # nested list, only mobile ---------------------------------------------------------------
     results <- purrr::map(
       .x = url,
-      .f = pagespeed_raw_v5,
+      .f = lh_raw_1,
       strategy = "mobile", interval = interval, key = key,
       categories = categories, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)

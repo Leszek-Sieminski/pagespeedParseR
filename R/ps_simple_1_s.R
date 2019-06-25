@@ -5,9 +5,9 @@
 #'    information from Pagespeed ver 4.
 #'
 #' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_raw_v5} for version 5.
+#'    Check function \code{lh_raw_1()} for version 5.
 #'    If you need all the information but in form of a nested list,
-#'    use \code{pagespeed_raw_v4}.
+#'    use \code{ps_raw_1()}.
 #'
 #' @param url string. The URL to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
@@ -34,9 +34,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' single_url_simple_output <- pagespeed_simple_v4("https://www.google.com/")
+#' single_url_simple_output <- ps_simple_1("https://www.google.com/")
 #' }
-pagespeed_simple_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
+ps_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                                 strategy = NULL, interval = 0.5,
                                 filter_third_party = NULL,locale = NULL, rule = NULL,
                                 screenshot = NULL, snapshots = NULL,

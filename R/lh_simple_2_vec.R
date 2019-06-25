@@ -1,4 +1,4 @@
-#' Download Pagespeed v4 raport for multiple URLs as one data frame
+#' Download Pagespeed v5 raport (Lighthouse) for multiple URLs as one data frame
 #'
 #' @description This function can check multiple URLs given in a vector
 #'    and parse them into a one data frame. This data frame doesn't
@@ -6,27 +6,32 @@
 #'    cannot be simply parsed into tabular form, but it contains
 #'    most of the metrics, recommendations and error occurences.
 #'
-#' @details This function uses legacy version 4 of the API.
-#'    Check function \code{pagespeed_simple_list_v5} for version 5.
+#' @details This function uses new version of the API (5th).
+#'    Check function \code{ps_simple_2_vec()} for version 4
+#'    (classic Pagespeed results).
 #'    If you need all the information but in form of a nested list,
-#'    use \code{pagespeed_raw_lists_v4}.
+#'    use \code{lh_raw_2_vec()}.
+#'
+#'    Setting \code{enhanced_lighthouse} parameter to \code{TRUE}
+#'    will add more data about error occurencess and opportunities
+#'    for improvement, but mind that resulting data frame can have
+#'    literally hundreds of columns (depending on how many \code{categories}
+#'    were selected). This is due to large amount of data returned by
+#'    Lighthouse reports.
 #'
 #' @param url vector of character strings. The URLs to fetch and analyze
 #' @param key string. Pagespeed API key to authenticate. Defaults to
 #'     "PAGESPEED_API_KEY" enviroment variable.
 #' @param strategy string. The analysis strategy to use. Options: "desktop" or
 #'     "mobile". Defaults to "desktop"
+#' @param categories string. A Lighthouse category/categories to run.
+#'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param filter_third_party logical. Indicates if third party resources should
-#'     be filtered out before PageSpeed analysis. Defaults to NULL (= FALSE)
+#' @param enhanced_lighthouse logical. If TRUE, adds even more columns with
+#'     Lighthouse data (errors, opportunities). Defaults to FALSE. See more in
+#'     Details section
 #' @param locale string. The locale used to localize formatted results
-#' @param rule string. A PageSpeed rule to run; if none are given, all rules
-#'     are run
-#' @param screenshot logical. Indicates if binary data containing a screenshot
-#'     should be included. Defaults to NULL (= FALSE)
-#' @param snapshots logical. Indicates if binary data containing snapshot images
-#'     should be included. Defaults to NULL (= FALSE)
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
 #'
@@ -37,27 +42,27 @@
 #'
 #' @examples
 #' \dontrun{
-#' multiple_urls_simple_output <- pagespeed_simple_list_v4("https://www.google.com/")
+#' multiple_urls_simple_output <- lh_simple_2_vec("https://www.google.com/")
 #' }
-pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                                     strategy = NULL, interval = 0.5,
-                                     filter_third_party = NULL,locale = NULL, rule = NULL,
-                                     screenshot = NULL, snapshots = NULL,
-                                     utm_campaign = NULL, utm_source = NULL)
+lh_simple_2_vec <- function(
+  url, key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = NULL, categories = "performance",
+  interval = 0.5,
+  enhanced_lighthouse = FALSE, locale = NULL,
+  utm_campaign = NULL, utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
   assert_that(all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)),
               is.string(key),
-              all(!is.na(strategy)) & (is.null(strategy) || (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
+              all(!is.na(strategy)) & (is.null(strategy) ||
+                   (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
+              is.null(categories) ||
+                (is.character(categories) & categories %in%
+                   c("accessibility", "best-practices", "performance", "pwa", "seo")),
               is.number(interval) & interval >= 0 & interval <= 120,
-              is.null(filter_third_party) ||
-                (is.logical(filter_third_party) & length(filter_third_party) > 0 & !is.na(filter_third_party)),
               (is.string(locale) & nchar(locale) > 0) || is.null(locale),
-              (is.string(rule) & nchar(rule) > 0) || is.null(rule),
-              (is.logical(screenshot) & length(screenshot) > 0 & !is.na(screenshot)) || is.null(screenshot),
-              (is.logical(snapshots) & length(snapshots) > 0 & !is.na(snapshots)) || is.null(snapshots),
               is.string(utm_campaign) | is.null(utm_campaign),
               is.string(utm_source)   | is.null(utm_source))
 
@@ -66,20 +71,20 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, both devices -------------------------------------------------
     desktop <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v4,
+      .f = lh_simple_1,
       strategy = "desktop", key = key, interval = interval,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      categories = categories,
+      enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     Sys.sleep(1 + interval) # very simple time interval for saving API limits
 
     mobile <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v4,
+      .f = lh_simple_1,
       interval = interval, strategy = "mobile", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      categories = categories,
+      enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
 
     results <- rbind(desktop, mobile)
@@ -89,10 +94,10 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only desktop -------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v4,
+      .f = lh_simple_1,
       interval = interval, strategy = "desktop", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      categories = categories,
+      enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   } else if (grepl("mobile", strategy)) {
@@ -100,10 +105,10 @@ pagespeed_simple_list_v4 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # simple df, only mobile --------------------------------------------------
     results <- purrr::map_dfr(
       .x = url,
-      .f = pagespeed_simple_v4,
+      .f = lh_simple_1,
       interval = interval, strategy = "mobile", key = key,
-      filter_third_party = filter_third_party, locale = locale, rule = rule,
-      screenshot = screenshot, snapshots = snapshots,
+      categories = categories,
+      enhanced_lighthouse = enhanced_lighthouse, locale = locale,
       utm_campaign = utm_campaign, utm_source = utm_source)
     return(results)
   }
