@@ -41,7 +41,3 @@ fun_lh_basic_extract <- function(audits, report_cat_df){
 
   return(results)
 }
-
-# basic <- fun_lh_basic_extract(audits, report_cat_df)
-# basic <- basic[, -1]
-# View(basic)
