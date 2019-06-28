@@ -5,15 +5,35 @@
 #'
 #' @return data frame with basic Lighthouse columns
 fun_lh_basic_extract <- function(audits, report_cat_df){
-  results <- data.frame(1)
+  results <- data.table::data.table(1)
   cat <- NULL
   for (i in 1:length(audits)) {
     # creating df with the data
-    x <- data.frame(
-      description   = ifelse(!is.null(audits[[i]]$description),  audits[[i]]$description, NA),
-      score         = ifelse(!is.null(audits[[i]]$score),        audits[[i]]$score * 100, NA),
-      display_value = ifelse(!is.null(audits[[i]]$displayValue), audits[[i]]$displayValue, NA),
-      stringsAsFactors = FALSE)
+
+    x <- data.table::data.table(
+      description      = NA,
+      score            = NA,
+      display_value    = NA,
+      stringsAsFactors = FALSE
+    )
+
+    if(!is.null(audits[[i]]$description)) {
+      x$description <- audits[[i]]$description
+    }
+
+    if(!is.null(audits[[i]]$score)) {
+      x$score <- audits[[i]]$score
+    }
+
+    if(!is.null(audits[[i]]$displayValue)) {
+      x$display_value <- audits[[i]]$displayValue
+    }
+
+    # x <- data.frame(
+    #   description   = ifelse(!is.null(audits[[i]]$description),  audits[[i]]$description, NA),
+    #   score         = ifelse(!is.null(audits[[i]]$score),        audits[[i]]$score * 100, NA),
+    #   display_value = ifelse(!is.null(audits[[i]]$displayValue), audits[[i]]$displayValue, NA),
+    #   stringsAsFactors = FALSE)
 
     # finding which category is the report in
     # cat <- filter(report_cat_df, grepl(gsub("-", "_", audits[[i]]$id), report_name))
