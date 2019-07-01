@@ -2,7 +2,8 @@
 #'
 #' @description Download single or multiple URLs in variety of options.
 #'
-#' @param url vector of character strings. The URLs to fetch and analyze
+#' @param url vector of character strings. The URLs to fetch and analyze.
+#'     MUST contain "http://" or "https://".
 #' @param key string. Pagespeed API key to authenticate. Defaults to
 #'     "PAGESPEED_API_KEY" enviroment variable.
 #' @param output_type string. Choose how to parse the output. Options:
