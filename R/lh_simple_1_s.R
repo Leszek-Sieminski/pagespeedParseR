@@ -68,12 +68,12 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if (httr::http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
 
     # 02 extracting from JSON -------------------------------------------------
-    parsed <- jsonlite::fromJSON(httr::content(req, "text"))
+    parsed  <- jsonlite::fromJSON(httr::content(req, as = "text", type = "application/json", encoding = "UTF-8"))
 
     # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
-      device           = ifelse(is.null(strategy), "desktop", strategy),
-      url              = ifelse(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
+      device           = `if`(is.null(strategy), "desktop", strategy),
+      url              = `if`(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
       status_code      = req$status_code,
       stringsAsFactors = FALSE)
 
@@ -84,35 +84,40 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     if ("performance" %in% categories) {
       pm <- data.frame(
         category = "performance",
-        report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id),
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$performance$auditRefs$id,
+                           fixed = TRUE),
         stringsAsFactors = FALSE)
     }
 
     if ("accessibility" %in% categories) {
       acc <- data.frame(
         category = "accessibility",
-        report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id),
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$accessibility$auditRefs$id,
+                           fixed = TRUE),
         stringsAsFactors = FALSE)
     }
 
     if ("best-practices" %in% categories) {
       bp <- data.frame(
         category = "best-practices",
-        report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id),
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$`best-practices`$auditRefs$id,
+                           fixed = TRUE),
         stringsAsFactors = FALSE)
     }
 
     if ("pwa" %in% categories) {
       pwa <- data.frame(
         category = "pwa",
-        report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id),
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$pwa$auditRefs$id,
+                           fixed = TRUE),
         stringsAsFactors = FALSE)
     }
 
     if ("seo" %in% categories) {
       seo <- data.frame(
         category = "seo",
-        report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id),
+        report_name = gsub("-", "_", parsed$lighthouseResult$categories$seo$auditRefs$id,
+                           fixed = TRUE),
         stringsAsFactors = FALSE)
     }
 
@@ -123,6 +128,7 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       if ("pwa" %in% categories) {pwa},
       if ("seo" %in% categories) {seo}
     )
+
 
     # 06 basic lighthouse data extraction -------------------------------------
     basic <- fun_lh_basic_extract(audits, report_cat_df)
