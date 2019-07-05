@@ -11,7 +11,6 @@
 #' }
 ps_url_extract <- function(object) {
   x <- if (!is.null(object)) {
-    # dplyr::bind_rows(object, .id = "column_label")$value
     withCallingHandlers(suppressWarnings(
       bind_rows(object, .id = "column_label")$value), warning = function(w) {print(w)})
 

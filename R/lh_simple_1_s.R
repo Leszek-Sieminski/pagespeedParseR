@@ -9,8 +9,6 @@
 #'     Defaults to "performance". See more in Details section
 #' @param interval numeric. Number of seconds to wait between multiple queries.
 #'     Defaults to 0.5 second.
-#' @param enhanced_lighthouse logical. If TRUE, adds even more columns with
-#'     Lighthouse data. Defaults to FALSE
 #' @param locale string. The locale used to localize formatted results
 #' @param utm_campaign string. Campaign name for analytics. Defaults to NULL
 #' @param utm_source string. Campaign source for analytics. Defaults to NULL
@@ -23,6 +21,11 @@
 #'
 #' @return data frame
 #'
+#' @importFrom httr GET
+#' @importFrom httr http_type
+#' @importFrom httr content
+#' @importFrom jsonlite fromJSON
+#'
 #' @examples
 #' \dontrun{
 #' single_url_simple_output_5 <- lh_simple_1("https://www.google.com/")
@@ -30,9 +33,19 @@
 lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                         strategy = NULL, categories = "performance",
                         interval = 0.5,
-                        enhanced_lighthouse = FALSE, locale = NULL,
+                        locale = NULL,
                         utm_campaign = NULL, utm_source = NULL)
 {
+  # test ----------------------------------------------------------------------
+  # url = "https://www.google.com"
+  # key = Sys.getenv("PAGESPEED_API_KEY")
+  # strategy = NULL
+  # categories = c("accessibility", "best-practices", "performance", "pwa", "seo")
+  # interval = 0.5
+  # locale = NULL
+  # utm_campaign = NULL
+  # utm_source = NULL
+
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
@@ -48,7 +61,7 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
               is.string(utm_source)   | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
-  req <- httr::GET(
+  req <- GET(
     url = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
     query = list(
       url = url, strategy = strategy, key = key, locale = locale,
@@ -65,10 +78,10 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # as we want to know which URL's wasn't properly returned
   if (req$status_code == 200){
     # 01 json check --------------------------------------------------------------
-    if (httr::http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
+    if (http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
 
     # 02 extracting from JSON -------------------------------------------------
-    parsed  <- jsonlite::fromJSON(httr::content(req, as = "text", type = "application/json", encoding = "UTF-8"))
+    parsed  <- fromJSON(content(req, as = "text", type = "application/json", encoding = "UTF-8"))
 
     # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
@@ -129,52 +142,53 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
       if ("seo" %in% categories) {seo}
     )
 
-
     # 06 basic lighthouse data extraction -------------------------------------
-    basic <- fun_lh_basic_extract(audits, report_cat_df)
+    # basic <- fun_lh_basic_extract(audits, report_cat_df)
     # basic <- pagespeedParseR:::fun_lh_basic_extract(audits, report_cat_df)
-    full_results <- cbind(baseline, basic)
+    results_load_exp <- fun_lh_enhanced_extract(parsed$loadingExperience)
+    results_audits   <- fun_lh_enhanced_extract(audits, report_cat_df)
+    full_results     <- cbind(baseline, results_load_exp, results_audits)
 
     # 07 missing columns in case of mobile ------------------------------------
-    if ((grepl("desktop", strategy) || is.null(strategy)) & "performance" %in% categories) {
-      full_results$performance.first_contentful_paint_3g_description   <- NA
-      full_results$performance.first_contentful_paint_3g_score         <- NA
-      full_results$performance.first_contentful_paint_3g_display_value <- NA
-    }
+    # if ((grepl("desktop", strategy) || is.null(strategy)) & "performance" %in% categories) {
+    #   full_results$performance_first_contentful_paint_3g_description   <- NA
+    #   full_results$performance_first_contentful_paint_3g_score         <- NA
+    #   full_results$performance_first_contentful_paint_3g_display_value <- NA
+    # }
 
-
-    if ("performance" %in% categories) {
-      full_results$score.performance <- parsed$lighthouseResult$categories$performance$score
-    }
-
-    if ("accessibility" %in% categories) {
-      full_results$score.accessibility <- parsed$lighthouseResult$categories$accessibility$score
-    }
-
-    if ("best-practices" %in% categories) {
-      full_results$score.best_practices <- parsed$lighthouseResult$categories$`best-practices`$score
-    }
-
-    if ("pwa" %in% categories) {
-      full_results$score.pwa <- parsed$lighthouseResult$categories$pwa$score
-    }
-
-    if ("seo" %in% categories) {
-      full_results$score.seo <- parsed$lighthouseResult$categories$seo$score
-    }
+    if ("performance" %in% categories) {full_results$score.performance <- parsed$lighthouseResult$categories$performance$score}
+    if ("accessibility" %in% categories) {full_results$score.accessibility <- parsed$lighthouseResult$categories$accessibility$score}
+    if ("best-practices" %in% categories) {full_results$score.best_practices <- parsed$lighthouseResult$categories$`best-practices`$score}
+    if ("pwa" %in% categories) {full_results$score.pwa <- parsed$lighthouseResult$categories$pwa$score}
+    if ("seo" %in% categories) {full_results$score.seo <- parsed$lighthouseResult$categories$seo$score}
 
     # 08 sorting the columns --------------------------------------------------
-    full_results <- fun_lh_basic_sort(full_results)
-    # full_results <- pagespeedParseR:::fun_lh_basic_sort(full_results)
+    colnames_v <- colnames(full_results) # capturing column names
+    colnames_sorted <- sort(colnames_v) # sorting column names alphabetically
+
+    # deleting baseline columns (they need to go first!)
+    col_scores <- colnames_sorted[grepl("^score.*", colnames_sorted)] # main scores
+    colnames_sorted <- colnames_sorted[!colnames_sorted %in% c('device', 'url', 'status_code', col_scores)]
+    # adding baseline columns at the beggining of the df
+    colnames_sorted <- c(c('device', 'url', 'status_code', col_scores), colnames_sorted)
+    full_results <- full_results[, colnames_sorted] # choosing the df columns in order
+
+    # full_results_tf1 <- tidyr::gather(full_results, parameter, value, -url)
+    # full_results_tf2 <- tidyr::gather(full_results, parameter, value)
+    # full_results_tf <- tidyr::gather(full_results, parameter, value, -url)
+    # colnames(full_results_tf)[3] <- full_results_tf$url[1]
+    # full_results_tf$url <- NULL
 
     # 10 returning ----------------------------------------------------------
     return(full_results)
-  } else {
+  } # else {
     # else NA df --------------------------------------------------------------
+    # TODO add some placeholder, simple
+
     # if there were no results, create placeholder to keep track which URL failed
-    full_results <- v5_placeholder_basic(categories = categories)
-    Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
-    return(full_results)
-  }
+    # full_results <- v5_placeholder_basic(categories = categories)
+    # Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
+    # return(full_results)
+  # }
 }
 

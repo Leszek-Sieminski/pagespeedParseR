@@ -3,7 +3,6 @@
 #' @param audits audits object
 #' @param report_cat_df reports category object
 #'
-#' @importFrom plyr rename
 #' @return data frame with basic Lighthouse columns
 
 fun_lh_basic_extract <- function(audits, report_cat_df){
@@ -31,10 +30,9 @@ fun_lh_basic_extract <- function(audits, report_cat_df){
     # finding id
     id <- gsub("-", "_", audits[[i]]$id, fixed = TRUE)
 
-    x <- rename(x, c(
-      "description"   = paste0(cat, ".", id, "_description"),
-      "score"         = paste0(cat, ".", id, "_score"),
-      "display_value" = paste0(cat, ".", id, "_display_value")))
+    colnames(x) <- c(paste0(cat, "_", id, "_description"),
+                     paste0(cat, "_", id, "_score"),
+                     paste0(cat, "_", id, "_display_value"))
 
     results <- cbind(results, x)
   }

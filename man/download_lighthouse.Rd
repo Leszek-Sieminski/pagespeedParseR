@@ -6,9 +6,8 @@
 \usage{
 download_lighthouse(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   output_type = "simple", strategy = "desktop",
-  categories = "performance", interval = 0.5,
-  enhanced_lighthouse = FALSE, locale = NULL, utm_campaign = NULL,
-  utm_source = NULL)
+  categories = "performance", long_result = FALSE, interval = 0.5,
+  locale = NULL, utm_campaign = NULL, utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze
@@ -28,12 +27,10 @@ function call.}
 \item{categories}{string. A Lighthouse categories to run.
 Defaults to "performance". See more in Details section}
 
+\item{long_result}{logical. Should the resulting data frame be a long df?}
+
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
 Defaults to 0.5 second.}
-
-\item{enhanced_lighthouse}{logical. Set to TRUE if you want to obtain even
-more data from Lighthouse. However, it can create a VERY WIDE data
-frame (hundreds of columns) depending on your}
 
 \item{locale}{string. The locale used to localize formatted results}
 
@@ -42,10 +39,23 @@ frame (hundreds of columns) depending on your}
 \item{utm_source}{string. Campaign source for analytics. Defaults to NULL}
 }
 \value{
-two options: data frame (if \code{output_type = "simple"}), nested list (if \code{output_type = "raw"})
+two options: data frame (if \code{output_type = "simple"}),
+    nested list (if \code{output_type = "raw"})
 }
 \description{
-Download single or multiple URLs in variety of options.
+Download PageSpeed Insights v5 report ("Lighthouse")
+     for single or multiple URLs in variety of options.
+     You can choose the the resulting object to be an original nested list
+     (\code{output_type = "raw"}) with all the data or a parsed data frame
+     (\code{output_type = "simple"}) with most of the data.
+
+     If you choose a data frame, mind that it will have literally
+     hundreds/thousands of columns. The number
+     of columns IS NOT STABLE, because it depends to number of error
+     occurrences and their types.
+
+     Because of this you can decide to set parameter (\code{long_result =
+     TRUE}) to obtain more messy but "long-like" output data frame.
 }
 \details{
 The \code{output_type} parameter regulates how the output will be
@@ -68,60 +78,124 @@ The \code{output_type} parameter regulates how the output will be
 }
 \examples{
 \dontrun{
-# download simple data frame with "Performance" Lighthouse report for Google.com
-lh_df_1 <- download_lighthouse(url = "https://www.google.com",
-                               output_type = "simple") # return the results in a wide data frame
+# download simple data frame with "Performance" Lighthouse report for Google.com:
+# that's a lot of columns and you will have problems but you can
+# spread/gather them as you like
+
+lh_df_1 <- download_lighthouse(
+ url = "https://www.google.com",
+ output_type = "simple") # return the results in a wide data frame
+
+class(lh_df_1)
+# [1] "data.frame"
+dim(lh_df_1)   # 1 row, 779 columns. The number of columns may wildly differ
+# [1]   1 779  # because it depends also to number of spotted errors and their types
+
+
+
+# this time let's download it and parse into messy long-like table:
+lh_df_1_long <- download_lighthouse(
+  url = "https://www.google.com",
+  output_type = "simple", # return the results in a wide data frame
+  long_result = TRUE) # spread the data into easier-to-digest form
+
+class(lh_df_1_long)
+# [1] "data.frame"
+dim(lh_df_1_long) # 780 rows in 3 columns
+# [1] 780   3
+
+
 
 # check "Performance" for Google.com & Bing.com for both desktop & mobile and
 # return in a data frame with most important columns
-lh_df_2 <- download_lighthouse(url = c("https://www.google.com",
-                                       "https://www.bing.com/"),
-                               output_type = "simple", # return the results in a wide data frame
-                               strategy = c("desktop", # check both desktop and mobile, bind
-                                            "mobile"),
-                               interval = 1, # wait 1 second between the calls to API
-                               categories = "performance") # which Lighthouse reports
-                                                           # are to be run?
+lh_df_2 <- download_lighthouse(
+  url = c("https://www.google.com",
+          "https://www.bing.com/"),
+  output_type = "simple", # return the results in a wide data frame
+  strategy = c("desktop", # check both desktop and mobile, bind
+               "mobile"),
+  interval = 1, # wait 1 second between the calls to API
+  categories = "performance") # which Lighthouse reports
+                              # are to be run?
+
+class(lh_df_2)
+# [1] "data.frame"
+dim(lh_df_2)
+# [1]    4 1231
+
+
 
 # check "Performance" and "Accessibility" for Google.com & Bing.com for
 # both desktop & mobile and return in a data frame with most important columns
-lh_df_3 <- download_lighthouse(url = c("https://www.google.com",
-                                       "https://www.bing.com/"),
-                               output_type = "simple", # return the results in a wide data frame
-                               strategy = c("desktop", # check both desktop and mobile, bind
-                                            "mobile"),
-                               interval = 2,           # wait 2 seconds between the calls to API
-                               categories = c("performance", # run performance & accessibility
-                                              "accessibility"))
+lh_df_3 <- download_lighthouse(
+  url = c("https://www.google.com",
+          "https://www.bing.com/"),
+  output_type = "simple", # return the results in a wide data frame
+  strategy = c("desktop", # check both desktop and mobile, bind
+               "mobile"),
+  interval = 2,           # wait 2 seconds between the calls to API
+  categories = c("performance", # run performance & accessibility
+                 "accessibility"))
+
+class(lh_df_3)
+[1] "data.frame"
+dim(lh_df_3)
+[1]    4 1637
+
 
 
 # check "Performance" and "Accessibility" for Google.com & Bing.com for
 # both desktop & mobile and return in a data frame with even more data,
 # including error occurences and the importance of each report result
-lh_df_4 <- download_lighthouse(url = c("https://www.google.com",
-                                       "https://www.bing.com/"),
-                               output_type = "simple", # return the results in a wide data frame
-                               strategy = c("desktop", # check both desktop and mobile, bind
-                                            "mobile"),
-                               interval = 2,           # wait 2 seconds between the calls to API
-                               enhanced_lighthouse = TRUE  # set to TRUE to obtain
-                                                           # more data about errors
-                               categories = c("performance", # run performance & accessibility
-                                              "accessibility"))
+lh_df_4 <- download_lighthouse(
+  url = c("https://www.google.com",
+          "https://www.bing.com/"),
+  output_type = "simple", # return the results in a wide data frame
+  strategy = c("desktop", # check both desktop and mobile, bind
+               "mobile"),
+  interval = 2,           # wait 2 seconds between the calls to API
+  categories = c("performance", # run performance & accessibility
+                 "accessibility"))
+
+
+
+# another run for a messy long-like data frame
+lh_df_4_long <- download_lighthouse(
+  url = c("https://www.google.com",
+          "https://www.bing.com/"),
+  output_type = "simple", # return the results in a wide data frame
+  strategy = c("desktop", # check both desktop and mobile, bind
+               "mobile"),
+  interval = 2,           # wait 2 seconds between the calls to API
+  categories = c("performance", # run performance & accessibility
+                 "accessibility"),
+  long_result = TRUE) # spread into 4 columns
+
+class(lh_df_4_long)
+# [1] "data.frame"
+dim(lh_df_4_long)
+# 4 columns ("device" + "parameter" + pages values x2) and 1637 rows
+# [1]    4 1637
+
+
 
 # download nested list with "Performance" Lighthouse report for Google.com
-lh_nl_1 <- download_lighthouse(url = "https://www.google.com",
-                               output_type = "raw") # return nested list with all possible data
+lh_nl_1 <- download_lighthouse(
+  url = "https://www.google.com",
+  output_type = "raw") # return nested list with all possible data
+
+
 
 # check "Performance" for Google.com & Bing.com for both desktop & mobile and
 # return in a nested list with all possible data
-lh_nl_2 <- download_lighthouse(url = c("https://www.google.com",
-                                       "https://www.bing.com/"),
-                               output_type = "raw", # return nested list with all possible data
-                               strategy = c("desktop", # check both desktop and mobile, bind
-                                            "mobile"),
-                               interval = 1,           # wait 1 second between the calls to API
-                               categories = "performance") # which Lighthouse reports
-                                                           # are to be run?
+lh_nl_2 <- download_lighthouse(
+  url = c("https://www.google.com",
+          "https://www.bing.com/"),
+  output_type = "raw", # return nested list with all possible data
+  strategy = c("desktop", # check both desktop and mobile, bind
+               "mobile"),
+  interval = 1,           # wait 1 second between the calls to API
+  categories = "performance") # which Lighthouse reports
+                              # are to be run?
 }
 }

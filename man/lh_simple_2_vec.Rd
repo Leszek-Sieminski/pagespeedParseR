@@ -2,18 +2,19 @@
 % Please edit documentation in R/lh_simple_2_vec.R
 \name{lh_simple_2_vec}
 \alias{lh_simple_2_vec}
-\title{Download Pagespeed v5 raport (Lighthouse) for multiple URLs as one data frame}
+\title{Download Pagespeed v5 raport (Lighthouse) for multiple URLs as one data
+   frame}
 \usage{
 lh_simple_2_vec(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-  strategy = NULL, categories = "performance", interval = 0.5,
-  enhanced_lighthouse = FALSE, locale = NULL, utm_campaign = NULL,
+  strategy = NULL, categories = "performance", long_result = TRUE,
+  interval = 0.5, locale = NULL, utm_campaign = NULL,
   utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze}
 
 \item{key}{string. Pagespeed API key to authenticate. Defaults to
-"PAGESPEED_API_KEY" enviroment variable.}
+"PAGESPEED_API_KEY" enviroment variable}
 
 \item{strategy}{string. The analysis strategy to use. Options: "desktop" or
 "mobile". Defaults to "desktop"}
@@ -21,12 +22,10 @@ lh_simple_2_vec(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 \item{categories}{string. A Lighthouse category/categories to run.
 Defaults to "performance". See more in Details section}
 
-\item{interval}{numeric. Number of seconds to wait between multiple queries.
-Defaults to 0.5 second.}
+\item{long_result}{logical. Should the resulting data frame be a long df?}
 
-\item{enhanced_lighthouse}{logical. If TRUE, adds even more columns with
-Lighthouse data (errors, opportunities). Defaults to FALSE. See more in
-Details section}
+\item{interval}{numeric. Number of seconds to wait between multiple queries.
+Defaults to 0.5 second}
 
 \item{locale}{string. The locale used to localize formatted results}
 
@@ -51,10 +50,9 @@ This function uses new version of the API (5th).
    If you need all the information but in form of a nested list,
    use \code{lh_raw_2_vec()}.
 
-   Setting \code{enhanced_lighthouse} parameter to \code{TRUE}
-   will add more data about error occurencess and opportunities
-   for improvement, but mind that resulting data frame can have
-   literally hundreds of columns (depending on how many \code{categories}
+   Mind that resulting data frame can have
+   literally hundreds/thousands of columns (depending on how many
+   \code{categories}
    were selected). This is due to large amount of data returned by
    Lighthouse reports.
 }
