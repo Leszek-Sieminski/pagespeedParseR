@@ -3,6 +3,7 @@
 #' @param object nested list object that contains 1-line data frames as lists
 #'
 #' @return data frame
+#' @importFrom dplyr bind_rows
 #'
 #' @examples
 #' \dontrun{
@@ -10,9 +11,8 @@
 #' }
 ps_url_extract <- function(object) {
   x <- if (!is.null(object)) {
-    # dplyr::bind_rows(object, .id = "column_label")$value
     withCallingHandlers(suppressWarnings(
-      dplyr::bind_rows(object, .id = "column_label")$value), warning = function(w) {print(w)})
+      bind_rows(object, .id = "column_label")$value), warning = function(w) {print(w)})
 
   } else {
     NULL

@@ -9,3 +9,5 @@ tests_ps.R
 appveyor.yml
 codecov.yml
 coveralls.yml
+profiling.R
+.*\.Rprofvis$

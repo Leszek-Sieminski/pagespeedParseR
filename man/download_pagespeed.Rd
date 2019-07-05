@@ -11,7 +11,8 @@ download_pagespeed(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   utm_source = NULL)
 }
 \arguments{
-\item{url}{vector of character strings. The URLs to fetch and analyze}
+\item{url}{vector of character strings. The URLs to fetch and analyze.
+MUST contain "http://" or "https://".}
 
 \item{key}{string. Pagespeed API key to authenticate. Defaults to
 "PAGESPEED_API_KEY" enviroment variable.}

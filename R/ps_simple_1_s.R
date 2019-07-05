@@ -78,24 +78,24 @@ ps_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 
     # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
-      device           = ifelse(is.null(strategy), "desktop", strategy),
-      title            = ifelse(is.null(parsed$title), NA, parsed$title),
-      url              = ifelse(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
+      device           = `if`(is.null(strategy), "desktop", strategy),
+      title            = `if`(is.null(parsed$title), NA, parsed$title),
+      url              = `if`(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
       status_code      = req$status_code,
-      speed_score      = ifelse(is.null(parsed$ruleGroups$SPEED$score), NA, parsed$ruleGroups$SPEED$score),
-      overall_category = ifelse(is.null(parsed$loadingExperience$overall_category), NA, parsed$loadingExperience$overall_category),
+      speed_score      = `if`(is.null(parsed$ruleGroups$SPEED$score), NA, parsed$ruleGroups$SPEED$score),
+      overall_category = `if`(is.null(parsed$loadingExperience$overall_category), NA, parsed$loadingExperience$overall_category),
       stringsAsFactors = FALSE)
 
     # 04 first contentful paint -----------------------------------------------
     tmp_fcp <- parsed$loadingExperience$metrics$FIRST_CONTENTFUL_PAINT_MS
-    fcp_main <- data.frame(fcp_median       = ifelse(is.null(tmp_fcp$median),   NA, tmp_fcp$median),
-                           fcp_category     = ifelse(is.null(tmp_fcp$category), NA, tmp_fcp$category),
+    fcp_main <- data.frame(fcp_median       = `if`(is.null(tmp_fcp$median),   NA, tmp_fcp$median),
+                           fcp_category     = `if`(is.null(tmp_fcp$category), NA, tmp_fcp$category),
                            stringsAsFactors = FALSE)
 
     # 05 dom content load -----------------------------------------------------
     tmp_dcl <- parsed$loadingExperience$metrics$DOM_CONTENT_LOADED_EVENT_FIRED_MS
-    dcl_main <- data.frame(dcl_median       = ifelse(is.null(tmp_dcl$median),   NA, tmp_dcl$median),
-                           dcl_category     = ifelse(is.null(tmp_dcl$category), NA, tmp_dcl$category),
+    dcl_main <- data.frame(dcl_median       = `if`(is.null(tmp_dcl$median),   NA, tmp_dcl$median),
+                           dcl_category     = `if`(is.null(tmp_dcl$category), NA, tmp_dcl$category),
                            stringsAsFactors = FALSE)
 
     # 06 page stats -----------------------------------------------------------
@@ -332,7 +332,7 @@ ps_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # if there were no results, create placeholder to
     # keep track which URL failed
     full_results <- data.frame(
-      device = ifelse(is.null(strategy), "desktop", strategy), title = NA,
+      device = `if`(is.null(strategy), "desktop", strategy), title = NA,
       url = url, status_code = req$status_code, speed_score = NA,
       overall_category = NA, numberResources = NA, numberHosts = NA,
       totalRequestBytes = NA, numberStaticResources = NA, htmlResponseBytes = NA,
