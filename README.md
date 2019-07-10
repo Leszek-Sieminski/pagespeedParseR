@@ -1,4 +1,4 @@
-# pagespeedParseR  v0.3.0.9000
+# pagespeedParseR  v0.3.1.9000
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Build status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
 [![Coverage status](https://codecov.io/gh/Leszek-Sieminski/pagespeedParseR/branch/master/graph/badge.svg)](https://codecov.io/github/Leszek-Sieminski/pagespeedParseR?branch=master)
@@ -16,6 +16,10 @@ R wrapper for Google Pagespeed Insights API
 * [Usage](#usage)
 
 ## News and plans
+##### **2019-07-10**, ver. 0.3.1.9000:
+* small bugfixes to *long_result = T* parameter in *download_lighthouse(..., output_type = "simple")*
+* small bugfixes to tests
+
 ##### **2019-07-05**, ver. 0.3.0.9000 (Lighthouse overhaul):
 * big overhaul of *download_lighthouse()* function. Parsing to data frame with *output_type = "simple"* parameter will now provide much more data. However, **it can generate literally hundreds/thousands of columns** (up to ~2500). What is more, the **number of columns IS NOT STABLE**, because it depends on the number of found errors and/or their type
 * to ease the pain of dealing with such data frames, I added *long_result* parameter that defaults to *FALSE*. Setting it to TRUE will force the function to spread the data frame into messy, long-like form that I hope to be easier to comprehend

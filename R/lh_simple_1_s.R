@@ -36,16 +36,6 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
                         locale = NULL,
                         utm_campaign = NULL, utm_source = NULL)
 {
-  # test ----------------------------------------------------------------------
-  # url = "https://www.google.com"
-  # key = Sys.getenv("PAGESPEED_API_KEY")
-  # strategy = NULL
-  # categories = c("accessibility", "best-practices", "performance", "pwa", "seo")
-  # interval = 0.5
-  # locale = NULL
-  # utm_campaign = NULL
-  # utm_source = NULL
-
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
 
@@ -76,7 +66,7 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
   # parsing -------------------------------------------------------------------
   # httr::stop_for_status(req) # we don't want to stop for error
   # as we want to know which URL's wasn't properly returned
-  if (req$status_code == 200){
+  if (req$status_code == 200) {
     # 01 json check --------------------------------------------------------------
     if (http_type(req) != "application/json") {stop("API did not return json", call. = FALSE)}
 
@@ -86,7 +76,7 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # 03 creating baseline data frame -----------------------------------------
     baseline <- data.frame(
       device           = `if`(is.null(strategy), "desktop", strategy),
-      url              = `if`(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
+      url              = url, #`if`(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
       status_code      = req$status_code,
       stringsAsFactors = FALSE)
 
@@ -179,16 +169,20 @@ lh_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     # colnames(full_results_tf)[3] <- full_results_tf$url[1]
     # full_results_tf$url <- NULL
 
-    # 10 returning ----------------------------------------------------------
+    # 10 returning ------------------------------------------------------------
     return(full_results)
-  } # else {
+  } else {
     # else NA df --------------------------------------------------------------
-    # TODO add some placeholder, simple
-
     # if there were no results, create placeholder to keep track which URL failed
-    # full_results <- v5_placeholder_basic(categories = categories)
-    # Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
-    # return(full_results)
-  # }
-}
+    parsed  <- fromJSON(content(req, as = "text", type = "application/json", encoding = "UTF-8"))
+    full_results <- data.frame(
+      device           = `if`(is.null(strategy), "desktop", strategy),
+      url              = url, #`if`(is.null(parsed$loadingExperience$initial_url), NA, parsed$loadingExperience$initial_url),
+      status_code      = req$status_code,
+      stringsAsFactors = FALSE)
 
+    full_results$url <- as.character(full_results$url)
+    Sys.sleep(0.5 + interval) # optional waiting to keep API limits happy
+    return(full_results)
+  }
+}

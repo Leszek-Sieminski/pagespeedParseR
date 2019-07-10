@@ -63,7 +63,8 @@
 #'
 #' lh_df_1 <- download_lighthouse(
 #'  url = "https://www.google.com",
-#'  output_type = "simple") # return the results in a wide data frame
+#'  output_type = "simple",
+#'  long_result = FALSE) # return the results in a wide data frame
 #'
 #' class(lh_df_1)
 #' # [1] "data.frame"
@@ -94,8 +95,9 @@
 #'   strategy = c("desktop", # check both desktop and mobile, bind
 #'                "mobile"),
 #'   interval = 1, # wait 1 second between the calls to API
-#'   categories = "performance") # which Lighthouse reports
-#'                               # are to be run?
+#'   categories = "performance", # which Lighthouse reports
+#'   long_result = FALSE)       # are to be run?
+#'
 #'
 #' class(lh_df_2)
 #' # [1] "data.frame"
@@ -114,7 +116,8 @@
 #'                "mobile"),
 #'   interval = 2,           # wait 2 seconds between the calls to API
 #'   categories = c("performance", # run performance & accessibility
-#'                  "accessibility"))
+#'                  "accessibility"),
+#'   long_result = FALSE)
 #'
 #' class(lh_df_3)
 #' [1] "data.frame"
@@ -134,7 +137,8 @@
 #'                "mobile"),
 #'   interval = 2,           # wait 2 seconds between the calls to API
 #'   categories = c("performance", # run performance & accessibility
-#'                  "accessibility"))
+#'                  "accessibility"),
+#'   long_result = FALSE)
 #'
 #'
 #'
@@ -183,7 +187,7 @@ download_lighthouse <- function(
   output_type  = "simple",
   strategy     = "desktop",
   categories   = "performance",
-  long_result  = FALSE,
+  long_result  = TRUE,
   interval     = 0.5,
   locale       = NULL,
   utm_campaign = NULL,
