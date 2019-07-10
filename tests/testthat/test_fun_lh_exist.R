@@ -1,23 +1,24 @@
 context("LH helper: exist")
 library(pagespeedParseR)
+library(testthat)
 
-# testthat::test_that("", {
-#   testthat::expect_identical()
+# test_that("", {
+#   expect_identical()
 # })
 
-testthat::test_that("not detecting LH report sublist's child when NA", {
+test_that("not detecting LH report sublist's child when NA", {
   results <- NA
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = NULL, object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })
 
-testthat::test_that("not detecting LH report sublist's child when NA", {
+test_that("not detecting LH report sublist's child when NA", {
   results <- NA
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })
 
-testthat::test_that("detecting LH report sublist works", {
+test_that("detecting LH report sublist works", {
   results <- list(
     "report_1" = list(
       "items" = list(
@@ -36,10 +37,10 @@ testthat::test_that("detecting LH report sublist works", {
   #
   # testu()
 
-  testthat::expect_identical(TRUE, existence)
+  expect_identical(TRUE, existence)
 })
 
-testthat::test_that("detecting LH report sublist's child works", {
+test_that("detecting LH report sublist's child works", {
   results <- list(
     "report_1" = list(
       "items" = list(
@@ -51,10 +52,10 @@ testthat::test_that("detecting LH report sublist's child works", {
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results")
-  testthat::expect_identical(TRUE, existence)
+  expect_identical(TRUE, existence)
 })
 
-testthat::test_that("not detecting LH report sublist when missing", {
+test_that("not detecting LH report sublist when missing", {
   results <- list(
     "report_3" = list(
       "items" = list(
@@ -66,10 +67,10 @@ testthat::test_that("not detecting LH report sublist when missing", {
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = NULL, object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })
 
-testthat::test_that("not detecting LH report sublist's child when missing (1st level)", {
+test_that("not detecting LH report sublist's child when missing (1st level)", {
   results <- list(
     "report_3" = list(
       "items" = list(
@@ -81,10 +82,10 @@ testthat::test_that("not detecting LH report sublist's child when missing (1st l
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })
 
-testthat::test_that("not detecting LH report sublist's child when missing (2nd level)", {
+test_that("not detecting LH report sublist's child when missing (2nd level)", {
   results <- list(
     "report_1" = list(
       "ninetendo" = list(
@@ -96,10 +97,10 @@ testthat::test_that("not detecting LH report sublist's child when missing (2nd l
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })
 
-testthat::test_that("not detecting LH report sublist's child when missing (3rd level)", {
+test_that("not detecting LH report sublist's child when missing (3rd level)", {
   results <- list(
     "report_1" = list(
       "items" = list(
@@ -111,5 +112,5 @@ testthat::test_that("not detecting LH report sublist's child when missing (3rd l
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results")
-  testthat::expect_identical(FALSE, existence)
+  expect_identical(FALSE, existence)
 })

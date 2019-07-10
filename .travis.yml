@@ -10,4 +10,4 @@ script:
 - R CMD check *tar.gz
 
 after_success:
-  - Rscript -e 'library(covr); covr::codecov()'
+  - Rscript -e 'library(covr); library(pagespeedParseR); covr::codecov()'

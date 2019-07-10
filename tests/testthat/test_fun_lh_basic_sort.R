@@ -1,5 +1,6 @@
 # context("LH helper: sort")
 # library(pagespeedParseR)
+# library(testthat)
 #
 # testthat::test_that("function properly sorts dataframe's columns order", {
 #   before <- data.frame(

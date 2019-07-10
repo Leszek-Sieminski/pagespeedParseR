@@ -1,7 +1,8 @@
 context("PS helper: sort")
 library(pagespeedParseR)
+library(testthat)
 
-testthat::test_that("function properly sorts dataframe's columns order", {
+test_that("function properly sorts dataframe's columns order", {
   before <- data.frame("device"      = "device",
                        "url"         = "url",
                        "title"       = "title",
@@ -21,6 +22,6 @@ testthat::test_that("function properly sorts dataframe's columns order", {
                       stringsAsFactors = F)
 
   after <- pagespeedParseR:::fun_ps_basic_sort(before)
-  testthat::expect_identical(after, ideal)
+  expect_identical(after, ideal)
 
 })
