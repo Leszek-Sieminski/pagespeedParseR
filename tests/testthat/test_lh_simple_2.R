@@ -120,9 +120,9 @@ testthat::test_that("output df returns rows/columns with errors", {
   testthat::expect_equal(nrow(y), 2)
 })
 
-testthat::test_that("advanced output has all rows/columns (mobile)", {
-  x <- pagespeedParseR:::lh_simple_2_vec(c("https://www.w3.org/", "https://archive.org/"), strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-  placeholder_cols <- pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-  testthat::expect_equal(nrow(x), 2)
-  testthat::expect_true(all(colnames(placeholder_cols) %in% colnames(x)))
-})
+# testthat::test_that("advanced output has all rows/columns (mobile)", {
+#   x <- pagespeedParseR:::lh_simple_2_vec(c("https://www.w3.org/", "https://archive.org/"), strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+#   placeholder_cols <- pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+#   testthat::expect_equal(nrow(x), 2)
+#   testthat::expect_true(all(colnames(placeholder_cols) %in% colnames(x)))
+# })
