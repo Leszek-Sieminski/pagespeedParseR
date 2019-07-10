@@ -37,6 +37,8 @@
 #'
 #' @import assertthat
 #' @importFrom dplyr full_join
+#' @importFrom dplyr filter
+#' @importFrom dplyr as_tibble
 #' @importFrom tidyr gather
 #' @importFrom stats reshape
 #'
@@ -75,8 +77,9 @@ lh_simple_2_vec <- function(
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
     # simple df, both devices -------------------------------------------------
     desktop <- data.frame()
-    for(i in 1:length(url)){
+    for(i in 1:length(url)) {
       res <- lh_simple_1(
+      # res <- pagespeedParseR:::lh_simple_1(
         url = url[i],
         interval = interval,
         strategy = "desktop",
@@ -97,6 +100,7 @@ lh_simple_2_vec <- function(
     mobile <- data.frame()
     for(i in 1:length(url)){
       res <- lh_simple_1(
+      # res <- pagespeedParseR:::lh_simple_1(
         url = url[i],
         interval = interval,
         strategy = "mobile",
@@ -117,6 +121,14 @@ lh_simple_2_vec <- function(
     if (long_result) {
       results <- gather(results, "parameter", "value", -"url", -"device")
       results <- reshape(results, idvar = c('parameter', "device"), timevar = 'url', direction = 'wide', sep = "_",)
+      results <- reshape(results, idvar = c('parameter'), timevar = 'device', direction = 'wide', sep = "_",)
+      results <- filter(results, !grepl("^.*_id$|^.*_details_type$", results$parameter))
+      # results <- filter(results, !grepl("^.*_details_type$", results$parameter))
+    } else {
+      # TODO some instability (1 dim vectir)
+      results <- as_tibble(results)
+      results <- results[, colnames(results)[!grepl("^.*_id$|^.*_details_type$", colnames(results))]]
+      results <- as.data.frame(results)
     }
 
     return(results)
@@ -125,36 +137,11 @@ lh_simple_2_vec <- function(
     # simple df, only desktop -------------------------------------------------
     results <- data.frame()
     for(i in 1:length(url)){
-      res <- lh_simple_1(url = url[i],
-                         interval = interval,
-                         strategy = "desktop",
-                         key = key,
-                         categories = categories,
-                         locale = locale,
-                         utm_campaign = utm_campaign, utm_source = utm_source)
-
-      if (i == 1){
-        results <- res
-      } else {
-        results <- suppressMessages(full_join(results, res))
-      }
-    }
-
-    if (long_result) {
-      results <- gather(results, "parameter", "value", -"url", -"device")
-      results <- reshape(results, idvar = c('parameter', "device"), timevar = 'url', direction = 'wide', sep = "_",)
-    }
-
-    return(results)
-  } else if (grepl("mobile", strategy)) {
-
-    # simple df, only mobile --------------------------------------------------
-    results <- data.frame()
-    for(i in 1:length(url)) {
       res <- lh_simple_1(
+      # res <- pagespeedParseR:::lh_simple_1(
         url = url[i],
         interval = interval,
-        strategy = "mobile",
+        strategy = "desktop",
         key = key,
         categories = categories,
         locale = locale,
@@ -170,6 +157,44 @@ lh_simple_2_vec <- function(
     if (long_result) {
       results <- gather(results, "parameter", "value", -"url", -"device")
       results <- reshape(results, idvar = c('parameter', "device"), timevar = 'url', direction = 'wide', sep = "_",)
+      results <- reshape(results, idvar = c('parameter'), timevar = 'device', direction = 'wide', sep = "_",)
+      results <- filter(results, !grepl("^.*_id$|^.*_details_type$", results$parameter))
+      # results <- filter(results, !grepl("^.*_details_type$", results$parameter))
+    } else {
+      results <- results[, colnames(results)[!grepl("^.*_id$|^.*_details_type$", colnames(results))]]
+    }
+
+    return(results)
+  } else if (grepl("mobile", strategy)) {
+
+    # simple df, only mobile --------------------------------------------------
+    results <- data.frame()
+    for(i in 1:length(url)) {
+      res <- lh_simple_1(
+      # res <- pagespeedParseR:::lh_simple_1(
+        url = url[i],
+        interval = interval,
+        strategy = "mobile",
+        key = key,
+        categories = categories,
+        locale = locale,
+        utm_campaign = utm_campaign, utm_source = utm_source)
+
+      if (i == 1) {
+        results <- res
+      } else {
+        results <- suppressMessages(full_join(results, res))
+      }
+    }
+
+    if (long_result) {
+      results <- gather(results, "parameter", "value", -"url", -"device")
+      results <- reshape(results, idvar = c('parameter', "device"), timevar = 'url', direction = 'wide', sep = "_",)
+      results <- reshape(results, idvar = c('parameter'), timevar = 'device', direction = 'wide', sep = "_",)
+      results <- filter(results, !grepl("^.*_id$|^.*_details_type$", results$parameter))
+      # results <- filter(results, !grepl("^.*_details_type$", results$parameter))
+    } else {
+      results <- results[, colnames(results)[!grepl("^.*_id$|^.*_details_type$", colnames(results))]]
     }
 
     return(results)
