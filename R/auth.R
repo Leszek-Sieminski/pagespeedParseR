@@ -28,7 +28,7 @@ auth_pagespeed <- function(api_key, verbose = TRUE){
   x <- GET(
     url = "https://www.googleapis.com/pagespeedonline/v4/runPagespeed",
     query = list(
-      url = "https://www.google.com/", # "https://www.w3.org/"\
+      url = "https://www.w3.org/", #"https://www.google.com/" \
       key = api_key,
       strategy = "desktop"))
 
