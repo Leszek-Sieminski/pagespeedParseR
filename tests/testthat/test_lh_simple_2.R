@@ -121,9 +121,38 @@ test_that("output df returns rows/columns with errors", {
   expect_equal(nrow(y), 2)
 })
 
-# test_that("advanced output has all rows/columns (mobile)", {
-#   x <- pagespeedParseR:::lh_simple_2_vec(c("https://www.w3.org/", "https://archive.org/"), strategy = "mobile", interval = 0, categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-#   placeholder_cols <- pagespeedParseR:::v5_placeholder_basic(categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
-#   expect_equal(nrow(x), 2)
-#   expect_true(all(colnames(placeholder_cols) %in% colnames(x)))
-# })
+test_that("advanced output has all rows/columns (mobile)", {
+  x <- pagespeedParseR:::lh_simple_2_vec(
+    c("https://www.w3.org/", "https://archive.org/"),
+    strategy = "mobile",
+    interval = 0,
+    categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+
+  expect_equal(length(dim(x)), 2)
+  expect_equal(ncol(x), 3)
+  expect_gte(nrow(x), 6 + 125)
+})
+
+test_that("advanced output has all rows/columns (desktop)", {
+  x <- pagespeedParseR:::lh_simple_2_vec(
+    c("https://www.w3.org/", "https://archive.org/"),
+    strategy = "desktop",
+    interval = 0,
+    categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+
+  expect_equal(length(dim(x)), 2)
+  expect_equal(ncol(x), 3)
+  expect_gte(nrow(x), 6 + 125)
+})
+
+test_that("advanced output has all rows/columns (desktop & mobile)", {
+  x <- pagespeedParseR:::lh_simple_2_vec(
+    c("https://www.w3.org/", "https://archive.org/"),
+    strategy = c("mobile", "desktop"),
+    interval = 0,
+    categories = c("performance", "accessibility", "best-practices", "seo", "pwa"))
+
+  expect_equal(length(dim(x)), 2)
+  expect_equal(ncol(x), 5)
+  expect_gte(nrow(x), 6 + 125)
+})

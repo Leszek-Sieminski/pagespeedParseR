@@ -6,6 +6,7 @@ test_that("API key parameter cannot be NA or empty", {
   expect_error(auth_pagespeed(api_key = ""))
   expect_error(auth_pagespeed(api_key = NA), "api_key contains 1 missing values")
   expect_error(auth_pagespeed(api_key = NULL), "api_key has an empty dimension")
+  expect_error(auth_pagespeed(api_key = "foo"))
 })
 
 test_that("API key parameter works when proper", {

@@ -1,10 +1,20 @@
+# setup -----------------------------------------------------------------------
 context("LH helper: exist")
 library(pagespeedParseR)
 library(testthat)
 
-# test_that("", {
-#   expect_identical()
-# })
+# defensive -------------------------------------------------------------------
+test_that("detecting LH report sublist's child works", {
+  results <- list(
+    "report_1" = NA,
+    "report_2" = list(
+      "items" = list(
+        "element_2.1" = "2.1",
+        "element_2.2" = "2.2")))
+
+  expect_identical(pagespeedParseR:::fun_lhex(report = "report_1", object_name = "results"), FALSE)
+  expect_identical(pagespeedParseR:::fun_lhex(report = "report_1", elem = "element_1.2", object_name = "results"), FALSE)
+})
 
 test_that("not detecting LH report sublist's child when NA", {
   results <- NA
@@ -18,6 +28,8 @@ test_that("not detecting LH report sublist's child when NA", {
   expect_identical(FALSE, existence)
 })
 
+
+# inner logic -----------------------------------------------------------------
 test_that("detecting LH report sublist works", {
   results <- list(
     "report_1" = list(
@@ -30,15 +42,10 @@ test_that("detecting LH report sublist works", {
         "element_2.2" = "2.2")))
 
   existence <- pagespeedParseR:::fun_lhex(report = "report_1", elem = NULL, object_name = "results")
-  # testu <- function(object_name = "results"){
-  #   object <- get(object_name, parent.frame())
-  #   return(object)
-  # }
-  #
-  # testu()
 
   expect_identical(TRUE, existence)
 })
+
 
 test_that("detecting LH report sublist's child works", {
   results <- list(
