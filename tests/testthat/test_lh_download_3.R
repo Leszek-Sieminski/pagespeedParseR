@@ -161,14 +161,13 @@ test_that("locale param doesn't accept bad values", {
   expect_error(download_lighthouse("https://www.w3.org/", strategy = "mobile", locale = NA, output_type = "raw"))
   expect_error(download_lighthouse("https://www.w3.org/", strategy = "mobile", locale = 1, output_type = "raw"))
 })
-#
-# # TODO check what's wrong with those tests (works on server, fails on travis & appveyor)
-# # test_that("basic output nested list has proper length (desktop)", {
-# #   # Sys.sleep(4)
-# #   x <- download_lighthouse("https://www.w3.org/", strategy = "desktop", interval = 0, output_type = "raw")
-# #   expect_equal(length(x[[1]]), 7)
-# # })
-# #
+
+# TODO check what's wrong with those tests (works on server, fails on travis & appveyor)
+test_that("basic output nested list contains the report", {
+  x <- download_lighthouse("https://www.w3.org/", strategy = "desktop", interval = 0, output_type = "raw")
+  expect_identical(x[[1]]$id, "https://www.w3.org/")
+})
+
 # # test_that("basic output nested list has proper length (mobile)", {
 # #   Sys.sleep(4)
 # #   x <- download_lighthouse("https://www.w3.org/", strategy = "mobile", interval = 0, output_type = "raw")

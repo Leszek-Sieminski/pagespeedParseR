@@ -177,8 +177,8 @@ test_that("screenshot param doesn't accept wrong values (raw)", {
 
 test_that("snapshots param doesn't accept wrong values (raw)", {
   expect_error(download_pagespeed("https://www.w3.org/", strategy = "desktop", output_type = "raw", snapshots = ""))
-  expect_error(download_pagespeed("https://www.w3.org/", strategy = "mobile", output_type = "raw", snapshots = NA))
-  expect_error(download_pagespeed("https://www.w3.org/", strategy = "mobile", output_type = "raw", snapshots = 2))
+  expect_error(download_pagespeed("https://www.w3.org/", strategy = "mobile",  output_type = "raw", snapshots = NA))
+  expect_error(download_pagespeed("https://www.w3.org/", strategy = "mobile",  output_type = "raw", snapshots = 2))
 })
 
 test_that("basic output nested list has proper length (desktop, raw)", {
