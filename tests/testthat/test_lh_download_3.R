@@ -165,7 +165,7 @@ test_that("locale param doesn't accept bad values", {
 # TODO check what's wrong with those tests (works on server, fails on travis & appveyor)
 test_that("basic output nested list contains the report", {
   x <- download_lighthouse("https://www.w3.org/", strategy = "desktop", interval = 0, output_type = "raw")
-  expect_identical(x[[1]]$id, "https://www.w3.org/")
+  expect_identical(x$desktop[[1]]$id, "https://www.w3.org/")
 })
 
 # # test_that("basic output nested list has proper length (mobile)", {

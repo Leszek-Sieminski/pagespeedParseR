@@ -213,12 +213,16 @@ download_lighthouse <- function(
     is.string(utm_source)   | is.null(utm_source))
 
   # creating report -----------------------------------------------------------
-  if (grepl("raw", output_type)) {
+  if (grepl("raw", output_type, fixed = T)) {
     lh_raw_2_vec(
       url = url, key = key, strategy = strategy, categories = categories,
       interval = interval,
       locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
-  } else if (grepl("simple", output_type)) {
+
+    results <- readList(file = "db.llo")
+    file.remove("db.llo")
+    return(results)
+  } else if (grepl("simple", output_type, fixed = T)) {
     lh_simple_2_vec(
       url = url, key = key, strategy = strategy, categories = categories,
       long_result, interval = interval,
