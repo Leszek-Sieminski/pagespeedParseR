@@ -5,32 +5,42 @@
 \title{Download new Pagespeed report (Lighthouse) (Pagespeed API ver. 5)}
 \usage{
 download_lighthouse(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-  output_type = "simple", strategy = "desktop",
-  categories = "performance", long_result = TRUE, interval = 0.5,
+  strategy = "desktop", categories = "performance",
+  as_reference = FALSE, reference_path = NULL, interval = 0.5,
   locale = NULL, utm_campaign = NULL, utm_source = NULL)
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze
-MUST contain "http://" or "https://".}
+MUST contain "http://" or "https://"}
 
-\item{key}{string. Pagespeed API key to authenticate. Defaults to
-"PAGESPEED_API_KEY" enviroment variable.}
-
-\item{output_type}{string. Choose how to parse the output. Options:
-"simple" or "raw". See more in Details section}
+\item{key}{string. Pagespeed API key to authenticate. Use
+\code{auth_pagespeed()} function to authenticate before requesting
+report}
 
 \item{strategy}{string/character vector. The analysis strategy to use.
 Options: \code{"desktop"}, \code{"mobile"},
-and \code{"c("desktop", "mobile")"} to return both results in one
-function call.}
+or \code{"c("desktop", "mobile")"} to return both results in one
+function call}
 
 \item{categories}{string. A Lighthouse categories to run.
 Defaults to "performance". See more in Details section}
 
-\item{long_result}{logical. Should the resulting data frame be a long df?}
+\item{as_reference}{logical. If TRUE, function will return only a reference
+to an output list stored in a local cache. Defaults to FALSE.
+*IMPORTANT*:
+if you choose the reference mode, output object will appear in R's
+global enviroment and will be accessible, but deleting .llo file will
+break the reference and the data will be no more accessible.
+See more in Details section}
+
+\item{reference_path}{string. If you decide to export the binary file with
+the exported reports, you may want to choose different directory to
+avoid overwriting it later. Proper path MUST be ending with
+'\code{.llo}' format. If NULL, the file will be stored in current
+working directory. Defaults to NULL}
 
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
-Defaults to 0.5 second.}
+Defaults to 0.5 second}
 
 \item{locale}{string. The locale used to localize formatted results}
 
@@ -39,167 +49,121 @@ Defaults to 0.5 second.}
 \item{utm_source}{string. Campaign source for analytics. Defaults to NULL}
 }
 \value{
-two options: data frame (if \code{output_type = "simple"}),
-    nested list (if \code{output_type = "raw"})
+two options: nested list (if \code{as_reference = FALSE}) or a
+   reference to a list in a binary 'db.llo' file
+   (if \code{as_reference = TRUE}).
 }
 \description{
 Download PageSpeed Insights v5 report ("Lighthouse")
      for single or multiple URLs in variety of options.
      You can choose the the resulting object to be an original nested list
-     (\code{output_type = "raw"}) with all the data or a parsed data frame
-     (\code{output_type = "simple"}) with most of the data.
-
-     If you choose a data frame, mind that it will have literally
-     hundreds/thousands of columns. The number
-     of columns IS NOT STABLE, because it depends to number of error
-     occurrences and their types.
-
-     Because of this you can decide to set parameter (\code{long_result =
-     TRUE}) to obtain more messy but "long-like" output data frame.
+     (\code{as_reference = FALSE}) returned into enviroment, or a reference
+     (\code{as_reference = TRUE}) to the physical compressed binary file
+     containing all the reports.
 }
 \details{
-The \code{output_type} parameter regulates how the output will be
+\itemize{
+  \item \code{output_type}
+    The \code{output_type} parameter regulates how the output will be
     parsed and stored.
     For "simple" - formatted data frame that contains most of the data
     (scores, recommendations and error occurences).
     For "raw" - unformatted nested list that contains all the data that
     was returned by the API.
 
-
+  \item \code{api_version}
     The \code{api_version} parameter regulates which API version is to
     create the report. Legacy version 4 is a classic Pagespeed, and the
     new version 5 returns Lighthouse reports.
 
+  \item \code{categories}
     The \code{categories} parameter works only for API version 5.
     It regulates which of the tests' categories from Lighthouse
     are to be run. You can select more than one in a vector.
     Options: "accessibility", "best-practices", "performance", "pwa",
     "seo".
+
+  \item \code{as_reference}: The parameter controls the output type. If
+  \code{FALSE}, it will returned a nested list with all the reports. If
+  set to \code{TRUE}, it will return only a reference to a compressed
+  temporary binary file \code{'db.llo'} stored in the current working
+  directory. Caching results like this may be a good choice if you plan to
+  check hundreds/thousands of URLs because this way their combined size
+  should not be causing memory issues in R as growing the \code{'db.llo'}
+  file doesn't require loading it to do memory every time and copying. You
+  can then access contents of the referenced file easily as it behaves like
+  a normal list. For example, \code{str(pagespeed_results)} will return the
+  structure of the list inside the binary file, and
+  \code{pagespeed_results[[1]]} will return its first element.
+  *IMPORTANT*:
+  if you choose the reference mode, mind that output object will appear in
+  R's global enviroment and will be accessible like a normal nested list
+  object, but deleting it's .llo file will break the reference. While the
+  object will seemingly stay in global enviroment, the data will be lost.
+  There should appear a warning that file does no longer exist.
+
+  Setting \code{as_reference = FALSE} will delete the temporary file.
+  For more information, please read:
+  <https://cran.r-project.org/web/packages/largeList/vignettes/intro_largeList.html>
+}
 }
 \examples{
 \dontrun{
-# download simple data frame with "Performance" Lighthouse report for Google.com:
-# that's a lot of columns and you will have problems but you can
-# spread/gather them as you like
-
-lh_df_1 <- download_lighthouse(
- url = "https://www.google.com",
- output_type = "simple",
- long_result = FALSE) # return the results in a wide data frame
-
-class(lh_df_1)
-# [1] "data.frame"
-dim(lh_df_1)   # 1 row, 779 columns. The number of columns may wildly differ
-# [1]   1 779  # because it depends also to number of spotted errors and their types
-
-
-
-# this time let's download it and parse into messy long-like table:
-lh_df_1_long <- download_lighthouse(
-  url = "https://www.google.com",
-  output_type = "simple", # return the results in a wide data frame
-  long_result = TRUE) # spread the data into easier-to-digest form
-
-class(lh_df_1_long)
-# [1] "data.frame"
-dim(lh_df_1_long) # 780 rows in 3 columns
-# [1] 780   3
-
-
-
-# check "Performance" for Google.com & Bing.com for both desktop & mobile and
-# return in a data frame with most important columns
-lh_df_2 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 1, # wait 1 second between the calls to API
-  categories = "performance", # which Lighthouse reports
-  long_result = FALSE)       # are to be run?
-
-
-class(lh_df_2)
-# [1] "data.frame"
-dim(lh_df_2)
-# [1]    4 1231
-
-
-
-# check "Performance" and "Accessibility" for Google.com & Bing.com for
-# both desktop & mobile and return in a data frame with most important columns
-lh_df_3 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"),
-  long_result = FALSE)
-
-class(lh_df_3)
-[1] "data.frame"
-dim(lh_df_3)
-[1]    4 1637
-
-
-
-# check "Performance" and "Accessibility" for Google.com & Bing.com for
-# both desktop & mobile and return in a data frame with even more data,
-# including error occurences and the importance of each report result
-lh_df_4 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"),
-  long_result = FALSE)
-
-
-
-# another run for a messy long-like data frame
-lh_df_4_long <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"),
-  long_result = TRUE) # spread into 4 columns
-
-class(lh_df_4_long)
-# [1] "data.frame"
-dim(lh_df_4_long)
-# 4 columns ("device" + "parameter" + pages values x2) and 1637 rows
-# [1]    4 1637
-
-
-
 # download nested list with "Performance" Lighthouse report for Google.com
 lh_nl_1 <- download_lighthouse(
-  url = "https://www.google.com",
-  output_type = "raw") # return nested list with all possible data
+  url = "https://www.google.com") # return nested list with the report
 
 
 
 # check "Performance" for Google.com & Bing.com for both desktop & mobile and
-# return in a nested list with all possible data
+# return in a nested list
 lh_nl_2 <- download_lighthouse(
   url = c("https://www.google.com",
           "https://www.bing.com/"),
-  output_type = "raw", # return nested list with all possible data
   strategy = c("desktop", # check both desktop and mobile, bind
                "mobile"),
   interval = 1,           # wait 1 second between the calls to API
   categories = "performance") # which Lighthouse reports
                               # are to be run?
+
+
+
+# download a reference with "Performance" Lighthouse report for Google.com
+lh_ref_1 <- download_lighthouse(
+  url = "https://www.google.com"
+  as_reference = TRUE) # return a reference to a temporary file with the
+                       # report
+
+# data in the file can be easily checked or accessed:
+
+> lh_ref_1[[1]][[1]]
+[1] "CAPTCHA_NOT_NEEDED"
+
+> str(lh_ref_1)
+List of 1
+$ :List of 7
+..$ captchaResult          : chr "CAPTCHA_NOT_NEEDED"
+..$ kind                   : chr "pagespeedonline#result"
+..$ id                     : chr "https://www.google.com/"
+..$ loadingExperience      :List of 4
+.. ..$ id              : chr "https://www.google.com/"
+.. ..$ metrics         :List of 2
+.. .. ..$ FIRST_CONTENTFUL_PAINT_MS:List of 3
+.. .. .. ..$ percentile   : int 6846
+.. .. .. ..$ distributions:'data.frame':	3 obs. of  3 variables:
+  .. .. .. .. ..$ min       : int [1:3] 0 1000 2500
+.. .. .. .. ..$ max       : int [1:3] 1000 2500 NA
+.. .. .. .. ..$ proportion: num [1:3] 0.53 0.226 0.244
+.. .. .. ..$ category     : chr "SLOW"
+.. .. ..$ FIRST_INPUT_DELAY_MS     :List of 3
+.. .. .. ..$ percentile   : int 148
+.. .. .. ..$ distributions:'data.frame':	3 obs. of  3 variables:
+  .. .. .. .. ..$ min       : int [1:3] 0 50 250
+.. .. .. .. ..$ max       : int [1:3] 50 250 NA
+.. .. .. .. ..$ proportion: num [1:3] 0.8951 0.0726 0.0323
+.. .. .. ..$ category     : chr "AVERAGE"
+.. ..$ overall_category: chr "SLOW"
+.. ..$ initial_url     : chr "https://www.google.com/"
+# (truncated)
 }
 }

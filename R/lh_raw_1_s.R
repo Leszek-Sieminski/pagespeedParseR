@@ -40,43 +40,53 @@
 #' \dontrun{
 #' single_url_raw_output_5 <- lh_raw_1("https://www.google.com/")
 #' }
-lh_raw_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
-                     strategy = NULL, categories = "performance",
-                     interval = 0.5, locale = NULL,
-                     utm_campaign = NULL, utm_source = NULL,
-                     largelist_object)
+lh_raw_1 <- function(
+  url,
+  key            = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy       = NULL,
+  categories     = "performance",
+  interval       = 0.5,
+  locale         = NULL,
+  utm_campaign   = NULL,
+  utm_source     = NULL)
 {
   # safety net ----------------------------------------------------------------
-  if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
+  if (is.null(key) | nchar(key) == 0){
+    stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)
+  }
+
   assert_that(
-    # is.null(key) | nchar(key),
     not_empty(url), is.string(url) & length(url) > 0,
-    grepl(".", url, fixed = T), is.string(key), is.null(strategy) ||
-      (is.character(strategy) & strategy %in% c("desktop", "mobile")),
+    grepl(".", url, fixed = T), is.string(key), is.null(strategy) || (is.character(strategy) & strategy %in% c("desktop", "mobile")),
     is.null(categories) || (is.character(categories) & categories %in% c("accessibility", "best-practices", "performance", "pwa", "seo")),
-    is.number(interval) & interval >= 0 & interval <= 120,
-    (is.string(locale) & nchar(locale) > 0) || is.null(locale),
-    is.string(utm_campaign) | is.null(utm_campaign),
-    is.string(utm_source)   | is.null(utm_source))
+    is.number(interval) & interval >= 0 & interval <= 120, (is.string(locale) & nchar(locale) > 0) || is.null(locale),
+    is.string(utm_campaign) | is.null(utm_campaign),is.string(utm_source) | is.null(utm_source))
 
   # downloading ---------------------------------------------------------------
   req <- GET(
     url = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
-    query = list(url = url, strategy = strategy, key = key, locale = locale,
-                 category = categories[1],
-                 category = if (length(categories) >= 2) categories[2] else NULL,
-                 category = if (length(categories) >= 3) categories[3] else NULL,
-                 category = if (length(categories) >= 4) categories[4] else NULL,
-                 category = if (length(categories) == 5) categories[5] else NULL,
-                 utm_campaign = utm_campaign,
-                 utm_source = utm_source))
+    query = list(
+      url          = url,
+      strategy     = strategy,
+      key          = key,
+      locale       = locale,
+      category     = categories[1],
+      category     = if (length(categories) >= 2) categories[2] else NULL,
+      category     = if (length(categories) >= 3) categories[3] else NULL,
+      category     = if (length(categories) >= 4) categories[4] else NULL,
+      category     = if (length(categories) == 5) categories[5] else NULL,
+      utm_campaign = utm_campaign,
+      utm_source   = utm_source))
 
   # parsing -------------------------------------------------------------------
   if (req$status_code == 200) {
-    saveList(object = list(fromJSON(content(req, as = "text", encoding = "UTF-8"))), file = "db.llo", append = TRUE)
-    # return()
+    saveList(object = list(fromJSON(content(req, as = "text", encoding = "UTF-8"))),
+             file = "db.llo",
+             append = TRUE)
   } else {
     Sys.sleep(interval)
-    saveList(object = list(url = url), file = "db.llo", append = TRUE)
+    saveList(object = list(url = url),
+             file = "db.llo",
+             append = TRUE)
   }
 }

@@ -14,8 +14,10 @@ test_that("url param doesn't accept bad values", {
 })
 
 test_that("API key doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::lh_raw_1("https://www.w3.org/", strategy = "desktop", key = ""), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
-  expect_error(pagespeedParseR:::lh_raw_1("https://www.w3.org/", strategy = "desktop", key = NULL), regexp = "argument is of length zero")
+  expect_error(pagespeedParseR:::lh_raw_1("https://www.w3.org/", strategy = "desktop", key = ""),
+               regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
+  expect_error(pagespeedParseR:::lh_raw_1("https://www.w3.org/", strategy = "desktop", key = NULL),
+               regexp = "argument is of length zero")
 })
 
 test_that("strategy param doesn't accept bad values", {

@@ -33,50 +33,51 @@
 #' multiple_urls_raw_output <- lh_raw_2_vec("https://www.google.com/")
 #' }
 lh_raw_2_vec <- function(
-  url, key = Sys.getenv("PAGESPEED_API_KEY"),
-  strategy = NULL, categories = "performance",
-  interval = 0.5, locale = NULL,
-  utm_campaign = NULL, utm_source = NULL)
+  url,
+  key = Sys.getenv("PAGESPEED_API_KEY"),
+  strategy = NULL,
+  categories = "performance",
+  interval = 0.5,
+  locale = NULL,
+  utm_campaign = NULL,
+  utm_source = NULL)
 {
   # safety net ----------------------------------------------------------------
-  if (is.null(key) | nchar(key) == 0){stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)}
+  if (is.null(key) | nchar(key) == 0){
+    stop("API key is a NULL or has length = 0.
+         Please check it and provide a proper API key.", call. = FALSE)
+    }
 
   assert_that(
     # is.null(key) | nchar(key) == 0,
-    all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0,
-    all(grepl(".", url, fixed = T)), is.string(key),
+    all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)), is.string(key),
     all(!is.na(strategy)) & (is.null(strategy) || (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
-    is.null(categories) || (is.character(categories) & categories %in%
-                              c("accessibility", "best-practices", "performance", "pwa", "seo")),
-    is.number(interval) & interval >= 0 & interval <= 120,
-    (is.string(locale) & nchar(locale) > 0) || is.null(locale),
-    is.string(utm_campaign) | is.null(utm_campaign),
-    is.string(utm_source)   | is.null(utm_source))
-
-  # large list cache preparation ----------------------------------------------
-  saveList(object = list(), file = "db.llo", append = FALSE, compress = TRUE)
+    is.null(categories) || (is.character(categories) & categories %in% c("accessibility", "best-practices", "performance", "pwa", "seo")),
+    is.number(interval) & interval >= 0 & interval <= 120, (is.string(locale) & nchar(locale) > 0) || is.null(locale),
+    is.string(utm_campaign) | is.null(utm_campaign), is.string(utm_source)   | is.null(utm_source))
 
   # realization ---------------------------------------------------------------
   if ("desktop" %in% strategy & "mobile" %in% strategy) {
     # nested list, both devices -----------------------------------------------
     Sys.sleep(1 + interval) # very simple time interval for saving API limits
     map(.x = url, .f = lh_raw_1, strategy = "desktop", interval = interval,
-        key = key, categories = categories, locale = locale,
-        utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories,
+        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+
     map(.x = url, .f = lh_raw_1, strategy = "mobile", interval = interval,
-        key = key, categories = categories, locale = locale,
-        utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories,
+        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
 
   } else if (is.null(strategy) || grepl("desktop", strategy, fixed = T)) {
     # nested list, only desktop -----------------------------------------------
     map(.x = url, .f = lh_raw_1, strategy = "desktop", interval = interval,
-        key = key, categories = categories, locale = locale,
-        utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories,
+        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
 
   } else if (grepl("mobile", strategy, fixed = T)) {
     # nested list, only mobile ------------------------------------------------
     map(.x = url, .f = lh_raw_1, strategy = "mobile", interval = interval,
-        key = key, categories = categories, locale = locale,
-        utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories,
+        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }
