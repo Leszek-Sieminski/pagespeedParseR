@@ -52,7 +52,7 @@ lh_raw_1 <- function(
 {
   # safety net ----------------------------------------------------------------
   if (is.null(key) | nchar(key) == 0){
-    stop("API key is a NULL or has length = 0. Please check it and provide a proper API key.", call. = FALSE)
+    stop("API key is a NULL or has length = 0.\n         Please check it and provide a proper API key.", call. = FALSE)
   }
 
   assert_that(

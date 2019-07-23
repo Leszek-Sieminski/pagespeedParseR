@@ -164,7 +164,6 @@ download_lighthouse <- function(
     stop("API key is a NULL or has 0 characters.
          Please check it and provide a proper API key.", call. = FALSE)}
 
-  # TODO asserts for as_reference & reference_path
   assert_that(
     all(not_empty(url)), all(!is.null(url)), all(is.character(url)) & length(url) > 0, all(grepl(".", url, fixed = T)),
     is.string(key), all(!is.na(strategy)) & (is.null(strategy) || (is.character(strategy) & all(strategy %in% c("desktop", "mobile")))),
@@ -178,7 +177,7 @@ download_lighthouse <- function(
   # large list cache preparation ----------------------------------------------
   saveList(
     object   = list(),
-    file     = "db.llo",
+    file     = paste0(getwd(), "/db.llo"),
     append   = FALSE,
     compress = TRUE)
 
@@ -191,17 +190,17 @@ download_lighthouse <- function(
   # exporting -----------------------------------------------------------------
   if (!as_reference) {
       # export: nested list ---------------------------------------------------
-      results <- readList(file = "db.llo")
-      file.remove("db.llo")
+      results <- readList(file = paste0(getwd(), "/db.llo"))
+      file.remove(paste0(getwd(), "/db.llo"))
       return(results)
   } else {
       # export: reference -----------------------------------------------------
       if (!is.null(reference_path)) {
-        file.copy(from = "db.llo", to = reference_path, overwrite = T)
-        file.remove("db.llo")
+        file.copy(from = paste0(getwd(), "/db.llo"), to = reference_path, overwrite = T)
+        file.remove(paste0(getwd(), "/db.llo"))
       }
       results <- getList(
-        file     = ifelse(is.null(reference_path), "db.llo", reference_path),
+        file     = ifelse(is.null(reference_path), paste0(getwd(), "/db.llo"), reference_path),
         verbose  = FALSE,
         truncate = FALSE)
     }

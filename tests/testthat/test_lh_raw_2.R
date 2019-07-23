@@ -14,8 +14,10 @@ test_that("url param doesn't accept bad values", {
 })
 
 test_that("API key doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", key = ""), regexp = "API key is a NULL or has length = 0. Please check it and provide a proper API key.")
-  expect_error(pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", key = NULL), regexp = "argument is of length zero")
+  expect_error(pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", key = ""),
+               regexp = "API key is a NULL or has length = 0.\n         Please check it and provide a proper API key.")
+  expect_error(pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", key = NULL),
+               regexp = "argument is of length zero")
 })
 
 test_that("strategy param doesn't accept bad values", {
@@ -46,25 +48,39 @@ test_that("locale param doesn't accept bad values", {
 })
 
 test_that("basic output nested list has proper length (desktop)", {
-  x <- pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", interval = 0)
+  path <- paste0(getwd(), "/db.llo")
+  saveList(object = list(), file = path, append = FALSE, compress = TRUE)
+  pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "desktop", interval = 0)
+  x <- readList(file = path)
+  file.remove(path)
   expect_equal(length(x[[1]]), 7)
 })
 
 test_that("basic output nested list has proper length (mobile)", {
-  x <- pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "mobile", interval = 0)
+  path <- paste0(getwd(), "/db.llo")
+  saveList(object = list(), file = path, append = FALSE, compress = TRUE)
+  pagespeedParseR:::lh_raw_2_vec("https://www.w3.org/", strategy = "mobile", interval = 0)
+  x <- readList(file = path)
+  file.remove(path)
   expect_equal(length(x[[1]]), 7)
 })
 
 test_that("output nested list for multiple URLs has proper length (mobile)", {
-  x <- pagespeedParseR:::lh_raw_2_vec(c("https://www.w3.org/", "https://www.bing"), strategy = "mobile", interval = 0)
+  path <- paste0(getwd(), "/db.llo")
+  saveList(object = list(), file = path, append = FALSE, compress = TRUE)
+  pagespeedParseR:::lh_raw_2_vec(c("https://www.w3.org/", "https://www.bing"), strategy = "mobile", interval = 0)
+  x <- readList(file = path)
+  file.remove(path)
   expect_equal(length(x), 2)
   expect_equal(length(x[[1]]), 7)
 })
 
 test_that("output nested list for multiple URLs and multiple devices has proper length", {
-  x <- pagespeedParseR:::lh_raw_2_vec(c("https://www.w3.org/", "https://www.bing"), strategy = c("mobile", "desktop"), interval = 0)
-  expect_equal(length(x), 2)
-  expect_equal(length(x[[1]]), 2)
-  expect_equal(length(x[[1]][[1]]), 7)
-  expect_true(all(names(x) %in% c("desktop", "mobile")))
+  path <- paste0(getwd(), "/db.llo")
+  saveList(object = list(), file = path, append = FALSE, compress = TRUE)
+  pagespeedParseR:::lh_raw_2_vec(c("https://www.w3.org/", "https://www.bing"), strategy = c("mobile", "desktop"), interval = 0)
+  x <- readList(file = path)
+  file.remove(path)
+  expect_equal(length(x), 4)
+  expect_equal(length(x[[1]]), 7)
 })

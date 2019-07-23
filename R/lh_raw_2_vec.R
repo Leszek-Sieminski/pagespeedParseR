@@ -61,23 +61,23 @@ lh_raw_2_vec <- function(
     # nested list, both devices -----------------------------------------------
     Sys.sleep(1 + interval) # very simple time interval for saving API limits
     map(.x = url, .f = lh_raw_1, strategy = "desktop", interval = interval,
-        key = key, categories = categories,
-        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories, locale = locale,
+        utm_campaign = utm_campaign, utm_source = utm_source)
 
     map(.x = url, .f = lh_raw_1, strategy = "mobile", interval = interval,
-        key = key, categories = categories,
-        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories, locale = locale,
+        utm_campaign = utm_campaign, utm_source = utm_source)
 
   } else if (is.null(strategy) || grepl("desktop", strategy, fixed = T)) {
     # nested list, only desktop -----------------------------------------------
     map(.x = url, .f = lh_raw_1, strategy = "desktop", interval = interval,
-        key = key, categories = categories,
-        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories, locale = locale,
+        utm_campaign = utm_campaign, utm_source = utm_source)
 
   } else if (grepl("mobile", strategy, fixed = T)) {
     # nested list, only mobile ------------------------------------------------
     map(.x = url, .f = lh_raw_1, strategy = "mobile", interval = interval,
-        key = key, categories = categories,
-        locale = locale, utm_campaign = utm_campaign, utm_source = utm_source)
+        key = key, categories = categories, locale = locale,
+        utm_campaign = utm_campaign, utm_source = utm_source)
   }
 }
