@@ -1,11 +1,11 @@
-# pagespeedParseR  v0.3.1.9000
+# pagespeedParseR  v1.0.0
 ![Lifecycle_Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Build status](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR.svg?branch=master)](https://travis-ci.org/Leszek-Sieminski/pagespeedParseR)
 [![Coverage status](https://codecov.io/gh/Leszek-Sieminski/pagespeedParseR/branch/master/graph/badge.svg)](https://codecov.io/github/Leszek-Sieminski/pagespeedParseR?branch=master)
 
 R wrapper for Google Pagespeed Insights API
 
-* [News and important information](#news-and-important-information)
+* [News](#news)
 * [What is Google Pagespeed Insights?](#what-is-google-pagespeed-insights)
 * [Other Pagespeed API packages in R](#other-pagespeed-packages-in-r)
 * [Why pagespeedParseR when there are other packages?](#but-why-another-r-package-for-pagespeed-api)
@@ -15,22 +15,18 @@ R wrapper for Google Pagespeed Insights API
 * [Authentication](#authentication)
 * [Usage](#usage)
 
-## News and plans
-##### **2019-07-10**, ver. 0.3.1.9000:
-* small bugfixes to *long_result = T* parameter in *download_lighthouse(..., output_type = "simple")*
-* small bugfixes to tests
+## News 
 
-##### **2019-07-05**, ver. 0.3.0.9000 (Lighthouse overhaul):
-* big overhaul of *download_lighthouse()* function. Parsing to data frame with *output_type = "simple"* parameter will now provide much more data. However, **it can generate literally hundreds/thousands of columns** (up to ~2500). What is more, the **number of columns IS NOT STABLE**, because it depends on the number of found errors and/or their type
-* to ease the pain of dealing with such data frames, I added *long_result* parameter that defaults to *FALSE*. Setting it to TRUE will force the function to spread the data frame into messy, long-like form that I hope to be easier to comprehend
-* the behaviour of download_lighthouse(output_type = "raw") or other functions didn't change
-* please mind that this is experimental and may cause unexpected errors. If you happen to find one, don't hesitate to inform me and/or add an Issue
+##### **2019-07-...**, v1.0.0 (package api shift + release):
+Big paradigm shift, may break exisiting code!
 
-##### **Plans for future**:
-* reworking the way user uses the package. I want to create only **one** function that downloads just the nested lists and create additional functions that will be used on downloaded nested lists to extract choosen report categories or audits or error examples. I think it will speed up the process, especially for the users that do not want to parse everything but need only some specific information. It would also allow me to add some parallelization features to speed everything up (and wouldn't blow up the API)
-* improving quantity of data parsed into data frame
-* speeding things up
+* there is only **one** function that downloads just the nested lists - *download_lighthouse()*. Parameters *output_type* & *long_result* are now obsolete (and will break the function) and were moved into specialised extraction functions (see below)
+* to extract the data from the export in the form of data frames, use new functions: *extract_lighthouse_...()*. You can choose to export 1) just the category scores, 2) most of the data from all audits or 3) detailed data from choosen audit (including errors & recommendations)
+* pagespeedParseR should be able to handle thousands of URLs thanks to the new cache functionality! The results are cached into temporary binary file 'db.llo' saved in a current working directory and thus should not cause memory allocation issues
+* you can choose to export the API output as a binary file to location of your choosing and access its data without loading it up into the global enviroment. You can just use the pointer overloading. See more in *download_lighthouse()* documentation
+* if you happen to find a bug, don't hesitate to inform me and/or [add an issue](https://github.com/Leszek-Sieminski/pagespeedParseR/issues)
 
+To find out more, please read the documentation.
 
 ## What is Google Pagespeed Insights?
 Google Pagespeed is an online tool that identifies performance issues for a given URL and provides suggestions and optimizations. See [more details](https://developers.google.com/speed/pagespeed/insights/?hl=pl).
