@@ -71,137 +71,108 @@ auth_pagespeed(api_key)
 
 ## Usage
 
-### Startup
+### Download & load
+
 ```r
+# libraries -------------------------------------------------------------------
+install.packages("devtools")
+library(devtools)
+devtools::install_github("Leszek-Sieminski/pagespeedParseR")
 library(pagespeedParseR)
-auth_pagespeed("12345") # not run, example
 ```
 
-### Lighthouse reports as wide data frames (most important data)
-
+### Authentication
 ```r
-# Lighthouse reports - Data Frames --------------------------------------------
-# download simple data frame with "Performance" Lighthouse report for Google.com:
-# that's a lot of columns and you will have problems but you can
-# spread/gather them as you like
-
-lh_df_1 <- download_lighthouse(
- url = "https://www.google.com",
- output_type = "simple") # return the results in a wide data frame
-
-class(lh_df_1)
-# [1] "data.frame"
-dim(lh_df_1)   # 1 row, 779 columns. The number of columns may wildly differ
-# [1]   1 779  # because it depends also to number of spotted errors and their types
-
-
-
-# this time let's download it and parse into messy long-like table:
-lh_df_1_long <- download_lighthouse(
-  url = "https://www.google.com",
-  output_type = "simple", # return the results in a wide data frame
-  long_result = TRUE) # spread the data into easier-to-digest form
-
-class(lh_df_1_long)
-# [1] "data.frame"
-dim(lh_df_1_long) # 780 rows in 3 columns
-# [1] 780   3
-
-
-
-# check "Performance" for Google.com & Bing.com for both desktop & mobile and
-# return in a data frame with most important columns
-lh_df_2 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 1, # wait 1 second between the calls to API
-  categories = "performance") # which Lighthouse reports
-                              # are to be run?
-
-class(lh_df_2)
-# [1] "data.frame"
-dim(lh_df_2)
-# [1]    4 1231
-
-
-
-# check "Performance" and "Accessibility" for Google.com & Bing.com for
-# both desktop & mobile and return in a data frame with most important columns
-lh_df_3 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"))
-
-class(lh_df_3)
-# [1] "data.frame"
-dim(lh_df_3)
-# [1]    4 1637
-
-
-
-# check "Performance" and "Accessibility" for Google.com & Bing.com for
-# both desktop & mobile and return in a data frame with even more data,
-# including error occurences and the importance of each report result
-lh_df_4 <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"))
-
-
-
-# another run for a messy long-like data frame
-lh_df_4_long <- download_lighthouse(
-  url = c("https://www.google.com",
-          "https://www.bing.com/"),
-  output_type = "simple", # return the results in a wide data frame
-  strategy = c("desktop", # check both desktop and mobile, bind
-               "mobile"),
-  interval = 2,           # wait 2 seconds between the calls to API
-  categories = c("performance", # run performance & accessibility
-                 "accessibility"),
-  long_result = TRUE) # spread into 4 columns
-
-class(lh_df_4_long)
-# [1] "data.frame"
-dim(lh_df_4_long)
-# 4 columns ("device" + "parameter" + pages values x2) and 1637 rows
-# [1]    4 1637
-
+# authentication --------------------------------------------------------------
+auth_pagespeed("12345") # Not run, example
 ```
 
-### Lighthouse reports as nested lists (all data)
-
+### Downloading Lighthouse reports as objects to global enviroment
 ```r
-# Lighthouse reports - Nested Lists -------------------------------------------                                           
-# download nested list with "Performance" Lighthouse report for Google.com
-lh_nl_1 <- download_lighthouse(url = "https://www.google.com", 
-                               output_type = "raw")           # return nested list with all possible data
+# downloading Lighthouse as objects -------------------------------------------
+obj1 <- download_lighthouse(
+  url        = c("https://www.w3.org/"), # single URL
+  categories = c("performance",
+                 "accessibility",
+                 "best-practices",
+                 "pwa",
+                 "seo"))
 
-# check "Performance" for Google.com & Bing.com for both desktop & mobile and
-# return in a nested list with all possible data
-lh_nl_2 <- download_lighthouse(url = c("https://www.google.com", 
-                                       "https://www.bing.com/"), 
-                               output_type = "raw",           # return nested list with all possible data
-                               strategy = c("desktop",        # check both desktop and mobile, bind
-                                            "mobile"), 
-                               interval = 1,                  # wait 1 second between the calls to API 
-                               categories = "performance")    # which Lighthouse reports are to be run?
-
+obj2 <- download_lighthouse(
+  url        = c("https://www.w3.org/",     # multi-URL
+                 "https://www.google.com"),
+  categories = c("performance",
+                 "accessibility",
+                 "best-practices",
+                 "pwa",
+                 "seo"))
 ```
 
+### Downloading Lighthouse as references to physical cache files on disk
+```r
+# downloading Lighthouse as references to physical files on disk --------------
+ref1 <- download_lighthouse(
+  url            = c("https://www.w3.org/"), # single URL
+  categories     = c("performance",
+                     "accessibility",
+                     "best-practices",
+                     "pwa",
+                     "seo"),
+  as_reference   = TRUE,
+  reference_path = "ref_path_1.llo")
+
+ref2 <- download_lighthouse(
+  url            = c("https://www.w3.org/",     # multi-URL
+                     "https://www.google.com"),
+  categories     = c("performance",
+                 "accessibility",
+                 "best-practices",
+                 "pwa",
+                 "seo"),
+  as_reference   = TRUE,
+  reference_path = "ref_path_2.llo")
+```
+
+### Extracting only Lighthouse category scores
+```r
+# extracting only category scores ---------------------------------------------
+scor_ref_1 <- pagespeedParseR::extract_lighthouse_scores(ref1)
+scor_ref_2 <- pagespeedParseR::extract_lighthouse_scores(ref2)
+scor_obj_1 <- pagespeedParseR::extract_lighthouse_scores(obj1)
+scor_obj_2 <- pagespeedParseR::extract_lighthouse_scores(obj2)
+
+str(scor_obj_2)
+# 'data.frame':	2 obs. of  7 variables:
+# $ url           : chr  "https://www.w3.org/" "https://www.google.com/"
+# $ device        : chr  "desktop" "desktop"
+# $ performance   : num  1 1
+# $ accessibility : num  0.78 0.89
+# $ best.practices: num  0.77 0.92
+# $ seo           : num  1 0.8
+# $ pwa           : num  0.54 0.46
+```
+
+### Extracting most important Lighthouse data from all audits
+```r
+# extracting most important data from all audits ------------------------------
+gen_ref_1  <- pagespeedParseR::extract_lighthouse_general_info(ref1)
+gen_obj_1  <- pagespeedParseR::extract_lighthouse_general_info(obj1)
+gen_obj_2  <- pagespeedParseR::extract_lighthouse_general_info(obj2)
+gen_ref_2  <- pagespeedParseR::extract_lighthouse_general_info(ref2)
+
+str(gen_ref_2)
+# 'data.frame':	2 obs. of  1630 variables:
+# $ device               : chr  "desktop" "desktop"
+# $ url                  : chr  "https://www.w3.org/" "https://www.google.com/"
+# $ finalUrl             : chr  "https://www.w3.org/" "https://www.google.com/"
+# $ status_code          : num  200 200
+# $ score.accessibility  : num  0.78 0.89
+# $ score.best-practices : num  0.77 0.92
+# $ score.performance    : num  1 1
+# $ score.pwa            : num  0.54 0.46
+# $ score.seo            : num  1 0.8
+# ... (truncated)
+```
 
 ### PageSpeed reports as wide data frames (most important data)
 ```r
@@ -225,11 +196,9 @@ ps_df_3 <- download_pagespeed(url = c("https://www.google.com",
                               strategy = c("desktop",      # check both desktop and mobile, bind
                                            "mobile"), 
                               interval = 2)                # wait 2 seconds between the calls to API 
-
 ```
 
 ### PageSpeed reports as nested lists (all data)
-
 ```r
 # PageSpeed reports - Nested Lists --------------------------------------------
 # download nested list with Pagespeed report for Google.com
@@ -252,5 +221,4 @@ ps_nl_3 <- download_pagespeed(url = c("https://www.google.com",
                               strategy = c("desktop", 
                                            "mobile"), 
                               interval = 2)
-
 ```
