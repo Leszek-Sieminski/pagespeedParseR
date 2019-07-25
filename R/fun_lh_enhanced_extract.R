@@ -37,32 +37,3 @@ fun_lh_enhanced_extract <- function(audits, report_cat_df = NULL) {
   }
   return(df)
 }
-
-# str(audits$`aria-required-attr`$details)
-#
-# pętla dla każdego audytu
-#   pętla dla każdego elementu w audycie
-#     (jeśli ilość podelementów > 1)
-#         cośtam
-#     (jeśli ilość podelementów < 1)
-#         cośtam
-#
-#
-# xd <- fun_lh_enhanced_extract(parsed$loadingExperience)
-# xd <- fun_lh_enhanced_extract(audits, report_cat_df = report_cat_df)
-#
-#
-# str(audits$`aria-required-attr`)
-# str(audits$`aria-required-attr`$details)
-# str(audits$`aria-required-attr`$details$debugData)
-# str(audits$`aria-required-attr`$details$headings)
-# str(audits$`aria-required-attr`$details$items)
-# str(audits$`aria-required-attr`$details$type)
-# df$`aria-required-children.id`
-# df$`aria-required-children.title`
-# df$`aria-required-children.description`
-# df$`aria-required-children.score`
-# df$`aria-required-children.scoreDisplayMode`
-# df$`aria-required-children.details.type`
-#
-# str(parsed$loadingExperience)

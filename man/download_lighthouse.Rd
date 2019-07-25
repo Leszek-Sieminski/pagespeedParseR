@@ -11,7 +11,7 @@ download_lighthouse(url, key = Sys.getenv("PAGESPEED_API_KEY"),
 }
 \arguments{
 \item{url}{vector of character strings. The URLs to fetch and analyze
-MUST contain "http://" or "https://"}
+MUST contain \code{"http://"} or \code{"https://"}}
 
 \item{key}{string. Pagespeed API key to authenticate. Use
 \code{auth_pagespeed()} function to authenticate before requesting
@@ -23,88 +23,98 @@ or \code{"c("desktop", "mobile")"} to return both results in one
 function call}
 
 \item{categories}{string. A Lighthouse categories to run.
-Defaults to "performance". See more in Details section}
+Defaults to \code{"performance".} See more in Details section}
 
 \item{as_reference}{logical. If TRUE, function will return only a reference
-to an output list stored in a local cache. Defaults to FALSE.
+to an output list stored in a local cache. Defaults to \code{FALSE}.
 *IMPORTANT*:
 if you choose the reference mode, output object will appear in R's
-global enviroment and will be accessible, but deleting .llo file will
-break the reference and the data will be no more accessible.
+global enviroment and will be accessible, but deleting \code{'.llo'}
+file will break the reference and the data will be no more accessible.
+This may be a good choice when you want to download more than 500-1000
+URLs as this should help you avoid memory & allocation issues.
 See more in Details section}
 
 \item{reference_path}{string. If you decide to export the binary file with
 the exported reports, you may want to choose different directory to
 avoid overwriting it later. Proper path MUST be ending with
 '\code{.llo}' format. If NULL, the file will be stored in current
-working directory. Defaults to NULL}
+working directory and might be overwritten later. Defaults to NULL}
 
 \item{interval}{numeric. Number of seconds to wait between multiple queries.
-Defaults to 0.5 second}
+Defaults to \code{0.5} second}
 
-\item{locale}{string. The locale used to localize formatted results}
+\item{locale}{string. The locale used to localize formatted results.
+Defaults to \code{NULL}}
 
-\item{utm_campaign}{string. Campaign name for analytics. Defaults to NULL}
+\item{utm_campaign}{string. Campaign name for analytics. Defaults to
+\code{NULL}}
 
-\item{utm_source}{string. Campaign source for analytics. Defaults to NULL}
+\item{utm_source}{string. Campaign source for analytics. Defaults to
+\code{NULL}}
 }
 \value{
 two options: nested list (if \code{as_reference = FALSE}) or a
-   reference to a list in a binary 'db.llo' file
+   reference to a list in a binary \code{'db.llo'} file
    (if \code{as_reference = TRUE}).
 }
 \description{
 Download PageSpeed Insights v5 report ("Lighthouse")
      for single or multiple URLs in variety of options.
      You can choose the the resulting object to be an original nested list
-     (\code{as_reference = FALSE}) returned into enviroment, or a reference
-     (\code{as_reference = TRUE}) to the physical compressed binary file
-     containing all the reports.
+     object (\code{as_reference = FALSE}) returned into enviroment, or a
+     reference (\code{as_reference = TRUE}) to such list saved as the
+     physical compressed binary file containing all the output.
 }
 \details{
 \itemize{
-  \item \code{output_type}
-    The \code{output_type} parameter regulates how the output will be
+  \item \code{output_type}: this parameter regulates how the output will be
     parsed and stored.
     For "simple" - formatted data frame that contains most of the data
     (scores, recommendations and error occurences).
     For "raw" - unformatted nested list that contains all the data that
     was returned by the API.
 
-  \item \code{api_version}
-    The \code{api_version} parameter regulates which API version is to
+  \item \code{api_version}: this parameter regulates which API version is to
     create the report. Legacy version 4 is a classic Pagespeed, and the
     new version 5 returns Lighthouse reports.
 
-  \item \code{categories}
-    The \code{categories} parameter works only for API version 5.
-    It regulates which of the tests' categories from Lighthouse
-    are to be run. You can select more than one in a vector.
+  \item \code{categories}: this parameter regulates which of the tests'
+    categories from Lighthouse are to be run. You can select more than one
+    in a vector.
     Options: "accessibility", "best-practices", "performance", "pwa",
     "seo".
 
-  \item \code{as_reference}: The parameter controls the output type. If
+  \item \code{as_reference}: this parameter controls the output type. If
   \code{FALSE}, it will returned a nested list with all the reports. If
   set to \code{TRUE}, it will return only a reference to a compressed
   temporary binary file \code{'db.llo'} stored in the current working
-  directory. Caching results like this may be a good choice if you plan to
+  directory.
+
+  Caching results like this may be a good choice if you plan to
   check hundreds/thousands of URLs because this way their combined size
   should not be causing memory issues in R as growing the \code{'db.llo'}
-  file doesn't require loading it to do memory every time and copying. You
-  can then access contents of the referenced file easily as it behaves like
-  a normal list. For example, \code{str(pagespeed_results)} will return the
-  structure of the list inside the binary file, and
+  file doesn't require loading it to do memory every time and copying.
+
+  You can then access contents of the referenced file easily as it behaves
+  like a normal list. For example, \code{str(pagespeed_results)} will return
+  the structure of the list inside the binary file, and for example
   \code{pagespeed_results[[1]]} will return its first element.
-  *IMPORTANT*:
+
+  IMPORTANT:
   if you choose the reference mode, mind that output object will appear in
   R's global enviroment and will be accessible like a normal nested list
-  object, but deleting it's .llo file will break the reference. While the
-  object will seemingly stay in global enviroment, the data will be lost.
-  There should appear a warning that file does no longer exist.
+  object, but deleting it's \code{'.llo'} file will break the reference.
+  While the object will seemingly stay in global enviroment, the data will
+  be lost. There should appear a warning that file does no longer exist.
 
-  Setting \code{as_reference = FALSE} will delete the temporary file.
+  Setting \code{as_reference = FALSE} will delete the temporary file so you
+  don't have to worry about managing physical files. However, returning big
+  reports (depending on your machine 500-1000 URLs and more) to global
+  enviroment may cause memory issues.
+
   For more information, please read:
-  <https://cran.r-project.org/web/packages/largeList/vignettes/intro_largeList.html>
+  https://cran.r-project.org/web/packages/largeList/vignettes/intro_largeList.html
 }
 }
 \examples{

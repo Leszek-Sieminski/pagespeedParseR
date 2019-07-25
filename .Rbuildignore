@@ -11,3 +11,4 @@ codecov.yml
 coveralls.yml
 profiling.R
 .*\.Rprofvis$
+NEWS.md
