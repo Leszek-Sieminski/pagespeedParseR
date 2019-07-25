@@ -3,7 +3,6 @@
 #' @param x object of single report
 #'
 #' @return data frame
-#' @export
 #'
 #' @examples
 #' \dontrun{
