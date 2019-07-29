@@ -10,6 +10,13 @@
 #'
 #' }
 fun_lh_extract_general_info <- function(x) {
+  assert_that(
+    !(is.null(x) || is.na(x))
+    & is.list(x)
+    & !is.data.frame(x)
+    # , not_empty(x)
+    )
+
   categories <- x$lighthouseResult$configSettings$onlyCategories
 
   # 01 creating baseline data frame ---------------------------------------------
@@ -26,7 +33,7 @@ fun_lh_extract_general_info <- function(x) {
     report_name      = character(),
     stringsAsFactors = F)
 
-  # source("R/fun_lh_extract_cat_id.R")
+  # source("R/fun_lh_cat_id.R")
   for(i in 1:length(categories)){
     res <- fun_lh_cat_id(categories[i], x)
     report_cat_df <- rbind(report_cat_df, res)

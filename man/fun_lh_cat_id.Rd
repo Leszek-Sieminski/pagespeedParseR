@@ -20,7 +20,7 @@ Helper function for extracting audit categories
 \examples{
 \dontrun{
 for(i in 1:length(categories)){
-  res <- fun_lh_extract_cat_id(categories[i], parsed)
+  res <- fun_lh_cat_id(categories[i], parsed)
   report_cat_df <- rbind(report_cat_df, res)
 }
 
