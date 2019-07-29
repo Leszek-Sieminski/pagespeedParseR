@@ -31,8 +31,8 @@
 #'   reference_path = "ref_path.llo")
 #'
 #' # extraction
-#' scores_obj  <- lh_score_extraction4(lh_object)
-#' scores_ref <- lh_score_extraction4(lh_ref)
+#' scores_obj  <- lh_score_extraction(lh_object)
+#' scores_ref <- lh_score_extraction(lh_ref)
 #'
 #' # let's see the objects' structures!
 #'
