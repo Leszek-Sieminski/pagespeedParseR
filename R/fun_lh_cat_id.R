@@ -29,7 +29,7 @@ fun_lh_cat_id <- function(id, parsed) {
     length(id) == 1,
     id %in% c("performance", "accessibility", "best-practices", "seo", "pwa"),
     !(is.na(parsed) || is.null(parsed)),
-    is.list(parsed),
+    is.list(parsed) || class(parsed) == "largeList",
     !is.data.frame(parsed)
     # length(parsed) >
   )
