@@ -10,12 +10,12 @@
 #'
 #' }
 fun_lh_extract_general_info <- function(x) {
-  assert_that(
-    !(is.null(x) || is.na(x))
-    & is.list(x)
-    & !is.data.frame(x)
-    # , not_empty(x)
-    )
+  # assert_that(
+  assert_that(!(is.null(x) || is.na(x)))
+  assert_that(is.list(x))
+  assert_that(!is.data.frame(x))
+  # , not_empty(x)
+    # )
 
   categories <- x$lighthouseResult$configSettings$onlyCategories
 

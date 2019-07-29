@@ -30,7 +30,7 @@ test_that("general info object have proper columns", {
 
   # extraction
   scores_obj  <- extract_lighthouse_general_info(lh_object)
-  scores_ref <- extract_lighthouse_general_info(lh_ref)
+  scores_ref  <- extract_lighthouse_general_info(lh_ref)
 
   # cleaning
   rm(lh_ref)
