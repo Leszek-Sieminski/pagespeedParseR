@@ -17,3 +17,14 @@ req_test <- GET(url = "https://www.googleapis.com/pagespeedonline/v5/runPagespee
 parsed_test <- fromJSON(content(req_test, as = "text", encoding = "UTF-8"))
 
 rm(req_test)
+
+# url_sample ------------------------------------------------------------------
+url_sample <- c(
+  # "https://www.w3.org/",
+  "https://archive.org/",
+  "https://www.loc.gov/",
+  "https://www.wikipedia.org/",
+  "https://www.who.int/",
+  "https://www.worldbank.org/",
+  "https://www.un.org/en/"
+)

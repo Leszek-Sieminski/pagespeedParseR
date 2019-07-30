@@ -29,7 +29,7 @@ test_that("function return proper ids", {
   }
 
 expect_equal(length(dim(report_cat_df)), 2)
-expect(is.data.frame(report_cat_df))
+expect(is.data.frame(report_cat_df), "report_cat_df not a data frame!")
 expect_equal(ncol(report_cat_df), 2)
-expect(unique(report_cat_df$category) %in% categories)
+expect(all(unique(report_cat_df$category) %in% categories), failure_message = 'resulting categories not in c("performance", "best-practices", "accessibility", "seo", "pwa")')
 })
