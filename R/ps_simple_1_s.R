@@ -326,6 +326,7 @@ ps_simple_1 <- function(url, key = Sys.getenv("PAGESPEED_API_KEY"),
     full_results <- fun_ps_basic_sort(full_results)
 
     # 20 returning ------------------------------------------------------------
+    Sys.sleep(interval)
     return(full_results)
   } else {
     # else NA df --------------------------------------------------------------
