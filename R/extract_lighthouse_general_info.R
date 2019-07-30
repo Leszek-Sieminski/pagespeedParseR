@@ -13,7 +13,7 @@
 #' }
 extract_lighthouse_general_info <- function(x) {
   # safety net ----------------------------------------------------------------
-  assert_that((is.list(x) | class(x) == "largeList"), !is.data.frame(x), length(x) >= 1)
+  assert_that((is.list(x) || grepl("largeList", class(x))), !is.data.frame(x), length(x) >= 1)
 
   # extraction ----------------------------------------------------------------
   for(i in 1:length(x)) {
