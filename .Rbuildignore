@@ -12,3 +12,4 @@ coveralls.yml
 profiling.R
 .*\.Rprofvis$
 NEWS.md
+helper_api_key\.R

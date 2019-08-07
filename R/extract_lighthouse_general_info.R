@@ -16,14 +16,10 @@ extract_lighthouse_general_info <- function(x) {
   # assert_that((is.list(x) || grepl("largeList", class(x))), !is.data.frame(x), length(x) >= 1)
 
   # extraction ----------------------------------------------------------------
-  for(i in 1:length(x)) {
-    res <- fun_lh_extract_general_info(x[[i]])
-
-    if (i == 1){
-      results <- res
-    } else {
-      results <- suppressMessages(full_join(results, res))
-    }
+  results <- vector(mode = "list", length = length(x))
+  for(i in seq_along(x)) {
+    results[[i]] <- fun_lh_extract_general_info(x[[i]])
   }
-  return(results)
+  results_2 <- Reduce(function(x, y) suppressMessages(full_join(x, y)), results)
+  return(results_2)
 }

@@ -3,24 +3,24 @@ library(pagespeedParseR)
 library(testthat)
 
 test_that("url param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "", strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NA, strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NULL, strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "google com", strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "", strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NA, strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NULL, strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "google com", strategy = "mobile"))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "",           strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NA,           strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NULL,         strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "google com", strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "",           strategy = "mobile",  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NA,           strategy = "mobile",  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = NULL,         strategy = "mobile",  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = "google com", strategy = "mobile",  key = sample(keys_vector, 1)))
 })
 
 test_that("url param doesn't accept wrong vectors", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c(""), strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("", "https://www.w3.org/"), strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c(NA, "https://www.w3.org/"), strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", "google com"), strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", ""), strategy = "desktop"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", NA), strategy = "mobile"))
-  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", "google com"), strategy = "mobile"))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c(""),                                  strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("", "https://www.w3.org/"),           strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c(NA, "https://www.w3.org/"),           strategy = "mobile", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", "google com"), strategy = "mobile", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", ""),           strategy = "desktop", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", NA),           strategy = "mobile", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", "google com"), strategy = "mobile", key = sample(keys_vector, 1)))
 })
 
 test_that("API key doesn't accept wrong values", {
@@ -29,78 +29,84 @@ test_that("API key doesn't accept wrong values", {
 })
 
 test_that("strategy param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "loremipsum"))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = NA, key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "loremipsum", key = sample(keys_vector, 1)))
 })
 
 test_that("interval param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = -1))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", interval = -1))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = 121))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", interval = 121))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = -1,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile",  interval = -1,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = 121, key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile",  interval = 121, key = sample(keys_vector, 1)))
 })
 
 test_that("filter_third_party param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", filter_third_party = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", filter_third_party = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", filter_third_party = 2))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", filter_third_party = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile",  filter_third_party = NA, key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile",  filter_third_party = 2,  key = sample(keys_vector, 1)))
 })
 
 test_that("locale param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", locale = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", locale = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", locale = 1))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", locale = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", locale = NA,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", locale = 1,   key = sample(keys_vector, 1)))
 })
 
 test_that("rule param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", rule = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", rule = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", rule = 1))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", rule = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", rule = NA,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", rule = 1,   key = sample(keys_vector, 1)))
 })
 
 
 test_that("screenshot param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", screenshot = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", screenshot = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", screenshot = 2))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", screenshot = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", screenshot = NA,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", screenshot = 2,   key = sample(keys_vector, 1)))
 })
 
 test_that("snapshots param doesn't accept wrong values", {
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", snapshots = ""))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", snapshots = NA))
-  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", snapshots = 2))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", snapshots = "", key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", snapshots = NA,  key = sample(keys_vector, 1)))
+  expect_error(pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", snapshots = 2,   key = sample(keys_vector, 1)))
 })
 
 test_that("basic output df has proper dimensions (desktop)", {
-  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "desktop", interval = 0, key = sample(keys_vector, 1))
   expect_equal(nrow(x), 1)
   expect_equal(ncol(x), 54)
 })
 
 test_that("basic output df has proper dimensions (mobile)", {
-  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = "mobile", interval = 0, key = sample(keys_vector, 1))
   expect_equal(nrow(x), 1)
   expect_equal(ncol(x), 54)
 })
 
 test_that("basic output df has proper dimensions (both devices)", {
-  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = c("mobile", "desktop"), interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec("https://www.w3.org/", strategy = c("mobile", "desktop"), interval = 0, key = sample(keys_vector, 1))
   expect_equal(nrow(x), 2)
   expect_equal(ncol(x), 54)
 })
 
 test_that("output df returns proper dimensions despite the NULL", {
-  x <- pagespeedParseR:::ps_simple_2_vec(url = c(NULL, "https://www.w3.org/"), strategy = "desktop", interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec(url = c(NULL, "https://www.w3.org/"), strategy = "desktop", interval = 0, key = sample(keys_vector, 1))
   expect_equal(nrow(x), 1)
   expect_equal(ncol(x), 54)
-  x <- pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", NULL), strategy = "mobile", interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec(url = c("https://www.w3.org/", NULL), strategy = "mobile", interval = 0, key = sample(keys_vector, 1))
   expect_equal(nrow(x), 1)
   expect_equal(ncol(x), 54)
 })
 
 test_that("output df returns rows with errors", {
-  x <- pagespeedParseR:::ps_simple_2_vec(url = c("loremipsumdolorametpageparsererrortest.com", "https://www.w3.org/"), strategy = "desktop", interval = 0)
+  x <- pagespeedParseR:::ps_simple_2_vec(
+    url = c("loremipsumdolorametpageparsererrortest.com",
+            "https://www.w3.org/"),
+    strategy = "desktop",
+    interval = 0,
+    key = sample(keys_vector, 1))
+
   expect_equal(nrow(x), 2)
   expect_equal(ncol(x), 54)
 })

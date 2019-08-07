@@ -5,16 +5,19 @@ library(testthat)
 
 # defensive -------------------------------------------------------------------
 # output ----------------------------------------------------------------------
-
-
 test_that("general info REFERNCE have proper columns", {
-   # download Lighthouse report as a reference to file
   lh_ref <- download_lighthouse(
-    url = sample(url_sample, 2), categories = c("performance", "accessibility", "best-practices", "pwa", "seo"),
-    as_reference = TRUE, reference_path = "ref_path.llo")
+    url            = sample(url_sample, 2),
+    key            = sample(keys_vector, 1),
+    categories     = c("performance",
+                       "accessibility",
+                       "best-practices",
+                       "pwa",
+                       "seo"),
+    as_reference   = TRUE,
+    reference_path = "ref_path.llo")
 
   scores_ref <- extract_lighthouse_general_info(lh_ref)
-  rm(lh_ref)
   file.remove("ref_path.llo")
 
   expect_equal(length(dim(scores_ref)), 2)
@@ -25,7 +28,13 @@ test_that("general info REFERNCE have proper columns", {
 test_that("general info OBJECT have proper columns", {
   # download Lighthouse report as a global enviroment object
   lh_object <- download_lighthouse(
-    url = sample(url_sample, 2), categories = c("performance", "accessibility", "best-practices", "pwa", "seo"))
+    url        = sample(url_sample, 2),
+    key        = sample(keys_vector, 1),
+    categories = c("performance",
+                   "accessibility",
+                   "best-practices",
+                   "pwa",
+                   "seo"))
 
   # extraction
   scores_obj  <- extract_lighthouse_general_info(lh_object)

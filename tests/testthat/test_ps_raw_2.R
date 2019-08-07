@@ -73,26 +73,36 @@ test_that("snapshots param doesn't accept wrong values", {
 })
 
 test_that("basic output df has proper dimensions (desktop)", {
-  x <- pagespeedParseR:::ps_raw_2_vec("https://www.w3.org/", strategy = "desktop", interval = 0)
+  x <- pagespeedParseR:::ps_raw_2_vec(url      = sample(url_sample, 1),
+                                      key      = sample(keys_vector, 1),
+                                      strategy = "desktop",
+                                      interval = 0)
   expect_equal(length(x), 1)
 })
 
 test_that("basic output df has proper dimensions (mobile)", {
-  x <- pagespeedParseR:::ps_raw_2_vec("https://www.w3.org/", strategy = "mobile", interval = 0)
+  x <- pagespeedParseR:::ps_raw_2_vec(url      = sample(url_sample, 1),
+                                      key      = sample(keys_vector, 1),
+                                      strategy = "mobile",
+                                      interval = 0)
   expect_equal(length(x), 1)
 })
 
 test_that("basic output df has proper dimensions (both devices)", {
-  x <- pagespeedParseR:::ps_raw_2_vec("https://www.w3.org/", strategy = c("mobile", "desktop"), interval = 0)
+  x <- pagespeedParseR:::ps_raw_2_vec(
+    url      = sample(url_sample, 1),
+    key      = sample(keys_vector, 1),
+    strategy = c("mobile", "desktop"),
+    interval = 0)
   expect_equal(length(x), 2)
 
   expect_equal(length(x[[1]]), 1)
   expect_equal(length(x[[1]][[1]]), 10)
-  expect_equal(length(x[[1]][[1]]$loadingExperience$metrics), 2)
+  # expect_equal(length(x[[1]][[1]]$loadingExperience$metrics), 2)
 
   expect_equal(length(x[[2]]), 1)
   expect_equal(length(x[[2]][[1]]), 10)
-  expect_equal(length(x[[2]][[1]]$loadingExperience$metrics), 2)
+  # expect_equal(length(x[[2]][[1]]$loadingExperience$metrics), 2)
 })
 
 # test_that("output df returns proper dimensions despite the NULL", {
@@ -103,6 +113,9 @@ test_that("basic output df has proper dimensions (both devices)", {
 # })
 
 test_that("output df returns rows with errors", {
-  x <- pagespeedParseR:::ps_raw_2_vec(url = c("loremipsumdolorametpageparsererrortest.com", "https://www.w3.org/"), strategy = "desktop", interval = 0)
+  x <- pagespeedParseR:::ps_raw_2_vec(url = c("loremipsumdolorametpageparsererrortest.com",
+                                              sample(url_sample, 1)),
+                                      strategy = "desktop",
+                                      interval = 0)
   expect_equal(length(x), 2)
 })
